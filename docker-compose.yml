@@ -24,25 +24,29 @@ services:
     depends_on:
       - database
     volumes:
+<<<<<<< Updated upstream
       - ./Back/blablabook-api/src:/usr/src/api/src
       - ./Back/blablabook-api/prisma:/usr/src/api/prisma
+=======
+      - ./Back/blablabook-api:/usr/src/api
+>>>>>>> Stashed changes
       - api_node_modules:/usr/src/api/node_modules
     restart: on-failure
-    develop:
-      watch:
-        - action: sync
-          path: ./Back/blablabook-api/src
-          target: /usr/src/api/src
-        - action: sync+restart
-          path: ./Back/blablabook-api/src/schemas
-          target: /usr/src/api/src/schemas
-        - action: sync+restart
-          path: ./Back/blablabook-api
-          target: /usr/src/api
-          ignore:
-            - ./Back/blablabook-api/src
-        - action: rebuild
-          path: ./Back/blablabook-api/package.json
+    # develop:
+    #   watch:
+    #     - action: sync
+    #       path: ./Back/blablabook-api/src
+    #       target: /usr/src/api/src
+    #     - action: sync+restart
+    #       path: ./Back/blablabook-api/src/schemas
+    #       target: /usr/src/api/src/schemas
+    #     - action: sync+restart
+    #       path: ./Back/blablabook-api
+    #       target: /usr/src/api
+    #       ignore:
+    #         - ./Back/blablabook-api/src
+    #     - action: rebuild
+    #       path: ./Back/blablabook-api/package.json
     ports:
       - "3000:3000"
     env_file: ".env"
@@ -107,3 +111,7 @@ services:
 volumes:
   postgre-data:
   api_node_modules:
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes

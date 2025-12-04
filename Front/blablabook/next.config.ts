@@ -1,7 +1,26 @@
-import type { NextConfig } from "next";
+// import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  /* config options here */
-};
+// const nextConfig: NextConfig = {
+//   /* config options here */
 
-export default nextConfig;
+// };
+
+// export default nextConfig;
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  swcMinify: true,
+  webpack: (config, context) => {
+    // Enable polling based on env variable being set
+    if(process.env.NEXT_WEBPACK_USEPOLLING) {
+      config.watchOptions = {
+        poll: 200,
+        aggregateTimeout: 300
+      }
+    }
+    return config
+  },
+}
+
+module.exports = nextConfig
