@@ -24,34 +24,38 @@ services:
     depends_on:
       - database
     volumes:
+      - ./Back/blablabook-api/src:/usr/src/api/src
+      - ./Back/blablabook-api/prisma:/usr/src/api/prisma
       - ./Back/blablabook-api:/usr/src/api
+      - api_node_modules:/usr/src/api/node_modules
     restart: on-failure
-    develop:
-      watch:
-        - action: sync
-          path: ./Back/blablabook-api/src
-          target: /usr/src/api/src
-        - action: sync+restart
-          path: ./Back/blablabook-api/src/schemas
-          target: /usr/src/api/src/schemas
-        - action: sync+restart
-          path: ./Back/blablabook-api
-          target: /usr/src/api
-          ignore:
-            - ./Back/blablabook-api/src
-        - action: rebuild
-          path: ./Back/blablabook-api/package.json
+    # develop:
+    #   watch:
+    #     - action: sync
+    #       path: ./Back/blablabook-api/src
+    #       target: /usr/src/api/src
+    #     - action: sync+restart
+    #       path: ./Back/blablabook-api/src/schemas
+    #       target: /usr/src/api/src/schemas
+    #     - action: sync+restart
+    #       path: ./Back/blablabook-api
+    #       target: /usr/src/api
+    #       ignore:
+    #         - ./Back/blablabook-api/src
+    #     - action: rebuild
+    #       path: ./Back/blablabook-api/package.json
     ports:
       - "3000:3000"
-      - "5555:5555"
     env_file: ".env"
 
   # check if needed
   # prismastudio:
-  #   image: timothyjmiller/prisma-studio
+  #   image: timothyjmiller/prisma-studio:latest
   #   restart: unless-stopped
   #   ports:
   #     - 5555:5555
+  #   environment:
+  #     POSTGRES_URL: postgresql://${DB_USER}:${DB_PASSWORD}@database:5432/${DB_NAME}?schema=public
   #   env_file:
   #     - .env
   #   depends_on:
@@ -66,6 +70,7 @@ services:
       - "5173:5173"
     environment:
       - NEXT_PUBLIC_API_URL=http://localhost:3000
+      - WATCHPACK_POLLING=true
     depends_on:
       - api
     volumes:
@@ -89,5 +94,18 @@ services:
       retries: 5
       start_period: 5s
 
+  adminer:
+    image: adminer:latest
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: database
+      ADMINER_DESIGN: pepa-linha
+    depends_on:
+      - database
+
+
 volumes:
   postgre-data:
+  api_node_modules:
