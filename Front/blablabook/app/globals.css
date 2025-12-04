@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme {
+  --color-primary: #a7a0c9;
+
+  --color-second: #e5b1b9;
+
+  --color-tiers: #f8d4c4;
+
+  --color-quater: #3c487c;
+
+  --color-noir: #191818;
+
+  --font-one: var(--font-ubuntu);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.wrapper {
+  @apply px-4 sm:px-8 lg:px-20;
+}
