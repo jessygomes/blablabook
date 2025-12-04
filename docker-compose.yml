@@ -25,25 +25,9 @@ services:
       - database
     volumes:
       - ./Back/blablabook-api/src:/usr/src/api/src
-      - ./Back/blablabook-api/prisma:/usr/src/api/prisma
       - ./Back/blablabook-api:/usr/src/api
       - api_node_modules:/usr/src/api/node_modules
     restart: on-failure
-    # develop:
-    #   watch:
-    #     - action: sync
-    #       path: ./Back/blablabook-api/src
-    #       target: /usr/src/api/src
-    #     - action: sync+restart
-    #       path: ./Back/blablabook-api/src/schemas
-    #       target: /usr/src/api/src/schemas
-    #     - action: sync+restart
-    #       path: ./Back/blablabook-api
-    #       target: /usr/src/api
-    #       ignore:
-    #         - ./Back/blablabook-api/src
-    #     - action: rebuild
-    #       path: ./Back/blablabook-api/package.json
     ports:
       - "3000:3000"
     env_file: ".env"
@@ -74,8 +58,8 @@ services:
     depends_on:
       - api
     volumes:
-      - ./Front/blablabook:/app
-      - /app/node_modules
+      - ./Front/blablabook:/usr/src/app
+      - /usr/src/app/node_modules
     env_file: ".env"
     # command: "npm run dev"
 
