@@ -1,3 +1,7 @@
 # cda-blablabook
 
-page
+## Instalation
+
+add .env
+run npm i
+run npx prisma migrate

@@ -24,7 +24,9 @@ services:
     depends_on:
       - database
     volumes:
-      - ./Back/blablabook-api:/usr/src/api
+      - ./Back/blablabook-api/src:/usr/src/api/src
+      - ./Back/blablabook-api/prisma:/usr/src/api/prisma
+      - api_node_modules:/usr/src/api/node_modules
     restart: on-failure
     develop:
       watch:
@@ -43,15 +45,16 @@ services:
           path: ./Back/blablabook-api/package.json
     ports:
       - "3000:3000"
-      - "5555:5555"
     env_file: ".env"
 
   # check if needed
   # prismastudio:
-  #   image: timothyjmiller/prisma-studio
+  #   image: timothyjmiller/prisma-studio:latest
   #   restart: unless-stopped
   #   ports:
   #     - 5555:5555
+  #   environment:
+  #     POSTGRES_URL: postgresql://${DB_USER}:${DB_PASSWORD}@database:5432/${DB_NAME}?schema=public
   #   env_file:
   #     - .env
   #   depends_on:
@@ -89,5 +92,18 @@ services:
       retries: 5
       start_period: 5s
 
+  adminer:
+    image: adminer:latest
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: database
+      ADMINER_DESIGN: pepa-linha
+    depends_on:
+      - database
+
+
 volumes:
   postgre-data:
+  api_node_modules:
