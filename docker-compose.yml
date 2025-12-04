@@ -1,0 +1,93 @@
+services:
+  database:
+    image: postgres:18.1-alpine
+    volumes:
+      - postgre-data:/var/lib/postgresql/data
+      - ./dumbSQL.sql:/docker-entrypoint-initdb.d/init.sql
+      # - ./db/database:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    restart: unless-stopped
+    env_file: "Back/blablabook-api/.env"
+
+  api:
+    build:
+      context: ./Back/blablabook-api
+      dockerfile: Dockerfile
+    container_name: blablabook-api
+    environment:
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@database:5432/${DB_NAME}?schema=public
+    depends_on:
+      - database
+    volumes:
+      - ./Back/blablabook-api:/usr/src/api
+    restart: on-failure
+    # develop:
+    #   watch:
+    #     - action: sync
+    #       path: ./api/src
+    #       target: /usr/src/api/src
+    #     - action: sync+restart
+    #       path: ./api/src/schemas
+    #       target: /usr/src/api/src/schemas
+    #     - action: sync+restart
+    #       path: ./api
+    #       target: /usr/src
+    #       ignore:
+    #         - ./src
+    #     - action: rebuild
+    #       path: ./api/package.json
+    ports:
+      - "3000:3000"
+      - "5555:5555"
+    env_file: ".env"
+
+  # check if needed
+  # prismastudio:
+  #   image: timothyjmiller/prisma-studio
+  #   restart: unless-stopped
+  #   ports:
+  #     - 5555:5555
+  #   env_file:
+  #     - .env
+  #   depends_on:
+  #     - database
+
+  frontend:
+    container_name: blablabook-frontend
+    build:
+      context: ./Front/blablabook
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:3000
+    depends_on:
+      - api
+    volumes:
+      - ./Front/blablabook:/app
+      - /app/node_modules
+    env_file: ".env"
+    # command: "npm run dev"
+
+  redis:
+    image: redis:8.4.0
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
+volumes:
+  postgre-data:
