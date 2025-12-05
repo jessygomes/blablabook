@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import NavbarDesktop from "@/components/Navbar/NavbarDesktop";
+import NavbarMobile from "@/components/Navbar/NavbarMobile";
+import Footer from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,11 +26,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="fr">
+      <head>
+        <link
+          href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet"
+        />
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >
-        {children}
+        <header>
+          <div className="w-full hidden sm:block">
+            <NavbarDesktop />
+          </div>
+          <div className="sm:hidden fixed bottom-0 w-full">
+            <NavbarMobile />
+          </div>
+        </header>
+        <main className="w-full min-h-screen bg-white">{children}</main>
+        <Footer />
       </body>
     </html>
   );
