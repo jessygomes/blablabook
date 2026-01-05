@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "name": "BlablaBook",
+  "name": "api test call",
   "type": "collection",
   "ignore": [
     "node_modules",
