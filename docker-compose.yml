@@ -3,7 +3,7 @@ services:
     image: postgres:18.1-alpine
     volumes:
       - postgre-data:/var/lib/postgresql/data
-      - ./dumpSql/book.sql:/docker-entrypoint-initdb.d/init.sql
+      # - ./dumpSql/book.sql:/docker-entrypoint-initdb.d/init.sql
       # - ./db/database:/var/lib/postgresql/data
     ports:
       - 5432:5432
@@ -87,7 +87,6 @@ services:
       ADMINER_DESIGN: pepa-linha
     depends_on:
       - database
-
 
 volumes:
   postgre-data:
