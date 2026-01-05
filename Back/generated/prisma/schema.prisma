@@ -1,0 +1,128 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Role {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  users User[]
+
+  @@map("role")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  isPrivate Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  roleId Int
+  role   Role @relation(fields: [roleId], references: [id])
+
+  userBooks UserBook[]
+  comments  Comment[]
+  rates     Rate[]
+
+  @@map("user")
+}
+
+model Book {
+  id              Int      @id @default(autoincrement())
+  title           String
+  page_count      Int
+  author          String
+  category        String
+  publishing_date DateTime
+  summary         String?
+  publisher       String?
+  isbn            String?  @unique
+  cover           String?
+  averageRating   Float?   @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  userBooks UserBook[]
+  comments  Comment[]
+  rates     Rate[]
+
+  @@map("book")
+}
+
+model UserBook {
+  id        Int                @id @default(autoincrement())
+  status    UserBookStatusEnum @default(NOT_READ)
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  bookId Int
+  book   Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, bookId])
+  @@map("userbook")
+}
+
+model Comment {
+  id            Int               @id @default(autoincrement())
+  title         String
+  reportCounter Int               @default(0)
+  content       String
+  date          DateTime          @default(now())
+  status        CommentStatusEnum @default(ACTIVE)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  bookId Int
+  book   Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@map("comment")
+}
+
+model Rate {
+  id     Int   @id @default(autoincrement())
+  rating Float
+
+  userId Int
+  bookId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book   Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, bookId])
+  @@map("rate")
+}
+
+enum UserBookStatusEnum {
+  READ
+  READING
+  NOT_READ
+
+  @@map("userbook_status")
+}
+
+enum CommentStatusEnum {
+  ACTIVE
+  REPORTED
+  HIDDEN
+
+  @@map("comment_status")
+}
