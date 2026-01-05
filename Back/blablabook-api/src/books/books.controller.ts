@@ -8,10 +8,16 @@ import { BooksService } from './books.service';
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
+  // @Post('import')
+  // async create() {
+  //   await this.booksService.getBooksFromGoogleApi();
+  //   return { message: 'ça marche' };
+  // }
+
   @Post('import')
   async create() {
-    await this.booksService.getBooksFromGoogleApi();
-    return { message: 'ça marche' };
+    await this.booksService.getBooksFromOpenLibraryApi();
+    return { message: 'ça marche avec Open Library' };
   }
 
   // @Get()
