@@ -3,7 +3,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useRef } from "react";
 
-export default function NavbarMobile() {
+export default function NavbarMobile({
+  isConnected,
+}: {
+  isConnected: boolean;
+}) {
   const pathname = usePathname();
   const navRef = useRef<HTMLUListElement>(null);
 
@@ -16,7 +20,11 @@ export default function NavbarMobile() {
       label: "Dernières critiques",
       icon: "book",
     },
-    { href: "/mon-profil", label: "Mon profil", icon: "account_circle" },
+    {
+      href: isConnected ? "/mon-profil" : "/se-connecter",
+      label: "Mon profil",
+      icon: "account_circle",
+    },
   ];
 
   return (

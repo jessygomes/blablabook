@@ -1,8 +1,16 @@
 import Register from "@/components/Auth/Register";
 import Image from "next/image";
-import React from "react";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-export default function RegisterPage() {
+export default async function RegisterPage() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("refresh_token");
+
+  if (token) {
+    redirect("/mon-profil");
+  }
+
   return (
     <section className="bg-white pb-10 flex flex-col items-center justify-center">
       <div className="text-noir">

@@ -4,7 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
 
-export default function NavbarDesktop() {
+export default function NavbarDesktop({
+  isConnected,
+}: {
+  isConnected: boolean;
+}) {
   const pathname = usePathname();
   const navRef = useRef<HTMLUListElement>(null);
 
@@ -38,7 +42,7 @@ export default function NavbarDesktop() {
         })}
 
         <Link
-          href="/se-connecter"
+          href={isConnected ? "/mon-profil" : "/se-connecter"}
           className="flex items-center gap-2 text-quater hover:text-primary cursor-pointer transition-colors duration-300"
         >
           <span className="material-icons">account_circle</span>
