@@ -167,6 +167,21 @@ export class BooksService {
     });
   }
 
+  async getTenMostPopularBooks() {
+    return await this.prisma.book.findMany({
+      take: 10,
+      select: {
+        id: true,
+        title: true,
+        author: true,
+        cover: true,
+      },
+      orderBy: {
+        averageRating: 'desc',
+      },
+    });
+  }
+
   async getTenLatestBooks() {
     return await this.prisma.book.findMany({
       take: 10,

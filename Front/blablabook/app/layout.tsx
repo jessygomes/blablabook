@@ -45,7 +45,7 @@ export default function RootLayout({
           <div className="w-full hidden sm:block">
             <NavbarDesktop isConnected={isAuth} />
           </div>
-          <div className="sm:hidden fixed bottom-0 w-full">
+          <div className="sm:hidden fixed bottom-0 w-full z-40">
             <NavbarMobile isConnected={isAuth} />
           </div>
         </header>

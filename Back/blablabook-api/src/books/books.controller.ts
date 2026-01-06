@@ -26,6 +26,12 @@ export class BooksController {
     return randomBooks;
   }
 
+  @Get('fetch-popular-books')
+  async findTenMostPopularBooks() {
+    const popularBooks = await this.booksService.getTenMostPopularBooks();
+    return popularBooks;
+  }
+
   @Get('fetch-latest')
   async finTenLatestBooks() {
     const latestBooks = await this.booksService.getTenLatestBooks();
