@@ -34,3 +34,12 @@ body {
 .wrapper {
   @apply px-4 sm:px-8 lg:px-20;
 }
+
+
+.title-section {
+  @apply tracking-wider text-noir font-bold text-2xl font-one ;
+}
+
+.title-card {
+  @apply truncate text-noir text-base font-one font-bold;
+}

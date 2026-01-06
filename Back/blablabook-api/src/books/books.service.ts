@@ -148,4 +148,22 @@ export class BooksService {
       }
     }
   }
+
+  async getTenRandomBooks() {
+    const booksCount = await this.prisma.book.count();
+    const skip = Math.floor(Math.random() * booksCount);
+    return await this.prisma.book.findMany({
+      take: 10,
+      skip: skip,
+      select: {
+        id: true,
+        title: true,
+        author: true,
+        cover: true,
+      },
+      orderBy: {
+        id: 'desc',
+      },
+    });
+  }
 }

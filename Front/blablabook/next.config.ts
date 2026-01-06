@@ -11,6 +11,9 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  images: {
+    remotePatterns: [new URL('https://covers.openlibrary.org/b/id/**')],
+  },
   webpack: (config, context) => {
     if(process.env.NEXT_WEBPACK_USEPOLLING) {
       config.watchOptions = {
