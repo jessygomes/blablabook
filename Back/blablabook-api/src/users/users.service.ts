@@ -20,22 +20,13 @@ export class UsersService {
         isPrivate: data.isPrivate || false,
       },
       include: {
-        role: true, // Include role relation
+        role: true,
       },
     });
   }
 
   async findAll() {
     return this.prisma.user.findMany({
-      include: {
-        role: true,
-      },
-    });
-  }
-
-  async findOne(id: number): Promise<User | null> {
-    return this.prisma.user.findUnique({
-      where: { id },
       include: {
         role: true,
       },
@@ -81,7 +72,6 @@ export class UsersService {
   async update(id: number, data: UpdateUserDTO): Promise<User> {
     const updateData = { ...data };
 
-    // Hash password if provided
     if (data.password) {
       updateData.password = await bcrypt.hash(data.password, 12);
     }
@@ -98,7 +88,6 @@ export class UsersService {
   async updateByEmail(email: string, data: UpdateUserDTO): Promise<User> {
     const updateData = { ...data };
 
-    // Hash password if provided
     if (data.password) {
       updateData.password = await bcrypt.hash(data.password, 12);
     }

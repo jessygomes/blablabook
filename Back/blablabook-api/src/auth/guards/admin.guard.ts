@@ -1,6 +1,7 @@
 import {
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
   Inject,
   Injectable,
   UnauthorizedException,
@@ -10,7 +11,7 @@ import { User } from 'generated/prisma';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class AdminGuard implements CanActivate {
   constructor(
     @Inject(UsersService)
     private usersService: UsersService,
@@ -19,9 +20,10 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context
-      .switchToHttp()
-      .getRequest<{ headers: { authorization?: string }; user?: User }>();
+    const request = context.switchToHttp().getRequest<{
+      headers: { authorization?: string };
+      user?: User;
+    }>();
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     if (type !== 'Bearer' || !token) {
       throw new UnauthorizedException(
@@ -39,11 +41,18 @@ export class AuthGuard implements CanActivate {
         throw new UnauthorizedException('Payload du jeton invalide');
       }
       const user = await this.usersService.findById(payload.id);
-      if (!user) {
-        throw new UnauthorizedException('Utilisateur non trouvé');
+
+      if (!user || user.roleId !== 2) {
+        throw new ForbiddenException(
+          'Accès refusé : droits administrateur requis',
+        );
       }
+
       request.user = user;
     } catch (error) {
+      if (error instanceof ForbiddenException) {
+        throw error;
+      }
       console.error(error);
       throw new UnauthorizedException(
         "Jeton d'autorisation manquant (ou invalide) dans l'entête de la requête",

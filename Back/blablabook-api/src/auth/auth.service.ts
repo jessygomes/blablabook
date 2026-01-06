@@ -87,7 +87,7 @@ export class AuthService {
   }
 
   async refreshToken(userId: number) {
-    const user = await this.usersService.findByIdWithRole(userId);
+    const user = await this.usersService.findById(userId);
     if (!user) {
       throw new UnauthorizedException('Utilisateur non trouvé');
     }
@@ -96,13 +96,13 @@ export class AuthService {
   }
 
   private generateTokenResponse(user: UserWithRole | User) {
-    const refreshToken = this.jwtService.sign(
-      { id: user?.id, type: 'refresh' },
+    const token = this.jwtService.sign(
+      { id: user?.id, type: 'auth' },
       { expiresIn: '7d' },
     );
 
     return {
-      refresh_token: refreshToken,
+      token: token,
       token_type: 'Bearer',
       user: {
         id: user?.id,
