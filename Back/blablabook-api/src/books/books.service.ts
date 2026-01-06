@@ -166,4 +166,19 @@ export class BooksService {
       },
     });
   }
+
+  async getTenLatestBooks() {
+    return await this.prisma.book.findMany({
+      take: 10,
+      select: {
+        id: true,
+        title: true,
+        author: true,
+        cover: true,
+      },
+      orderBy: {
+        publishing_date: 'desc',
+      },
+    });
+  }
 }

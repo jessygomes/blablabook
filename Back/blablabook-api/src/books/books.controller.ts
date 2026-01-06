@@ -26,6 +26,12 @@ export class BooksController {
     return randomBooks;
   }
 
+  @Get('fetch-latest')
+  async finTenLatestBooks() {
+    const latestBooks = await this.booksService.getTenLatestBooks();
+    return latestBooks;
+  }
+
   // @Get()
   // findAll() {
   //   return this.booksService.findAll();
