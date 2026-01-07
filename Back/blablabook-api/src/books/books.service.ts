@@ -149,10 +149,40 @@ export class BooksService {
     }
   }
 
-  async getTenRandomBooks() {
+  // Fonction utilitaire privée pour éviter de répéter le code de transformation
+  private mapBookWithUserBookId(books: any[]) {
+    return books.map((book) => {
+      const userBookEntry =
+        book.userBooks && book.userBooks.length > 0 ? book.userBooks[0] : null;
+
+      return {
+        id: book.id,
+        title: book.title,
+        author: book.author,
+        cover: book.cover,
+        userBookId: userBookEntry ? userBookEntry.id : null,
+        status: userBookEntry ? userBookEntry.status : null,
+      };
+    });
+  }
+  async getBooks(userId?: number) {
+    const books = await this.prisma.book.findMany({
+      include: {
+        userBooks: userId
+          ? {
+              where: { userId: userId },
+            }
+          : false,
+      },
+    });
+
+    return this.mapBookWithUserBookId(books);
+  }
+
+  async getTenRandomBooks(userId?: number) {
     const booksCount = await this.prisma.book.count();
     const skip = Math.floor(Math.random() * booksCount);
-    return await this.prisma.book.findMany({
+    const books = await this.prisma.book.findMany({
       take: 10,
       skip: skip,
       select: {
@@ -160,40 +190,61 @@ export class BooksService {
         title: true,
         author: true,
         cover: true,
+        userBooks: userId
+          ? {
+              where: { userId: userId },
+              select: { id: true, status: true },
+            }
+          : false,
       },
       orderBy: {
         id: 'desc',
       },
     });
+    return this.mapBookWithUserBookId(books);
   }
 
-  async getTenMostPopularBooks() {
-    return await this.prisma.book.findMany({
+  async getTenMostPopularBooks(userId?: number) {
+    const books = await this.prisma.book.findMany({
       take: 10,
       select: {
         id: true,
         title: true,
         author: true,
         cover: true,
+        userBooks: userId
+          ? {
+              where: { userId: userId },
+              select: { id: true, status: true },
+            }
+          : false,
       },
       orderBy: {
         averageRating: 'desc',
       },
     });
+    return this.mapBookWithUserBookId(books);
   }
 
-  async getTenLatestBooks() {
-    return await this.prisma.book.findMany({
+  async getTenLatestBooks(userId?: number) {
+    const books = await this.prisma.book.findMany({
       take: 10,
       select: {
         id: true,
         title: true,
         author: true,
         cover: true,
+        userBooks: userId
+          ? {
+              where: { userId: userId },
+              select: { id: true, status: true },
+            }
+          : false,
       },
       orderBy: {
         publishing_date: 'desc',
       },
     });
+    return this.mapBookWithUserBookId(books);
   }
 }

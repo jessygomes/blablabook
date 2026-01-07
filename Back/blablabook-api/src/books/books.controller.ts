@@ -1,5 +1,5 @@
 // import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { Controller, Post, Get, Body } from '@nestjs/common';
+import { Controller, Post, Get, Body, Query } from '@nestjs/common';
 import { BooksService } from './books.service';
 // import { CreateBookDto } from './dto/create-book.dto';
 // import { UpdateBookDto } from './dto/update-book.dto';
@@ -21,27 +21,26 @@ export class BooksController {
   }
 
   @Get('fetch-random')
-  async findTenRandomBooks() {
-    const randomBooks = await this.booksService.getTenRandomBooks();
-    return randomBooks;
+  async findTenRandomBooks(@Query('userId') userId?: string) {
+    return this.booksService.getTenRandomBooks(userId ? +userId : undefined);
   }
 
   @Get('fetch-popular-books')
-  async findTenMostPopularBooks() {
-    const popularBooks = await this.booksService.getTenMostPopularBooks();
-    return popularBooks;
+  async findTenMostPopularBooks(@Query('userId') userId?: string) {
+    return this.booksService.getTenMostPopularBooks(
+      userId ? +userId : undefined,
+    );
   }
 
   @Get('fetch-latest')
-  async finTenLatestBooks() {
-    const latestBooks = await this.booksService.getTenLatestBooks();
-    return latestBooks;
+  async findTenLatestBooks(@Query('userId') userId?: string) {
+    return this.booksService.getTenLatestBooks(userId ? +userId : undefined);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.booksService.findAll();
-  // }
+  @Get()
+  findAll(@Query('userId') userId?: string) {
+    return this.booksService.getBooks(userId ? +userId : undefined);
+  }
 
   // @Get(':id')
   // findOne(@Param('id') id: string) {
