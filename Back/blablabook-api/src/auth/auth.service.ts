@@ -109,6 +109,7 @@ export class AuthService {
         email: user?.email,
         username: user?.username,
         isPrivate: user?.isPrivate,
+        profilePicture: user?.profilePicture,
       },
     };
   }

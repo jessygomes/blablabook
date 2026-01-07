@@ -4,7 +4,7 @@ import "./globals.css";
 import NavbarDesktop from "@/components/Navbar/NavbarDesktop";
 import NavbarMobile from "@/components/Navbar/NavbarMobile";
 import Footer from "@/components/Footer";
-import { isAuthenticated } from "@/lib/auth";
+import { isAuthenticated, getAuthUser } from "@/lib/auth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,6 +22,7 @@ export const metadata: Metadata = {
 };
 
 const isAuth = await isAuthenticated();
+const authUser = await getAuthUser();
 
 console.log("isAuth in layout:", isAuth);
 
@@ -43,10 +44,10 @@ export default function RootLayout({
       >
         <header>
           <div className="w-full hidden sm:block">
-            <NavbarDesktop isConnected={isAuth} />
+            <NavbarDesktop isConnected={isAuth} user={authUser} />
           </div>
           <div className="sm:hidden fixed bottom-0 w-full z-40">
-            <NavbarMobile isConnected={isAuth} />
+            <NavbarMobile isConnected={isAuth} user={authUser} />
           </div>
         </header>
         <main className="w-full min-h-screen bg-white">{children}</main>

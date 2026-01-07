@@ -7,6 +7,7 @@ export type UserWithRole =
     } & {
       id: number;
       username: string;
+      profilePicture: string | null;
       email: string;
       password: string;
       isPrivate: boolean;

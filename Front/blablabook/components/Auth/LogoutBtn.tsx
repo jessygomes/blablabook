@@ -44,8 +44,8 @@ export default function LogoutBtn() {
         onClick={() => setIsOpen(true)}
         className="cursor-pointer flex items-center gap-2 px-4 py-2 rounded-md bg-quater text-white font-medium transition-colors duration-300"
       >
-        <span className="material-icons text-sm">logout</span>
-        Se déconnecter
+        <span className="material-icons text-xs">logout</span>
+        {/* Se déconnecter */}
       </button>
 
       <Modal

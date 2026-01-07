@@ -7,7 +7,14 @@ import {
   Param,
   Delete,
   UseGuards,
+  ParseIntPipe,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 import { UsersService } from './users.service';
 import { NewUserDTO } from './dto/new-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
@@ -24,12 +31,13 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   // It would be a good idea to protect some of the routes to be used only by authenticated (admin) users.
-
+  //! CREATE NEW USER
   @Post()
   create(@Body() data: NewUserDTO) {
     return this.usersService.create(data);
   }
 
+  //! GET ALL USERS
   @Get()
   async findAll() {
     const users = await this.usersService.findAll();
@@ -40,27 +48,81 @@ export class UsersController {
     });
   }
 
-  @Get(':id')
-  async findById(@Param('id') id: number) {
-    const user = await this.usersService.findById(id);
-    if (user) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...userWithoutPassword } = user;
-      return userWithoutPassword;
-    }
+  //! GET PROFILE USER
+  @Get('/profil/:id')
+  async getprofileById(@Param('id', ParseIntPipe) id: number) {
+    const user = this.usersService.getProfileById(id);
+    console.log('User profile fetched:', user);
+    return user;
   }
 
+  //! GET USER BY ID
+  @Get(':id')
+  async findById(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.findById(id);
+  }
+
+  //! UPDATE USER BY ID
   @Patch(':id')
   @ApiBearerAuth()
   @UseGuards(SelfOrAdminGuard)
+  @UseInterceptors(
+    FileInterceptor('profilePicture', {
+      storage: diskStorage({
+        destination: './uploads/profiles',
+        filename: (
+          _req: Express.Request,
+          file: Express.Multer.File,
+          cb: (error: Error | null, filename: string) => void,
+        ) => {
+          const randomName = Array(32)
+            .fill(null)
+            .map(() => Math.round(Math.random() * 16).toString(16))
+            .join('');
+          cb(null, `${randomName}${extname(file.originalname)}`);
+        },
+      }),
+
+      fileFilter: (
+        _req: Express.Request,
+        file: Express.Multer.File,
+        cb: (error: Error | null, acceptFile: boolean) => void,
+      ) => {
+        if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+          cb(
+            new BadRequestException('Seules les images sont autorisées'),
+            false,
+          );
+        } else {
+          cb(null, true);
+        }
+      },
+      limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
+    }),
+  )
   @ApiUnauthorizedResponse({
     description:
       "Jeton d'autorisation manquant (ou invalide) dans l'entête de la requête",
   })
-  update(@Param('id') id: number, @Body() data: UpdateUserDTO) {
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() data: UpdateUserDTO,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    // Si un fichier est uploadé, ajouter l'URL au data
+    if (file) {
+      data.profilePicture = `/uploads/profiles/${file.filename}`;
+    }
+
+    // Convertir isPrivate de string à boolean si nécessaire
+    if (typeof data.isPrivate === 'string') {
+      data.isPrivate = data.isPrivate === 'true';
+    }
+
     return this.usersService.update(id, data);
   }
 
+  //! DELETE USER BY ID
   @Delete(':id')
   @ApiBearerAuth()
   @UseGuards(SelfOrAdminGuard)
@@ -68,7 +130,7 @@ export class UsersController {
     description:
       "Jeton d'autorisation manquant (ou invalide) dans l'entête de la requête",
   })
-  remove(@Param('id') id: number) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.remove(id);
   }
 }
