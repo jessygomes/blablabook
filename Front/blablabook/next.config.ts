@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // import type { NextConfig } from "next";
 
 // const nextConfig: NextConfig = {
@@ -14,7 +15,8 @@ const nextConfig = {
   serverActions: {
     bodySizeLimit: "5mb",
   },
-  webpack: (config, context) => {
+
+  webpack: (config: any, context: any) => {
     if (process.env.NEXT_WEBPACK_USEPOLLING) {
       config.watchOptions = {
         poll: 200,
