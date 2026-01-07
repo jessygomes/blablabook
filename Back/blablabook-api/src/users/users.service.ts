@@ -33,10 +33,67 @@ export class UsersService {
     });
   }
 
-  async findById(id: number): Promise<User | null> {
-    return this.prisma.user.findUnique({
+  //! Find user by ID
+  async findById(id: number) {
+    console.log('Looking for user with ID:', id);
+    // const user = await this.prisma.user.findUnique({
+    //   where: { id },
+    //   select: {
+    //     id: true,
+    //     username: true,
+    //     email: true,
+    //     isPrivate: true,
+    //     // description: true,
+    //     createdAt: true,
+    //     updatedAt: true,
+    //     userBooks: {
+    //       include: {
+    //         book: true,
+    //       },
+    //     },
+    //     comments: true,
+    //   },
+    // });
+
+    const user = await this.prisma.user.findUnique({
       where: { id },
     });
+
+    if (!user) {
+      return null;
+    }
+    console.log('Found user:', user);
+
+    return user;
+  }
+
+  //! Find user by ID
+  async getProfileById(id: number) {
+    console.log('Looking for user with ID:', id);
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        isPrivate: true,
+        description: true,
+        createdAt: true,
+        updatedAt: true,
+        userBooks: {
+          include: {
+            book: true,
+          },
+        },
+        comments: true,
+      },
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    return user;
   }
 
   async findByIdWithRole(id: number): Promise<UserWithRole | null> {
