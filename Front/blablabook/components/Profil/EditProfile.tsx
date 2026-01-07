@@ -5,13 +5,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { editProfileSchema } from "@/lib/validator.schema";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { updateProfileAction } from "@/lib/actions/user.action";
 import { Toast, useToast } from "@/components/Toast";
-import Image from "next/image";
 import Link from "next/link";
 import { getUploadUrl } from "@/lib/utils";
+import ProfileImageDropzone from "./ProfileImageDropzone";
 
 type EditProfileFormData = z.infer<typeof editProfileSchema>;
 
@@ -23,12 +23,10 @@ export default function EditProfile({
   initialData: EditProfileFormData;
 }) {
   const [isLoading, setIsLoading] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(
     initialData.profilePicture ? getUploadUrl(initialData.profilePicture) : null
   );
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const { toast, showToast, hideToast } = useToast();
 
@@ -99,22 +97,13 @@ export default function EditProfile({
     showToast("Image sélectionnée", "success");
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      handleFileUpload(files[0]);
+  const handleClearPicture = () => {
+    setValue("profilePicture", "");
+    if (previewUrl?.startsWith("blob:")) {
+      URL.revokeObjectURL(previewUrl);
     }
+    setPreviewUrl(null);
+    setSelectedFile(null);
   };
 
   const onSubmit = async (data: EditProfileFormData) => {
@@ -170,99 +159,13 @@ export default function EditProfile({
         >
           <div className="p-6 space-y-6">
             {/* Photo de profil section */}
-            <div className="flex flex-col items-center pb-6 border-b border-gray-100">
-              <div className="relative mb-4">
-                {displayProfilePicture ? (
-                  <div className="relative h-32 w-32 rounded-full overflow-hidden border-4 border-quater shadow-lg">
-                    <Image
-                      src={displayProfilePicture}
-                      alt="Aperçu du profil"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div className="relative h-32 w-32 rounded-full bg-linear-to-br from-quater/10 to-primary/10 border-4 border-quater/30 flex items-center justify-center shadow-lg">
-                    <span className="material-icons text-quater/40 text-5xl">
-                      account_circle
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              <div className="w-full">
-                <label
-                  htmlFor="profilePicture"
-                  className="block text-xs font-semibold text-quater mb-2"
-                >
-                  <span className="material-icons inline-block mr-1 align-text-bottom text-base">
-                    image
-                  </span>
-                  Photo de profil
-                </label>
-
-                {/* Drag & Drop Zone */}
-                <div
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                  onClick={() => fileInputRef.current?.click()}
-                  className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition ${
-                    isDragging
-                      ? "border-quater bg-quater/5"
-                      : "border-gray-300 hover:border-quater/50 hover:bg-gray-50/50"
-                  }`}
-                >
-                  <div className="flex flex-col items-center gap-2">
-                    <span className="material-icons text-2xl text-quater/60">
-                      cloud_upload
-                    </span>
-                    <p className="text-xs font-medium text-quater">
-                      Glissez votre image ici ou cliquez
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      (JPG, PNG - Max 5 MB)
-                    </p>
-                  </div>
-                </div>
-
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) handleFileUpload(file);
-                  }}
-                  className="hidden"
-                />
-
-                {profilePictureUrl && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setValue("profilePicture", "");
-                      if (previewUrl?.startsWith("blob:")) {
-                        URL.revokeObjectURL(previewUrl);
-                      }
-                      setPreviewUrl(null);
-                      setSelectedFile(null);
-                    }}
-                    className="mt-2 text-xs text-red-500 hover:text-red-700 flex items-center gap-1"
-                  >
-                    <span className="material-icons text-sm">delete</span>
-                    Supprimer l'image
-                  </button>
-                )}
-
-                {errors.profilePicture && (
-                  <p className="text-red-500 text-xs mt-2 flex items-center gap-1">
-                    <span className="material-icons text-xs">error</span>
-                    {errors.profilePicture.message}
-                  </p>
-                )}
-              </div>
-            </div>
+            <ProfileImageDropzone
+              displayUrl={displayProfilePicture}
+              hasValue={!!profilePictureUrl}
+              onFileSelected={handleFileUpload}
+              onClear={handleClearPicture}
+              errorMessage={errors.profilePicture?.message}
+            />
 
             {/* Infos personnelles section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-6 border-b border-gray-100">
@@ -373,9 +276,9 @@ export default function EditProfile({
                 }`}
               >
                 <span className="material-icons text-base">
-                  {isSubmitting ? "hourglass_empty" : "save"}
+                  {isSubmitting || isLoading ? "hourglass_empty" : "save"}
                 </span>
-                {isSubmitting ? "Mise à jour..." : "Enregistrer"}
+                {isSubmitting || isLoading ? "Mise à jour..." : "Enregistrer"}
               </button>
             </div>
           </div>

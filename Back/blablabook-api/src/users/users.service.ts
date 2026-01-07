@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { promises as fs } from 'fs';
+import { join } from 'path';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from 'generated/prisma/client';
 import { NewUserDTO } from './dto/new-user.dto';
@@ -133,6 +135,32 @@ export class UsersService {
 
     if (data.password) {
       updateData.password = await bcrypt.hash(data.password, 12);
+    }
+
+    // quand on remplace la photo de profil, il faut supprimer l'ancienne
+    if (data.profilePicture) {
+      const currentUser = await this.prisma.user.findUnique({
+        where: { id },
+        select: { profilePicture: true },
+      });
+
+      if (
+        currentUser?.profilePicture &&
+        currentUser.profilePicture.startsWith('/uploads') &&
+        currentUser.profilePicture !== data.profilePicture
+      ) {
+        const filePath = join(
+          __dirname,
+          '..',
+          '..',
+          currentUser.profilePicture,
+        );
+        try {
+          await fs.unlink(filePath);
+        } catch (error) {
+          console.error('Error deleting old profile picture:', error);
+        }
+      }
     }
 
     return this.prisma.user.update({
