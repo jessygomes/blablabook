@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+//! REGISTER SCHEMA
 export const registerSchema = z
   .object({
     username: z
@@ -28,7 +29,27 @@ export const registerSchema = z
     path: ["confirmPassword"],
   });
 
+//! LOGIN SCHEMA
 export const loginSchema = z.object({
   email: z.string().email("Veuillez entrer une adresse email valide"),
   password: z.string().min(1, "Le mot de passe est obligatoire"),
+});
+
+//! EDIT PROFILE SCHEMA
+export const editProfileSchema = z.object({
+  username: z
+    .string()
+    .min(3, "Le nom d'utilisateur doit contenir au moins 3 caractères")
+    .max(20, "Le nom d'utilisateur ne peut pas dépasser 20 caractères")
+    .regex(
+      /^[a-zA-Z0-9_]+$/,
+      "Le nom d'utilisateur ne peut contenir que des lettres, chiffres et underscores"
+    ),
+  description: z
+    .string()
+    .max(500, "La description ne peut pas dépasser 500 caractères")
+    .optional()
+    .or(z.literal("")),
+  profilePicture: z.string().optional().or(z.literal("")),
+  isPrivate: z.boolean(),
 });

@@ -7,4 +7,6 @@ export class UpdateUserDTO extends PartialType(NewUserDTO) {
   password?: string | undefined;
   avatar?: string | undefined;
   isPrivate?: boolean | undefined;
+  description?: string | undefined;
+  profilePicture?: string | undefined;
 }
