@@ -1,5 +1,5 @@
 // import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Get, Body, Query } from '@nestjs/common';
 import { BooksService } from './books.service';
 // import { CreateBookDto } from './dto/create-book.dto';
 // import { UpdateBookDto } from './dto/update-book.dto';
@@ -20,10 +20,27 @@ export class BooksController {
     return { message: 'ça marche avec Open Library' };
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.booksService.findAll();
-  // }
+  @Get('fetch-random')
+  async findTenRandomBooks(@Query('userId') userId?: string) {
+    return this.booksService.getTenRandomBooks(userId ? +userId : undefined);
+  }
+
+  @Get('fetch-popular-books')
+  async findTenMostPopularBooks(@Query('userId') userId?: string) {
+    return this.booksService.getTenMostPopularBooks(
+      userId ? +userId : undefined,
+    );
+  }
+
+  @Get('fetch-latest')
+  async findTenLatestBooks(@Query('userId') userId?: string) {
+    return this.booksService.getTenLatestBooks(userId ? +userId : undefined);
+  }
+
+  @Get()
+  findAll(@Query('userId') userId?: string) {
+    return this.booksService.getBooks(userId ? +userId : undefined);
+  }
 
   // @Get(':id')
   // findOne(@Param('id') id: string) {
