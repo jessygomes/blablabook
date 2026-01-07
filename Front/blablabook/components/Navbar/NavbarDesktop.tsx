@@ -18,7 +18,6 @@ export default function NavbarDesktop({
 
   const links = [
     { href: "/", label: "Accueil" },
-    { href: "/en-savoir-plus", label: "En savoir plus" },
     { href: "/dernieres-critiques", label: "Dernières critiques" },
   ];
 
