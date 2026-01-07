@@ -29,6 +29,7 @@ model User {
   password  String
   isPrivate Boolean  @default(false)
   description String?
+  profilePicture String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

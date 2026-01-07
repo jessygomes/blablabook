@@ -1,0 +1,386 @@
+/* eslint-disable react/no-unescaped-entities */
+"use client";
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { editProfileSchema } from "@/lib/validator.schema";
+import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { updateProfileAction } from "@/lib/actions/user.action";
+import { Toast, useToast } from "@/components/Toast";
+import Image from "next/image";
+import Link from "next/link";
+import { getUploadUrl } from "@/lib/utils";
+
+type EditProfileFormData = z.infer<typeof editProfileSchema>;
+
+export default function EditProfile({
+  userId,
+  initialData,
+}: {
+  userId: number;
+  initialData: EditProfileFormData;
+}) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(
+    initialData.profilePicture ? getUploadUrl(initialData.profilePicture) : null
+  );
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+  const { toast, showToast, hideToast } = useToast();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    watch,
+    setValue,
+  } = useForm<EditProfileFormData>({
+    resolver: zodResolver(editProfileSchema),
+    defaultValues: {
+      username: initialData.username || "",
+      description: initialData.description || "",
+      profilePicture: initialData.profilePicture || "",
+      isPrivate: initialData.isPrivate || false,
+    },
+  });
+
+  const profilePictureUrl = watch("profilePicture");
+  const descriptionValue = watch("description");
+  const displayProfilePicture =
+    previewUrl ||
+    (profilePictureUrl
+      ? profilePictureUrl.startsWith("data:")
+        ? profilePictureUrl
+        : getUploadUrl(profilePictureUrl)
+      : null);
+
+  // Nettoyer les object URLs pour éviter les fuites mémoire
+  useEffect(() => {
+    return () => {
+      if (previewUrl?.startsWith("blob:")) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
+  const handleFileUpload = async (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      showToast("Veuillez sélectionner une image", "error");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      showToast("L'image ne doit pas dépasser 5 MB", "error");
+      return;
+    }
+
+    // Nettoyer l'ancien preview s'il existe
+    if (previewUrl?.startsWith("blob:")) {
+      URL.revokeObjectURL(previewUrl);
+    }
+
+    // Stocker le fichier pour l'envoyer avec le formulaire
+    setSelectedFile(file);
+
+    // Créer un aperçu local sans charger en base64
+    const objectUrl = URL.createObjectURL(file);
+    setPreviewUrl(objectUrl);
+
+    // Conserver la valeur actuelle du champ (chemin existant) pour la validation
+    setValue(
+      "profilePicture",
+      profilePictureUrl || initialData.profilePicture || ""
+    );
+
+    showToast("Image sélectionnée", "success");
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      handleFileUpload(files[0]);
+    }
+  };
+
+  const onSubmit = async (data: EditProfileFormData) => {
+    setIsLoading(true);
+    try {
+      // Passer le fichier à l'action (sera uploadé en même temps que les autres données)
+      const response = await updateProfileAction(userId, data, selectedFile);
+
+      if (!response?.success) {
+        showToast(
+          response?.error || "Une erreur est survenue lors de la mise à jour.",
+          "error"
+        );
+        return;
+      }
+
+      showToast("Profil mis à jour avec succès !", "success");
+
+      setTimeout(() => {
+        router.push("/mon-profil");
+      }, 1500);
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour:", error);
+      showToast("Une erreur est survenue. Veuillez réessayer.", "error");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <>
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          duration={toast.duration}
+          onClose={hideToast}
+        />
+      )}
+      <div className="w-full mx-auto">
+        <div className="bg-linear-to-r from-quater/5 to-primary/5 rounded-t-md p-6 border-b border-quater/10">
+          <h1 className="text-2xl font-bold font-one text-quater mb-1">
+            Modifier mon profil
+          </h1>
+          <p className="text-gray-600 text-xs">
+            Mettez à jour vos informations personnelles
+          </p>
+        </div>
+
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="bg-white rounded-b-md"
+        >
+          <div className="p-6 space-y-6">
+            {/* Photo de profil section */}
+            <div className="flex flex-col items-center pb-6 border-b border-gray-100">
+              <div className="relative mb-4">
+                {displayProfilePicture ? (
+                  <div className="relative h-32 w-32 rounded-full overflow-hidden border-4 border-quater shadow-lg">
+                    <Image
+                      src={displayProfilePicture}
+                      alt="Aperçu du profil"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="relative h-32 w-32 rounded-full bg-linear-to-br from-quater/10 to-primary/10 border-4 border-quater/30 flex items-center justify-center shadow-lg">
+                    <span className="material-icons text-quater/40 text-5xl">
+                      account_circle
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <div className="w-full">
+                <label
+                  htmlFor="profilePicture"
+                  className="block text-xs font-semibold text-quater mb-2"
+                >
+                  <span className="material-icons inline-block mr-1 align-text-bottom text-base">
+                    image
+                  </span>
+                  Photo de profil
+                </label>
+
+                {/* Drag & Drop Zone */}
+                <div
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  onClick={() => fileInputRef.current?.click()}
+                  className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition ${
+                    isDragging
+                      ? "border-quater bg-quater/5"
+                      : "border-gray-300 hover:border-quater/50 hover:bg-gray-50/50"
+                  }`}
+                >
+                  <div className="flex flex-col items-center gap-2">
+                    <span className="material-icons text-2xl text-quater/60">
+                      cloud_upload
+                    </span>
+                    <p className="text-xs font-medium text-quater">
+                      Glissez votre image ici ou cliquez
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      (JPG, PNG - Max 5 MB)
+                    </p>
+                  </div>
+                </div>
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleFileUpload(file);
+                  }}
+                  className="hidden"
+                />
+
+                {profilePictureUrl && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setValue("profilePicture", "");
+                      if (previewUrl?.startsWith("blob:")) {
+                        URL.revokeObjectURL(previewUrl);
+                      }
+                      setPreviewUrl(null);
+                      setSelectedFile(null);
+                    }}
+                    className="mt-2 text-xs text-red-500 hover:text-red-700 flex items-center gap-1"
+                  >
+                    <span className="material-icons text-sm">delete</span>
+                    Supprimer l'image
+                  </button>
+                )}
+
+                {errors.profilePicture && (
+                  <p className="text-red-500 text-xs mt-2 flex items-center gap-1">
+                    <span className="material-icons text-xs">error</span>
+                    {errors.profilePicture.message}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Infos personnelles section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-6 border-b border-gray-100">
+              {/* Username */}
+              <div>
+                <label
+                  htmlFor="username"
+                  className="block text-xs font-semibold text-quater mb-2"
+                >
+                  <span className="material-icons inline-block mr-1 align-text-bottom text-base">
+                    person
+                  </span>
+                  Nom d'utilisateur
+                </label>
+                <input
+                  {...register("username")}
+                  type="text"
+                  id="username"
+                  className={`text-noir text-sm w-full px-3 py-2 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-quater/50 transition ${
+                    errors.username
+                      ? "border-red-500"
+                      : "border-gray-200 hover:border-quater/30"
+                  }`}
+                  placeholder="Votre nom d'utilisateur"
+                />
+                {errors.username && (
+                  <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                    <span className="material-icons text-xs">error</span>
+                    {errors.username.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Statut privé */}
+              <div className="flex flex-col justify-end">
+                <label className="flex items-center p-3 border-2 border-gray-200 rounded-lg hover:border-quater/30 cursor-pointer transition bg-gray-50/50">
+                  <input
+                    {...register("isPrivate")}
+                    type="checkbox"
+                    className="w-4 h-4 text-quater rounded cursor-pointer"
+                  />
+                  <span className="ml-2 font-medium text-quater text-sm flex items-center gap-1">
+                    <span className="material-icons text-base">lock</span>
+                    Profil privé
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            {/* Description section */}
+            <div className="pb-6">
+              <label
+                htmlFor="description"
+                className="block text-xs font-semibold text-quater mb-2"
+              >
+                <span className="material-icons inline-block mr-1 align-text-bottom text-base">
+                  description
+                </span>
+                À propos de moi
+              </label>
+              <textarea
+                {...register("description")}
+                id="description"
+                rows={4}
+                className={`text-noir text-sm w-full px-3 py-2 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-quater/50 transition resize-none ${
+                  errors.description
+                    ? "border-red-500"
+                    : "border-gray-200 hover:border-quater/30"
+                }`}
+                placeholder="Parlez-nous de vous, vos passions, vos lectures préférées..."
+              />
+              {errors.description && (
+                <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                  <span className="material-icons text-xs">error</span>
+                  {errors.description.message}
+                </p>
+              )}
+              <div className="flex justify-between items-center mt-1">
+                <p className="text-gray-500 text-xs">Maximum 500 caractères</p>
+                <p
+                  className={`text-xs font-medium ${
+                    descriptionValue && descriptionValue.length > 450
+                      ? "text-orange-500"
+                      : "text-gray-400"
+                  }`}
+                >
+                  {descriptionValue?.length || 0}/500
+                </p>
+              </div>
+            </div>
+
+            {/* Boutons d'action */}
+            <div className="flex gap-3 pt-3 border-t border-gray-100">
+              <Link
+                href="/mon-profil"
+                className="flex-1 py-2 px-3 rounded-lg font-medium text-sm transition-colors border-2 border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50 flex items-center justify-center gap-2"
+              >
+                <span className="material-icons text-base">close</span>
+                Annuler
+              </Link>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={`cursor-pointer flex-1 py-2 px-3 rounded-lg font-medium text-sm transition-colors flex items-center justify-center gap-2 text-white ${
+                  isSubmitting
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-primary hover:bg-primary/90  shadow-lg hover:shadow-xl"
+                }`}
+              >
+                <span className="material-icons text-base">
+                  {isSubmitting ? "hourglass_empty" : "save"}
+                </span>
+                {isSubmitting ? "Mise à jour..." : "Enregistrer"}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </>
+  );
+}

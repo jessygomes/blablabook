@@ -78,6 +78,7 @@ export class UsersService {
         email: true,
         isPrivate: true,
         description: true,
+        profilePicture: true,
         createdAt: true,
         updatedAt: true,
         userBooks: {
@@ -126,6 +127,7 @@ export class UsersService {
     });
   }
 
+  //! UPDATE USER BY ID
   async update(id: number, data: UpdateUserDTO): Promise<User> {
     const updateData = { ...data };
 

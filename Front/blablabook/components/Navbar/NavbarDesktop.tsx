@@ -3,11 +3,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
+import { UserCookie } from "@/lib/auth";
+import { getUploadUrl } from "@/lib/utils";
 
 export default function NavbarDesktop({
   isConnected,
+  user,
 }: {
   isConnected: boolean;
+  user: UserCookie | null;
 }) {
   const pathname = usePathname();
   const navRef = useRef<HTMLUListElement>(null);
@@ -45,7 +49,18 @@ export default function NavbarDesktop({
           href={isConnected ? "/mon-profil" : "/se-connecter"}
           className="flex items-center gap-2 text-quater hover:text-primary cursor-pointer transition-colors duration-300"
         >
-          <span className="material-icons">account_circle</span>
+          {isConnected && user?.profilePicture ? (
+            <div className="relative h-8 w-8 rounded-full overflow-hidden border border-quater">
+              <Image
+                src={getUploadUrl(user.profilePicture)}
+                alt={user.username}
+                fill
+                className="object-cover"
+              />
+            </div>
+          ) : (
+            <span className="material-icons">account_circle</span>
+          )}
         </Link>
       </ul>
     </nav>

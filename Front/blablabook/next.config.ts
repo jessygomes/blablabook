@@ -11,15 +11,18 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  serverActions: {
+    bodySizeLimit: "5mb",
+  },
   webpack: (config, context) => {
-    if(process.env.NEXT_WEBPACK_USEPOLLING) {
+    if (process.env.NEXT_WEBPACK_USEPOLLING) {
       config.watchOptions = {
         poll: 200,
-        aggregateTimeout: 300
-      }
+        aggregateTimeout: 300,
+      };
     }
-    return config
+    return config;
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
