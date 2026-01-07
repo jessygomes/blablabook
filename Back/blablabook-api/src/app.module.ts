@@ -6,6 +6,7 @@ import { BooksModule } from './books/books.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
+import { CommentModule } from "./comment/comment.module";
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { PrismaModule } from './prisma/prisma.module';
     BooksModule,
     ConfigModule.forRoot(),
     PrismaModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

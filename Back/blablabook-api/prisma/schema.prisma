@@ -23,14 +23,14 @@ model Role {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  username  String   @unique
-  email     String   @unique
-  password  String
-  isPrivate Boolean  @default(false)
+  id          Int      @id @default(autoincrement())
+  username    String   @unique
+  email       String   @unique
+  password    String
+  isPrivate   Boolean  @default(false)
   description String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   roleId Int
   role   Role @relation(fields: [roleId], references: [id])
@@ -96,6 +96,8 @@ model Comment {
   bookId Int
   book   Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
 
+  @@index([userId])
+  @@index([bookId])
   @@map("comment")
 }
 
