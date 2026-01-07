@@ -1,5 +1,6 @@
-"use client";
 
+"use client";
+import BookLists from "@/components/Home/BookLists";
 import { useState } from "react";
 import AboutUs from "@/components/AboutUs/AboutUs";
 
