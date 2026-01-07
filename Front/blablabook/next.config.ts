@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // import type { NextConfig } from "next";
 
 // const nextConfig: NextConfig = {
@@ -11,15 +12,19 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  webpack: (config, context) => {
-    if(process.env.NEXT_WEBPACK_USEPOLLING) {
+  serverActions: {
+    bodySizeLimit: "5mb",
+  },
+
+  webpack: (config: any, context: any) => {
+    if (process.env.NEXT_WEBPACK_USEPOLLING) {
       config.watchOptions = {
         poll: 200,
-        aggregateTimeout: 300
-      }
+        aggregateTimeout: 300,
+      };
     }
-    return config
+    return config;
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

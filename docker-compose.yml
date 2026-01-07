@@ -27,6 +27,7 @@ services:
       - ./Back/blablabook-api/src:/usr/src/api/src
       - ./Back/blablabook-api:/usr/src/api
       - api_node_modules:/usr/src/api/node_modules
+      - ./Back/blablabook-api/uploads:/usr/src/api/uploads
     restart: on-failure
     ports:
       - "3000:3000"

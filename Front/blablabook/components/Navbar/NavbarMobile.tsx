@@ -1,12 +1,17 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 import React, { useRef } from "react";
+import { UserCookie } from "@/lib/auth";
+import { getUploadUrl } from "@/lib/utils";
 
 export default function NavbarMobile({
   isConnected,
+  user,
 }: {
   isConnected: boolean;
+  user: UserCookie | null;
 }) {
   const pathname = usePathname();
   const navRef = useRef<HTMLUListElement>(null);
@@ -18,11 +23,6 @@ export default function NavbarMobile({
       href: "/dernieres-critiques",
       label: "Dernières critiques",
       icon: "book",
-    },
-    {
-      href: isConnected ? "/mon-profil" : "/se-connecter",
-      label: "Mon profil",
-      icon: "account_circle",
     },
   ];
 
@@ -52,6 +52,25 @@ export default function NavbarMobile({
             </li>
           );
         })}
+        <li className="relative overflow-hidden text-sm font-one py-2 px-4 rounded-md tracking-widest transition-all duration-500 ease-in-out transform text-white">
+          <Link
+            href={isConnected ? "/mon-profil" : "/se-connecter"}
+            className="flex flex-col gap-1 items-center"
+          >
+            {isConnected && user?.profilePicture ? (
+              <div className="relative h-6 w-6 rounded-full overflow-hidden border border-white">
+                <Image
+                  src={getUploadUrl(user.profilePicture)}
+                  alt={user.username}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            ) : (
+              <span className="material-icons">account_circle</span>
+            )}
+          </Link>
+        </li>
       </ul>
     </nav>
   );
