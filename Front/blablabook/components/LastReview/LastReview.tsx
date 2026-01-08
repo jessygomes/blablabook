@@ -1,4 +1,6 @@
 import ExpandableText from "@/components/ExpandableText";
+import { getUploadUrl } from '@/lib/utils';
+import Image from "next/image";
 
 type Item = {
   id: number;
@@ -6,7 +8,7 @@ type Item = {
   content: string;
   date: string;
   book: { id: number; title: string };
-  user: { id: number; username: string; author : string, cover : string};
+  user: { id: number; username: string; author : string, cover : string, profilePicture : string};
 };
 
 async function getLatest() {
@@ -30,7 +32,7 @@ export default async function DernieresCritiques() {
 
   return (
     <section className="w-full bg-white">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-6">
+      <div className="mx-auto sm:py-14 space-y-6">
         <header className="space-y-3">
           <h1 className="text-2xl sm:text-3xl font-bold text-black">
             Les dernières critiques
@@ -59,9 +61,10 @@ export default async function DernieresCritiques() {
                   <h2 className="text-base sm:text-lg font-semibold text-black leading-tight truncate">
                     {c.book.title}
                   </h2>
-                  <p className="mt-1 text-xs sm:text-sm text-gray-500">
-                    de <span className="italic">{c.book.author}</span>
-                  </p>
+
+                    <p className="text-xs sm:text-sm text-gray-500">
+                      de <span className="italic">{c.book.author}</span>
+                    </p>
 
                   <button className="mt-3 inline-flex items-center rounded-md bg-green-100 px-3 py-1 text-xs text-green-700 hover:bg-green-200">
                 + ajouter à ma bibliothèque
@@ -82,6 +85,20 @@ export default async function DernieresCritiques() {
                 />
 
                 <div className="mt-auto pt-6 flex flex-wrap items-center gap-1 text-xs sm:text-sm text-gray-800">
+                  <div className="relative h-6 w-6 rounded-full overflow-hidden">
+                    {c.user?.profilePicture ? (
+                    <Image
+                      src={getUploadUrl(c.user.profilePicture)}
+                      alt={c.user.username}
+                      fill
+                      className="rounded-full object-cover border"
+                      loading="lazy"
+                    />
+
+                      ) : (
+                      <span className="material-icons">account_circle</span>
+                      )}
+                  </div>
                   <span className="italic">
                     par <span>{c.user.username}</span>
                   </span>
