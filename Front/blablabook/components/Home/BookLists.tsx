@@ -37,7 +37,7 @@ export default async function BookLists() {
   const latestBooks: Book[] = resLatest.success ? resLatest.data : [];
 
   return (
-    <>
+    <section className="bg-white">
       <h2 className="title-section">Découvertes</h2>
       <div className="flex flex-nowrap overflow-x-auto snap-x snap-mandatory gap-4 pb-4 mb-8 pt-3 px-1 no-scrollbar">
         {randomBooks.map((book) => (
@@ -77,6 +77,6 @@ export default async function BookLists() {
           />
         ))}
       </div>
-    </>
+    </section>
   );
 }
