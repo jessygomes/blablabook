@@ -5,6 +5,7 @@ import {
   getTenRandomBooks,
 } from "@/lib/actions/book.action";
 import { cookies } from "next/headers";
+import Carousel from "./Carousel";
 
 interface Book {
   id: number;
@@ -38,8 +39,24 @@ export default async function BookLists() {
 
   return (
     <>
-      <h2 className="title-section">Découvertes</h2>
-      <div className="flex flex-nowrap overflow-x-auto snap-x snap-mandatory gap-4 pb-4 mb-8 pt-3 px-1 no-scrollbar">
+      <section className="border-b border-b-gray-200 mt-2 mb-6">
+        <h2 className="title-section mt-2">Découvertes</h2>
+        <Carousel>
+          {randomBooks.map((book) => (
+            <div key={book.id} className="snap-start shrink-0">
+              <BookCard
+                book={book}
+                userId={userId}
+                token={token}
+                userBookId={book.userBookId ?? null}
+                status={book.status ?? null}
+              />
+            </div>
+          ))}
+        </Carousel>
+      </section>
+     
+      {/* <div className="flex flex-nowrap overflow-x-auto snap-x snap-mandatory gap-4 pb-4 mb-8 pt-3 px-1 no-scrollbar">
         {randomBooks.map((book) => (
           <BookCard
             key={book.id}
@@ -50,33 +67,40 @@ export default async function BookLists() {
             status={book.status ?? null}
           />
         ))}
-      </div>
-      <h2 className="title-section">Populaires</h2>
-      <div className="flex flex-nowrap overflow-x-auto snap-x snap-mandatory gap-4 pb-4 mb-8 pt-3 px-1 no-scrollbar">
-        {popularBooks.map((book) => (
-          <BookCard
-            key={book.id}
-            book={book}
-            userId={userId}
-            token={token}
-            userBookId={book.userBookId ?? null}
-            status={book.status ?? null}
-          />
-        ))}
-      </div>
-      <h2 className="title-section">Nouveautés</h2>
-      <div className="flex flex-nowrap overflow-x-auto snap-x snap-mandatory gap-4 pb-4 mb-8 pt-3 px-1 no-scrollbar">
-        {latestBooks.map((book) => (
-          <BookCard
-            key={book.id}
-            book={book}
-            userId={userId}
-            token={token}
-            userBookId={book.userBookId ?? null}
-            status={book.status ?? null}
-          />
-        ))}
-      </div>
+      </div> */}
+      <section className="border-b border-b-gray-200 mt-2 mb-6">
+        <h2 className="title-section">Populaires</h2>
+        <Carousel>
+          {popularBooks.map((book) => (
+            <div key={book.id} className="snap-start shrink-0">
+              <BookCard
+                book={book}
+                userId={userId}
+                token={token}
+                userBookId={book.userBookId ?? null}
+                status={book.status ?? null}
+              />
+            </div>
+          ))}
+        </Carousel>
+      </section>
+
+      <section className="mb-18">
+        <h2 className="title-section">Nouveautés</h2>
+        <Carousel>
+          {latestBooks.map((book) => (
+            <div key={book.id} className="snap-start shrink-0">
+              <BookCard
+                book={book}
+                userId={userId}
+                token={token}
+                userBookId={book.userBookId ?? null}
+                status={book.status ?? null}
+              />
+            </div>
+          ))}
+        </Carousel>
+      </section>
     </>
   );
 }

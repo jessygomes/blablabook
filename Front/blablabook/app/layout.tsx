@@ -5,6 +5,7 @@ import NavbarDesktop from "@/components/Navbar/NavbarDesktop";
 import NavbarMobile from "@/components/Navbar/NavbarMobile";
 import Footer from "@/components/Footer";
 import { isAuthenticated, getAuthUser } from "@/lib/auth";
+import Header from "@/components/Header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,18 +41,21 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased `}
+        className={`${geistSans.variable} ${geistMono.variable} bg-white! antialiased `}
       >
-        <header>
+        <nav>
           <div className="w-full hidden sm:block">
             <NavbarDesktop isConnected={isAuth} user={authUser} />
           </div>
           <div className="sm:hidden fixed bottom-0 w-full z-40">
             <NavbarMobile isConnected={isAuth} user={authUser} />
           </div>
-        </header>
+        </nav>
+        <Header/>
         <main className="w-full min-h-screen bg-white">{children}</main>
+        <div className="w-full hidden sm:block">
         <Footer />
+        </div>
       </body>
     </html>
   );
