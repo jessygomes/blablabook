@@ -51,7 +51,6 @@ export default function RootLayout({
             <NavbarMobile isConnected={isAuth} user={authUser} />
           </div>
         </nav>
-        <Header/>
         <main className="w-full min-h-screen bg-white">{children}</main>
         <div className="w-full hidden sm:block">
         <Footer />
