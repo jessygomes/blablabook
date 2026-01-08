@@ -19,7 +19,15 @@ export default function ExpandableText({
 
   const showToggle = useMemo(() => text.trim().length > 220, [text]);
 
-  const clampClass = expanded ? "" : `line-clamp-${clampLines}`;
+  const clampMap: Record<number, string> = {
+    2: "line-clamp-2",
+    3: "line-clamp-3",
+    4: "line-clamp-4",
+    5: "line-clamp-5",
+    6: "line-clamp-6",
+  };
+
+  const clampClass = expanded ? "" : (clampMap[clampLines] ?? "line-clamp-4");
 
   return (
     <div>

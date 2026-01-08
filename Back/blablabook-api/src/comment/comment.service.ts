@@ -22,6 +22,7 @@ export class CommentService {
           select: {
             id: true,
             username: true,
+            profilePicture: true,
           },
         },
       },

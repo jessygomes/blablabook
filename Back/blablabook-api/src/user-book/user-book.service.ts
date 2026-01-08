@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { NewUserBookDto } from './dto/new-user-book.dto';
 // import { UpdateUserBookDto } from './dto/update-user-book.dto';
 import { UserBook } from './entities/user-book.entity';
+import { UserBookStatusEnum } from 'generated/prisma';
 
 @Injectable()
 export class UserBookService {
@@ -26,9 +27,15 @@ export class UserBookService {
     return `This action returns a #${id} userBook`;
   }
 
-  // update(id: number, updateUserBookDto: UpdateUserBookDto) {
-  //   return `This action updates a #${id} userBook`;
-  // }
+  async updateStatus(
+    id: number,
+    status: UserBookStatusEnum,
+  ): Promise<UserBook> {
+    return this.prisma.userBook.update({
+      where: { id },
+      data: { status },
+    });
+  }
 
   async remove(id: number) {
     return this.prisma.userBook.delete({
