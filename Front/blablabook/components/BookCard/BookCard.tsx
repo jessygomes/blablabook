@@ -6,6 +6,7 @@ import { Toast, useToast } from "@/components/Toast";
 import StatusSelector, {
   StatusType,
 } from "@/components/Library/StatusSelector";
+import Link from "next/link";
 
 interface BookCardProps {
   book: {
@@ -56,14 +57,17 @@ export default function BookCard({
       )}
       <div className="relative flex-none w-56 snap-start bg-white drop-shadow-md flex flex-col items-center p-2">
         <div className="w-full flex justify-center items-center h-56">
-          <div className="relative w-[60%] rounded-2xl aspect-2/3 shadow-sm">
+          <Link
+            href={`/bibliotheque/${book.id}`}
+            className="relative w-[60%] rounded-2xl aspect-2/3 shadow-sm"
+          >
             <Image
               src={book.cover}
               fill
               alt={`Couverture du livre ${book.title}`}
               className="object-cover rounded-sm"
             />
-          </div>
+          </Link>
         </div>
         <div className="p-2 w-full border-t">
           <h3 className="title-card">{book.title}</h3>

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import LibraryButton from "@/components/Library/LibraryButton";
 import StatusSelector from "@/components/Library/StatusSelector";
+import Link from "next/link";
 
 type Book = {
   id: number;
@@ -51,7 +52,10 @@ export default function CardBookProfil({
     <>
       <article className="relative bg-white border border-gray-100 rounded-md p-6 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
         <div className="rounded-md overflow-hidden mb-5 bg-gray-50">
-          <div className="relative w-full pt-[150%]">
+          <Link
+            href={`/bibliotheque/${item.book.id}`}
+            className="relative w-full pt-[150%]"
+          >
             <Image
               src={item.book?.cover || "/default-book.png"}
               alt={item.book?.title || "Couverture"}
@@ -59,7 +63,7 @@ export default function CardBookProfil({
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
               className="object-cover"
             />
-          </div>
+          </Link>
         </div>
         <h3
           className="text-base font-semibold text-noir leading-snug truncate"
@@ -76,14 +80,6 @@ export default function CardBookProfil({
           </p>
         )}
         <div className="mt-4 flex items-center gap-2 flex-nowrap min-w-0">
-          <StatusSelector
-            token={token}
-            userBookId={item.id}
-            status={item.status}
-            onUpdated={handleStatusUpdated}
-            onToast={onToast}
-            triggerClassName="flex-1 px-2 py-1"
-          />
           <LibraryButton
             userId={userId ?? undefined}
             token={token}
@@ -92,6 +88,14 @@ export default function CardBookProfil({
             onUpdate={handleRemovedFromChild}
             onToast={onToast}
             className="flex-1 px-2 py-1"
+          />
+          <StatusSelector
+            token={token}
+            userBookId={item.id}
+            status={item.status}
+            onUpdated={handleStatusUpdated}
+            onToast={onToast}
+            triggerClassName="flex-1 px-2 py-1"
           />
         </div>
       </article>

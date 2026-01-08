@@ -247,4 +247,21 @@ export class BooksService {
     });
     return this.mapBookWithUserBookId(books);
   }
+
+  //! GET BOOK BY ID
+  async findOne(id: number) {
+    const book = await this.prisma.book.findUnique({
+      where: { id },
+      include: {
+        comments: true,
+        rates: true,
+      },
+    });
+
+    if (!book) {
+      throw new Error('Livre non trouvé');
+    }
+
+    return book;
+  }
 }
