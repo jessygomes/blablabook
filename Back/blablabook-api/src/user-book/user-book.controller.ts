@@ -6,10 +6,12 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Patch,
 } from '@nestjs/common';
 import { UserBookService } from './user-book.service';
 // import { NewUserBookDto } from './dto/new-user-book.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { UserBookStatusEnum } from 'generated/prisma';
 // import { UpdateUserBookDto } from './dto/update-user-book.dto';
 
 @ApiTags('Userbook')
@@ -27,6 +29,14 @@ export class UserBookController {
       bookId: bookId,
       status: 'NOT_READ',
     });
+  }
+
+  @Patch('/statut/:id')
+  updateStatus(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: { status: UserBookStatusEnum },
+  ) {
+    return this.userBookService.updateStatus(id, body.status);
   }
 
   @Get()
