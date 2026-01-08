@@ -4,9 +4,9 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getProfileById } from "@/lib/actions/user.action";
 import Image from "next/image";
-import CardBookProfil from "@/components/Profil/CardBookProfil";
 import Link from "next/link";
 import { getUploadUrl } from "@/lib/utils";
+import UserBookLibrary from "@/components/Profil/UserBookLibrary";
 
 export default async function page() {
   const cookieStore = await cookies();
@@ -23,8 +23,6 @@ export default async function page() {
 
   const user = JSON.parse(userCookie.value);
   const userData = await getProfileById(user.id);
-
-  console.log("User data in profile page:", userData);
 
   return (
     <>
@@ -59,7 +57,11 @@ export default async function page() {
       </section>
 
       <section className="wrapper">
-        <CardBookProfil userBooks={userData.userBooks || []} />
+        <UserBookLibrary
+          initialUserBooks={userData.userBooks || []}
+          token={token?.value ?? null}
+          userId={user.id}
+        />
       </section>
     </>
   );
