@@ -11,6 +11,7 @@ interface AboutUsProps {
 
 export default function AboutUs({ isOpen, onClose }: AboutUsProps) {
 
+
   // Prevent background scrolling when modal is open
 	useEffect(() => {
 		if (isOpen) {
@@ -35,7 +36,7 @@ export default function AboutUs({ isOpen, onClose }: AboutUsProps) {
 
 			{/* Modal content - Mobile: slide from bottom, Desktop: centered */}
 			<div className="fixed inset-x-0 bottom-0 sm:inset-0 sm:flex sm:items-center sm:justify-center z-50">
-			<div className="relative bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl animate-[slideUp_0.4s_ease-out] sm:animate-[fadeIn_0.3s_ease-out] h-[90vh] sm:max-h-[85vh] w-full sm:max-w-4xl sm:mx-4 overflow-hidden flex flex-col">
+			<div className="relative bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl animate-[slideUp_0.5s_ease-out] sm:animate-[fadeIn_0.3s_ease-out] h-[90vh] sm:max-h-[85vh] w-full sm:max-w-4xl sm:mx-4 overflow-hidden flex flex-col">
 				{/* Close button */}
 				<button
 					onClick={onClose}

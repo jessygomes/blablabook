@@ -25,20 +25,21 @@ export class BooksController {
   }
 
   @Get('fetch-random')
-  async findTenRandomBooks(@Query('userId') userId?: string) {
-    return this.booksService.getTenRandomBooks(userId ? +userId : undefined);
+  async findRandomBooks(@Query('userId') userId?: string) {
+    return this.booksService.getRandomBooks(10, userId ? +userId : undefined);
   }
 
   @Get('fetch-popular-books')
-  async findTenMostPopularBooks(@Query('userId') userId?: string) {
-    return this.booksService.getTenMostPopularBooks(
+  async findMostPopularBooks(@Query('userId') userId?: string) {
+    return this.booksService.getMostPopularBooks(
+      10,
       userId ? +userId : undefined,
     );
   }
 
   @Get('fetch-latest')
-  async findTenLatestBooks(@Query('userId') userId?: string) {
-    return this.booksService.getTenLatestBooks(userId ? +userId : undefined);
+  async findLatestBooks(@Query('userId') userId?: string) {
+    return this.booksService.getLatestBooks(10, userId ? +userId : undefined);
   }
 
   @Get()
