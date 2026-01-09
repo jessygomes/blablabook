@@ -51,15 +51,22 @@ export class UsersController {
   //! GET PROFILE USER
   @Get('/profil/:id')
   async getprofileById(@Param('id', ParseIntPipe) id: number) {
-    const user = this.usersService.getProfileById(id);
-    console.log('User profile fetched:', user);
+    const user = await this.usersService.getProfileById(id);
+    if (!user) {
+      throw new BadRequestException('Utilisateur non trouvé');
+    }
     return user;
   }
 
   //! GET USER BY ID
   @Get(':id')
   async findById(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.findById(id);
+    const user = await this.usersService.findById(id);
+    if (user) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, ...userWithoutPassword } = user;
+      return userWithoutPassword;
+    }
   }
 
   //! UPDATE USER BY ID

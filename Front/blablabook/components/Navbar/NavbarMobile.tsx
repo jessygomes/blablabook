@@ -18,7 +18,7 @@ export default function NavbarMobile({
 
   const links = [
     { href: "/", label: "Accueil", icon: "home" },
-    { href: "/search", label: "Recherche", icon: "search" },
+    { href: "/rechercher", label: "Recherche", icon: "search" },
     {
       href: "/dernieres-critiques",
       label: "Dernières critiques",
