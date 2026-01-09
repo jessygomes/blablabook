@@ -13,7 +13,6 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-
     remotePatterns: [
       {
         protocol: "http",
@@ -35,7 +34,6 @@ const nextConfig = {
       },
     ],
   },
-
   webpack: (config: any, context: any) => {
     if (process.env.NEXT_WEBPACK_USEPOLLING) {
       config.watchOptions = {

@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { catchError, firstValueFrom, of } from 'rxjs';
+import { CommentService } from 'src/comment/comment.service';
 
 /* Récupération des livres depuis l'API d'OpenLibrary. 
 Récupérations des Work contenant la description, et l'auteur principal d'une oeuvre (le concept du livre)
@@ -55,6 +56,7 @@ export class BooksService {
   constructor(
     private prisma: PrismaService,
     private readonly httpService: HttpService,
+    private readonly commentService: CommentService,
   ) {}
 
   async getBooksFromOpenLibraryApi() {
@@ -65,7 +67,7 @@ export class BooksService {
       ),
     );
 
-    const docs = (data.docs as OpenLibraryDoc[]) ?? [];
+    const docs = data.docs ?? [];
     for (const doc of docs) {
       // On ignore les livres qui n'ont pas d'édition sinon on ne pourra pas récupérer le détail du livre
       if (!doc.edition_key?.length) continue;
@@ -81,7 +83,7 @@ export class BooksService {
             .pipe(catchError(() => of(null))),
         );
 
-        const edition = editionResponse?.data as OpenLibraryEdition;
+        const edition = editionResponse?.data;
         if (!edition) continue;
         // Préaration des données :
         // Extraction de l'année de publication
@@ -98,14 +100,14 @@ export class BooksService {
         let summary: string | null = null;
 
         // Récupérati
-        if (!summary && doc.key) {
+        if (doc.key) {
           const workResponse = await firstValueFrom(
             this.httpService
               .get<OpenLibraryWork>(`https://openlibrary.org${doc.key}.json`)
               .pipe(catchError(() => of(null))),
           );
 
-          const work = workResponse?.data as OpenLibraryWork;
+          const work = workResponse?.data;
           if (work?.description) {
             summary =
               typeof work.description === 'object'
@@ -246,5 +248,109 @@ export class BooksService {
       },
     });
     return this.mapBookWithUserBookId(books);
+  }
+
+  async mostAddedBooks(take = 10, userId?: number) {
+    // count the number of times each bookId appears in userBook and return the top n books
+    const groupedUserBooks = await this.prisma.userBook.groupBy({
+      by: ['bookId'],
+      _count: {
+        bookId: true,
+      },
+      orderBy: {
+        _count: {
+          bookId: 'desc',
+        },
+      },
+      take,
+    });
+
+    const bookIds = groupedUserBooks.map((group) => group.bookId);
+
+    const books = await this.prisma.book.findMany({
+      where: {
+        id: { in: bookIds },
+      },
+      select: {
+        id: true,
+        title: true,
+        author: true,
+        cover: true,
+        userBooks: userId
+          ? {
+              where: { userId: userId },
+              select: { id: true, status: true },
+            }
+          : false,
+      },
+    });
+    return groupedUserBooks.map((group) => {
+      const book = books.find((b) => b.id === group.bookId);
+      return {
+        ...book,
+        addedCount: group._count.bookId,
+      };
+    });
+  }
+
+  async mostCommentedBooks(take = 10, userId?: number) {
+    const groupedComments =
+      await this.commentService.numbeOfCommentsPerBook(take);
+
+    const bookIds = groupedComments.map((group) => group.bookId);
+
+    const books = await this.prisma.book.findMany({
+      where: {
+        id: { in: bookIds },
+      },
+      select: {
+        id: true,
+        title: true,
+        author: true,
+        cover: true,
+        userBooks: userId
+          ? {
+              where: { userId: userId },
+              select: { id: true, status: true },
+            }
+          : false,
+      },
+    });
+
+    return groupedComments.map((group) => {
+      const book = books.find((b) => b.id === group.bookId);
+      return {
+        ...book,
+        commentCount: group._count.bookId,
+      };
+    });
+  }
+
+  async searchBooks(
+    query: string,
+    page: number = 1,
+    pageSize: number = 20,
+    userId?: number,
+  ) {
+    const skip = (page - 1) * pageSize;
+    const books = await this.prisma.book.findMany({
+      where: {
+        OR: [
+          { title: { contains: query, mode: 'insensitive' } },
+          { author: { contains: query, mode: 'insensitive' } },
+          { isbn: { contains: query, mode: 'insensitive' } },
+        ],
+      },
+      include: {
+        userBooks: userId
+          ? {
+              where: { userId: userId },
+            }
+          : false,
+      },
+      skip,
+      take: pageSize,
+    });
+    return books;
   }
 }

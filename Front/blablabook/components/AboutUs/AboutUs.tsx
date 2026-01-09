@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
 
 interface AboutUsProps {
 	isOpen: boolean;
@@ -9,12 +10,26 @@ interface AboutUsProps {
 }
 
 export default function AboutUs({ isOpen, onClose }: AboutUsProps) {
+
+  // Prevent background scrolling when modal is open
+	useEffect(() => {
+		if (isOpen) {
+			document.body.style.overflow = "hidden";
+		} else {
+			document.body.style.overflow = "unset";
+		}
+
+		return () => {
+			document.body.style.overflow = "unset";
+		};
+	}, [isOpen]);
+
 	if (!isOpen) return null;
 
 	return (
 		<>
 			<div
-				className="fixed inset-0 bg-black/40 z-40 backdrop-blur-sm transition-all duration-300"
+				className="fixed inset-0 bg-black/40 z-40 backdrop-blur-sm transition-all duration-300 overflow-hidden"
 				onClick={onClose}
 			/>
 
@@ -50,8 +65,8 @@ export default function AboutUs({ isOpen, onClose }: AboutUsProps) {
 					{/* Content - Mobile: single column, Desktop: two columns */}
 				<div className="flex flex-col sm:flex-row sm:gap-8 px-6 pb-8 sm:p-8 overflow-y-auto flex-1">
 						{/* Mobile view */}
-						<div className="flex flex-col items-center sm:hidden">
-							<h2 className="text-2xl font-bold text-noir text-center mb-6">
+						<div className="flex flex-col sm:hidden">
+							<h2 className="text-2xl font-bold text-noir mb-6">
 								À propos
 							</h2>
 							<div className="flex flex-col gap-4 w-full">
@@ -112,7 +127,7 @@ export default function AboutUs({ isOpen, onClose }: AboutUsProps) {
 						<div className="hidden sm:block sm:w-px sm:bg-quater" />
 
 						<div className="hidden sm:flex sm:flex-col sm:flex-1 sm:gap-6">
-							<h1 className="text-3xl font-bold text-noir">En savoir plus</h1>
+							<h1 className="text-3xl font-bold text-noir">À propos</h1>
 							<div className="flex flex-col gap-4">
 								<p className="text-noir text-lg leading-relaxed">
 									Découvrez Blablabook, votre plateforme de partage et
@@ -145,7 +160,7 @@ export default function AboutUs({ isOpen, onClose }: AboutUsProps) {
 									explicabo doloribus necessitatibus quibusdam consectetur. Illum
 									vero fuga quasi mollitia!
 								</p>
-								<p className="text-noir leading-relaxed">
+								<p className="text-noir leading-relaxed m-4">
 									Lorem ipsum dolor sit, amet consectetur adipisicing elit.
 									Eaque dolor dolorum reiciendis. Esse, rerum vero neque nihil,
 									dolorum repellat deleniti nesciunt beatae modi doloribus porro
@@ -155,10 +170,6 @@ export default function AboutUs({ isOpen, onClose }: AboutUsProps) {
 									vero fuga quasi mollitia!
 								</p>
 							</div>
-              <div className="mt-1">
-                <Link href="/mentions-legales" className="text-quater mt-6 underline">Mentions légales</Link>
-                <Link href="/politique-de-confidentialite" className="text-quater mt-2 underline ml-4">Politique de confidentialité</Link>
-              </div>
 						</div>
 					</div>
 				</div>

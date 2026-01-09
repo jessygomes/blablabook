@@ -78,7 +78,6 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new UnauthorizedException('Identifiants invalides');
     }
-
     return this.generateTokenResponse(user);
   }
 
@@ -97,7 +96,7 @@ export class AuthService {
 
   private generateTokenResponse(user: UserWithRole | User) {
     const token = this.jwtService.sign(
-      { id: user?.id, type: 'auth' },
+      { id: user.id, type: 'auth' },
       { expiresIn: '7d' },
     );
 

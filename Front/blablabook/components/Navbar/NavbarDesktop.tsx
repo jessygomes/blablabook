@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useRef } from "react";
 import { UserCookie } from "@/lib/auth";
 import { getUploadUrl } from "@/lib/utils";
+import SearchBarHandler from "../Search/SearchBarHandler";
 
 export default function NavbarDesktop({
   isConnected,
@@ -21,19 +22,25 @@ export default function NavbarDesktop({
     { href: "/dernieres-critiques", label: "Dernières critiques" },
   ];
 
+
+
   return (
-    <nav className="w-full flex justify-between items-center py-4 wrapper bg-white">
+    <nav className="w-full flex justify-between items-center gap-2 md:gap-4 py-4 wrapper bg-white">
       {" "}
-      {/* <p className="font-two font-bold text-xl text-white">TheInkEra</p> */}
-      <Image src="/logo/icon_logo_bleu.png" alt="Logo" width={50} height={50} />
-      <ul ref={navRef} className="flex gap-8">
+      <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
+        <Image src="/logo/icon_logo_bleu.png" alt="Logo" width={50} height={50} className="shrink-0" />
+        <div className="min-w-0 mr-2 flex-1">
+          <SearchBarHandler />
+        </div>
+      </div>
+      <ul ref={navRef} className="flex gap-2 md:gap-4 xl:gap-8 shrink-0">
         {links.map((link, index) => {
           const isActive = pathname === link.href;
 
           return (
             <li
               key={index}
-              className={`relative overflow-hidden text-sm font-one py-2 px-4 rounded-md tracking-widest transition-all duration-500 ease-in-out transform ${
+              className={`relative overflow-hidden text-sm font-one py-2 px-2 xl:px-4 rounded-md tracking-widest transition-all duration-500 ease-in-out transform ${
                 isActive
                   ? "text-quater underline shadow-primary/30 scale-105"
                   : "text-quater hover:text-primary hover:bg-gray-50 hover:scale-102"
