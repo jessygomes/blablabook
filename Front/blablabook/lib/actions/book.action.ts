@@ -1,6 +1,6 @@
 "use server";
 
-export const getTenRandomBooks = async(userId?: number | null) => {
+export const getRandomBooks = async(userId?: number | null) => {
     const url = userId ? `http://api:3000/books/fetch-random?userId=${userId}` : `http://api:3000/books/fetch-random`;
     const res = await fetch(url, {
         method: "GET", 
@@ -28,7 +28,7 @@ export const getTenRandomBooks = async(userId?: number | null) => {
     };
 };
 
-export const getTenMostPopularBooks = async(userId?: number | null) => {
+export const getMostPopularBooks = async(userId?: number | null) => {
     const url = userId ? `http://api:3000/books/fetch-popular-books?userId=${userId}` : `http://api:3000/books/fetch-popular-books`;
     const res = await fetch(url, {
         method: "GET", 
@@ -56,7 +56,7 @@ export const getTenMostPopularBooks = async(userId?: number | null) => {
     };
 }
 
-export const getTenLatestBooks = async(userId?: number | null) => {
+export const getLatestBooks = async(userId?: number | null) => {
     const url = userId ? `http://api:3000/books/fetch-latest?userId=${userId}` : `http://api:3000/books/fetch-latest`;
     const res = await fetch(url, {
         method: "GET", 

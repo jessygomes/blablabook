@@ -83,21 +83,22 @@ export class BooksService {
 
         const edition = editionResponse?.data as OpenLibraryEdition;
         if (!edition) continue;
-        // Préaration des données :
+        // Préparation des données :
         // Extraction de l'année de publication
-        const rawDate = edition.publish_date || '';
-        const yearMatch = rawDate.match(/\d{4}/);
-        const pubDate = yearMatch
-          ? new Date(parseInt(yearMatch[0]), 0, 1)
-          : new Date();
-        // Récupération de l'isbn. S'il n'y en a pas dans l'édition, on récupère celi du doc
-        let isbn = edition.isbn_13?.[0] || edition.isbn_10?.[0];
-        if (!isbn && doc.isbn && doc.isbn.length > 0) {
-          isbn = doc.isbn[0];
+        let pubDate: Date | null = null;
+        const rawDate = edition.publish_date;
+        if (rawDate) {
+          const yearMatch = rawDate.match(/\d{4}/);
+          if (yearMatch) {
+            pubDate = new Date(parseInt(yearMatch[0]), 0, 1);
+          }
         }
+        // Récupération de l'isbn
+        const isbn = edition.isbn_13?.[0] || edition.isbn_10?.[0];
+
         let summary: string | null = null;
 
-        // Récupérati
+        // Récupération du résumé
         if (!summary && doc.key) {
           const workResponse = await firstValueFrom(
             this.httpService
@@ -105,7 +106,7 @@ export class BooksService {
               .pipe(catchError(() => of(null))),
           );
 
-          const work = workResponse?.data as OpenLibraryWork;
+          const work = workResponse?.data;
           if (work?.description) {
             summary =
               typeof work.description === 'object'
@@ -179,11 +180,11 @@ export class BooksService {
     return this.mapBookWithUserBookId(books);
   }
 
-  async getTenRandomBooks(userId?: number) {
+  async getRandomBooks(take: number, userId?: number) {
     const booksCount = await this.prisma.book.count();
-    const skip = Math.floor(Math.random() * booksCount);
+    const skip = Math.max(0, Math.floor(Math.random() * (booksCount - take)));
     const books = await this.prisma.book.findMany({
-      take: 10,
+      take: take,
       skip: skip,
       select: {
         id: true,
@@ -204,9 +205,9 @@ export class BooksService {
     return this.mapBookWithUserBookId(books);
   }
 
-  async getTenMostPopularBooks(userId?: number) {
+  async getMostPopularBooks(take: number, userId?: number) {
     const books = await this.prisma.book.findMany({
-      take: 10,
+      take: take,
       select: {
         id: true,
         title: true,
@@ -226,9 +227,9 @@ export class BooksService {
     return this.mapBookWithUserBookId(books);
   }
 
-  async getTenLatestBooks(userId?: number) {
+  async getLatestBooks(take: number, userId?: number) {
     const books = await this.prisma.book.findMany({
-      take: 10,
+      take: take,
       select: {
         id: true,
         title: true,
