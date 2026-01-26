@@ -161,7 +161,7 @@ export default function AboutUs({ isOpen, onClose }: AboutUsProps) {
 									explicabo doloribus necessitatibus quibusdam consectetur. Illum
 									vero fuga quasi mollitia!
 								</p>
-								<p className="text-noir leading-relaxed m-4">
+								<p className="text-noir leading-relaxed mb-4">
 									Lorem ipsum dolor sit, amet consectetur adipisicing elit.
 									Eaque dolor dolorum reiciendis. Esse, rerum vero neque nihil,
 									dolorum repellat deleniti nesciunt beatae modi doloribus porro

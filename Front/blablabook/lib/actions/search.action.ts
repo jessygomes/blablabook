@@ -24,6 +24,52 @@ type BooksResponse = {
   }[]
 }
 
+interface Book {
+  id: number;
+  title: string;
+  page_count: number;
+  author: string;
+  category: string;
+  publishing_date: Date | null;
+  summary: string | null;
+  publisher: string | null;
+  isbn: string | null;
+  cover: string | null;
+  averageRating: number | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface OpenLibraryDoc {
+  key?: string;
+  title?: string;
+  editions: Editions;
+  edition_key?: string[];
+  number_of_pages_median?: number;
+  author_name?: string[];
+  first_publish_year?: number;
+  publish_date?: string[];
+  publisher?: string[];
+  isbn?: string[];
+  cover_i?: number;
+}
+
+interface Editions {
+  numFound: number;
+  start: number;
+  numFoundExact: number;
+  docs: EditionsDocs[];
+}
+
+interface EditionsDocs {
+  key: string;
+  title: string;
+  cover_i: number;
+  isbn: string[];
+}
+
+
+
 interface mostCommentedBooksResponse extends BooksResponse {
   commentCount: number,
 }
@@ -53,6 +99,59 @@ export const searchBooksAction = async (query: string, userId?: number, page: nu
     data:    resData,
   };
 }
+
+export const searchBooksFromExternalApiAction = async (query: string, limit: number = 20) => {
+  if (query.trim().length < 3) {
+    return {
+      success: false,
+      error:   'La recherche doit contenir au moins 3 caractères.',
+      status:  400,
+    };
+  }
+  const res = await fetch(`http://api:3000/books/search-external?q=${encodeURIComponent(query)}&limit=${limit}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  if (!res.ok) {
+    const errorData = await res.json();
+    return {
+      success: false,
+      error:    errorData.message || "Un problème est survenu lors de la recherche des livres externes",
+      status:   res.status,
+    };
+  }
+  const resData: OpenLibraryDoc[] = await res.json();
+  return {
+    success: true,
+    data:    resData,
+  };
+}
+
+export const importBooksFromExternalApiAction = async (book: OpenLibraryDoc) => {
+  const res = await fetch(`http://api:3000/books/import-external`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(book),
+  });
+  if (!res.ok) {
+    const errorData = await res.json();
+    return {
+      success: false,
+      error:    errorData.message || "Un problème est survenu lors de l'importation du livre externe",
+      status:   res.status,
+    };
+  }
+  const resData: Book = await res.json();
+  return {
+    success: true,
+    data:    resData,
+  };
+}
+
   
 export const mostCommentedBooksAction = async (take = 9, userId?: number) => {
   const res = await fetch(`http://api:3000/books/most-commented-books?take=${take}${userId ? `&userId=${userId}` : ""}`, {

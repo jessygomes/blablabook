@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
+import type { OpenLibraryDoc } from './types/books.type';
 
 @Controller('books')
 export class BooksController {
@@ -49,14 +50,10 @@ export class BooksController {
     return this.booksService.getBooks(userId ? +userId : undefined);
   }
 
-  @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.booksService.findOne(id);
-  }
   @Get('most-added-books')
   mostAddedBooks(
     @Query('take') take?: string,
-    @Query('userId', new ParseIntPipe({ optional: true })) userId?: number,
+    @Query('userId') userId?: number,
   ) {
     const n = take ? Number(take) : 10;
     return this.booksService.mostAddedBooks(
@@ -68,7 +65,7 @@ export class BooksController {
   @Get('most-commented-books')
   mostCommentedBooks(
     @Query('take') take?: string,
-    @Query('userId', new ParseIntPipe({ optional: true })) userId?: number,
+    @Query('userId') userId?: number,
   ) {
     const n = take ? Number(take) : 10;
     return this.booksService.mostCommentedBooks(
@@ -92,10 +89,27 @@ export class BooksController {
     );
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.booksService.findOne(+id);
-  // }
+  @Get('search-external')
+  searchBooksWithOpenLibraryApi(
+    @Query('q') query: string,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
+  ) {
+    return this.booksService.searchBooksWithOpenLibraryApi(
+      decodeURIComponent(query),
+      limit,
+    );
+  }
+
+  @Post('import-external')
+  importExternalBookToDatabase(@Body() book: OpenLibraryDoc) {
+    return this.booksService.importExternalBookToDatabase(book);
+  }
+
+  // the regex \\d+ ensures that the slug only catches numeric ids
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.booksService.findOne(id);
+  }
 
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {

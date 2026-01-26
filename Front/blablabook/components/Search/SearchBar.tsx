@@ -24,7 +24,7 @@ function SearchBar({
 
   return (
     <div className="flex items-center mx-auto my-3 sm:m-3 gap-2 px-3 sm:px-4 py-2 border border-gray-300 rounded-full focus-within:ring-2 focus-within:ring-quater bg-[#e3edef] w-[calc(100%-2rem)] sm:w-full sm:max-w-md">
-      <span className="material-icons text-noir text-lg sm:text-xl shrink-0">search</span>
+      <span className="material-icons text-noir text-lg sm:text-xl shrink-0 cursor-pointer" onClick={() => onSearch(searchQuery.trim())}>search</span>
       <input
         type="text"
         placeholder={placeholder}
