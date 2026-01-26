@@ -1,8 +1,8 @@
 import BookCard from "@/components/BookCard/BookCard";
 import {
-  getLatestBooks,
-  getMostPopularBooks,
-  getRandomBooks,
+  getTenLatestBooks as getLatestBooks,
+  getTenMostPopularBooks as getMostPopularBooks,
+  getTenRandomBooks as getRandomBooks,
 } from "@/lib/actions/book.action";
 import { cookies } from "next/headers";
 import Carousel from "./Carousel";
@@ -55,7 +55,7 @@ export default async function BookLists() {
           ))}
         </Carousel>
       </section>
-     
+
       {/* <div className="flex flex-nowrap overflow-x-auto snap-x snap-mandatory gap-4 pb-4 mb-8 pt-3 px-1 no-scrollbar">
         {randomBooks.map((book) => (
           <BookCard
