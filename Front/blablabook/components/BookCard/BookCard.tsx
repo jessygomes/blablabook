@@ -32,10 +32,10 @@ export default function BookCard({
 }: BookCardProps) {
   const { toast, showToast, hideToast } = useToast();
   const [currentUserBookId, setCurrentUserBookId] = useState<number | null>(
-    initialUserBookId
+    initialUserBookId,
   );
   const [currentStatus, setCurrentStatus] = useState<StatusType>(
-    (status ?? "NOT_READ") as StatusType
+    (status ?? "NOT_READ") as StatusType,
   );
 
   useEffect(() => {
@@ -71,11 +71,11 @@ export default function BookCard({
         </div>
         <div className="p-2 w-full border-t">
           <h3 className="title-card">{book.title}</h3>
-          <p className="truncate text-noir italic text-base tracking-wider">
+          <p className="truncate text-noir text-xs italic tracking-wider">
             de {book.author}
           </p>
         </div>
-        <div className="mt-auto mb-1 flex items-center justify-between w-full px-2">
+        <div className="mt-auto flex items-center justify-between w-full p-2">
           {
             <>
               <LibraryButton

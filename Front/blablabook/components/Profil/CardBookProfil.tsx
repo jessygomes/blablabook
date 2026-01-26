@@ -50,36 +50,35 @@ export default function CardBookProfil({
 
   return (
     <>
-      <article className="relative bg-white border border-gray-100 rounded-md p-6 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-        <div className="rounded-md overflow-hidden mb-5 bg-gray-50">
+      <article className="relative flex-none w-56 snap-start bg-white drop-shadow-md flex flex-col items-center p-2">
+        <div className="w-full flex justify-center items-center h-56">
           <Link
             href={`/bibliotheque/${item.book.id}`}
-            className="relative w-full pt-[150%]"
+            className="relative w-[60%] rounded-2xl aspect-2/3 shadow-sm"
           >
             <Image
               src={item.book?.cover || "/default-book.png"}
               alt={item.book?.title || "Couverture"}
               fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-              className="object-cover"
+              className="object-cover rounded-sm"
             />
           </Link>
         </div>
-        <h3
-          className="text-base font-semibold text-noir leading-snug truncate"
-          title={item.book?.title}
-        >
-          {item.book?.title || "Titre inconnu"}
-        </h3>
-        {item.book?.author && (
-          <p
-            className="mt-1 text-xs italic text-gray-600 truncate"
-            title={item.book.author}
-          >
-            de {item.book.author}
-          </p>
-        )}
-        <div className="mt-4 flex items-center gap-2 flex-nowrap min-w-0">
+        <div className="p-2 w-full border-t">
+          <h3 className="title-card" title={item.book?.title}>
+            {item.book?.title || "Titre inconnu"}
+          </h3>
+          {item.book?.author && (
+            <p
+              className="truncate text-noir text-xs italic tracking-wider"
+              title={item.book.author}
+            >
+              de {item.book.author}
+            </p>
+          )}
+        </div>
+
+        <div className="mt-auto flex gap-2 items-center justify-between w-full p-2">
           <LibraryButton
             userId={userId ?? undefined}
             token={token}

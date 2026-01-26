@@ -89,8 +89,8 @@ export default function DetailBook({
                 token={token}
                 bookId={book.id}
                 initialUserBookId={book.userBookId ?? null}
-                className="px-4 py-2"
                 onToast={(msg, type) => showToast(msg, type)}
+                className="px-4 py-2"
               />
             </div>
             <p className="text-base text-gray-700">
@@ -141,13 +141,10 @@ export default function DetailBook({
           </div>
 
           <RatingComponent
+            bookId={book.id}
             userRating={book.userRating}
-            averageRating={book.averageRating}
             userId={userId}
             token={token}
-            onRatingChange={(rating) => {
-              console.log("User rated:", rating);
-            }}
           />
         </div>
       </div>

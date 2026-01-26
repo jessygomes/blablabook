@@ -31,8 +31,6 @@ export default async function Page({ params }: { params: Params }) {
 
   const book = bookRes.data;
 
-  console.log("Book page data:", { book, userId, token });
-
   return (
     <>
       <section className="wrapper py-8">

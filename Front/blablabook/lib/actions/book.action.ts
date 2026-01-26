@@ -111,8 +111,6 @@ export const getBookById = async (bookId: number) => {
   }
   const resData = await res.json();
 
-  console.log("resData book action:", resData);
-
   return {
     success: true,
     data: resData,

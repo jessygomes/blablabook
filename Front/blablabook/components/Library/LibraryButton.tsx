@@ -1,14 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
-import { addToLibrary, removeFromLibrary } from "@/lib/actions/userbook.action";
+import { useState, useEffect } from "react";
+import {
+  addToLibrary,
+  removeFromLibrary,
+  checkIfBookInLibrary,
+} from "@/lib/actions/userbook.action";
 
 interface LibraryButtonProps {
-  userId?: number; // required only for add
+  userId?: number;
   bookId: number;
   token: string | null;
-  initialUserBookId?: number | null; // if present => already in library
-  className?: string; // extra classes appended to default
+  initialUserBookId?: number | null;
+  className?: string;
   onUpdate?: (userBookId: number | null) => void;
   onToast?: (message: string, type: "success" | "error") => void;
 }
@@ -23,9 +27,29 @@ export default function LibraryButton({
   onToast,
 }: LibraryButtonProps) {
   const [userBookId, setUserBookId] = useState<number | null>(
-    () => initialUserBookId ?? null
+    () => initialUserBookId ?? null,
   );
+  const [isLoading, setIsLoading] = useState(false);
 
+  // Vérifier si le livre est dans la librairie du user
+  useEffect(() => {
+    if (!userId || initialUserBookId !== null) {
+      return;
+    }
+
+    const checkBook = async () => {
+      setIsLoading(true);
+      const result = await checkIfBookInLibrary(userId, bookId);
+      if (result.success && result.userBook) {
+        setUserBookId(result.userBook.id);
+      }
+      setIsLoading(false);
+    };
+
+    checkBook();
+  }, [userId, bookId, initialUserBookId]);
+
+  //! Ajouter
   const handleAdd = async () => {
     if (!token || !userId) {
       onToast?.("Veuillez vous connecter pour ajouter des livres", "error");
@@ -42,6 +66,7 @@ export default function LibraryButton({
     }
   };
 
+  //! Retirer
   const handleRemove = async () => {
     if (!token || !userBookId) return;
     const result = await removeFromLibrary(userBookId, token);
@@ -54,8 +79,22 @@ export default function LibraryButton({
     }
   };
 
+  //! Bouton CSS
   const baseBtn =
     "flex items-center gap-1.5 whitespace-nowrap cursor-pointer text-[12px] font-normal rounded-2xl px-3 py-1 transition-colors truncate";
+
+  if (isLoading) {
+    return (
+      <button
+        disabled
+        className={`${baseBtn} bg-gray-200 text-gray-500 cursor-wait ${className}`}
+      >
+        <span className="material-icons text-[14px]! animate-spin">
+          hourglass_empty
+        </span>
+      </button>
+    );
+  }
 
   return (
     <>
