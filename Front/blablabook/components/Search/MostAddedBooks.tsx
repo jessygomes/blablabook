@@ -16,7 +16,6 @@ async function MostAddedBooks() {
 
 
   const mostAddedBooks = await fetchMostAddedBooks();
-  console.log(mostAddedBooks);
 
   return (
     <div className="mb-12">

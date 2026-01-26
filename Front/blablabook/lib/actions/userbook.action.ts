@@ -20,7 +20,6 @@ export const addToLibrary = async (
   userId: number,
   token: string,
 ) => {
-  console.log("Adding to library:", `http://api:3000/userbook/add/${userId}/${bookId}`);
   const res = await fetch(`http://api:3000/userbook/add/${userId}/${bookId}`, {
     method: "POST",
     headers: {
@@ -81,7 +80,6 @@ export const updateUserBookStatus = async (
   status: string,
   token: string,
 ) => {
-  console.log("Updating user book status:", `http://api:3000/userbook/statut/${id}`);
   const res = await fetch(`http://api:3000/userbook/statut/${id}`, {
     method: "PATCH",
     headers: {

@@ -25,8 +25,6 @@ export const metadata: Metadata = {
 const isAuth = await isAuthenticated();
 const authUser = await getAuthUser();
 
-console.log("isAuth in layout:", isAuth);
-
 export default function RootLayout({
   children,
 }: Readonly<{

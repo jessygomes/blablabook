@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import React from "react";
 import AboutUsBtn from "./AboutUs/AboutUsBtn";
 
 export default function Header() {

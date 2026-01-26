@@ -5,13 +5,14 @@ meta {
 }
 
 get {
-  url: http://localhost:3000/books/search?q=Under the&page=1&size=20
+  url: http://localhost:3000/books/search?q=Bridge&page=1&size=20&userId=2
   body: none
   auth: inherit
 }
 
 params:query {
-  q: Under the
+  q: Bridge
   page: 1
   size: 20
+  userId: 2
 }

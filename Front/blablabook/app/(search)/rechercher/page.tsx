@@ -2,7 +2,8 @@ import MostAddedBooks from "@/components/Search/MostAddedBooks";
 import MostCommentedBooks from "@/components/Search/MostCommentedBooks";
 import SearchBarHandler from "@/components/Search/SearchBarHandler";
 import SearchResult from "@/components/Search/SearchResult";
-import { searchBooksAction } from "@/lib/actions/search.action";
+import BackupSearchResults from "@/components/Search/BackupSearchResults";
+import { searchBooksAction, searchBooksFromExternalApiAction } from "@/lib/actions/search.action";
 import { cookies } from "next/headers";
 
 interface SearchPageProps {
@@ -16,15 +17,21 @@ export default async function Search({ searchParams }: SearchPageProps) {
   const query = params.q;
 
   let searchResults = null;
+  let backUpSearch = null;
+  
   if (query) {
     let userId
     if (userCookie) {
       userId = JSON.parse(userCookie).id;
     }
     searchResults = await searchBooksAction(query, userId);
+    if (query.trim().length >= 3 && (!searchResults.success || (searchResults.data && searchResults.data.length === 0))) {
+      backUpSearch = await searchBooksFromExternalApiAction(query, 10);
+    }
   }
 
   const hasResults = searchResults && searchResults.success && searchResults.data && searchResults.data.length > 0;
+
   return (
     <>
       <div className="sm:hidden" >
@@ -35,6 +42,14 @@ export default async function Search({ searchParams }: SearchPageProps) {
         <SearchResult books={searchResults.data} />
       ) : (
         <>
+          {searchResults && searchResults.success && !hasResults && (
+            <>
+              <p className="text-red-400 ml-5 mb-3">Aucun résultat trouvé pour votre recherche.</p>
+              {backUpSearch && backUpSearch.success && backUpSearch.data && backUpSearch.data.length > 0 && (
+                <BackupSearchResults books={backUpSearch.data} />
+              )}
+            </>
+          )}
           <MostAddedBooks />
           <MostCommentedBooks />
         </>
