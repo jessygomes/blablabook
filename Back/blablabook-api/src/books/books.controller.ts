@@ -1,9 +1,11 @@
+// import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import {
   Controller,
   Post,
   Get,
   Body,
   Query,
+  Param,
   ParseIntPipe,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
@@ -47,6 +49,10 @@ export class BooksController {
     return this.booksService.getBooks(userId ? +userId : undefined);
   }
 
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.booksService.findOne(id);
+  }
   @Get('most-added-books')
   mostAddedBooks(
     @Query('take') take?: string,

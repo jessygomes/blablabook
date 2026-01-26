@@ -58,4 +58,16 @@ export class UserBookController {
   remove(@Param('id') id: string) {
     return this.userBookService.remove(+id);
   }
+
+  /**
+   * GET /userbook/check/:userId/:bookId
+   * Vérifier si un livre fait partie de la liste userBook d'un utilisateur
+   */
+  @Get('check/:userId/:bookId')
+  checkIfBookInLibrary(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('bookId', ParseIntPipe) bookId: number,
+  ) {
+    return this.userBookService.checkIfBookInLibrary(userId, bookId);
+  }
 }

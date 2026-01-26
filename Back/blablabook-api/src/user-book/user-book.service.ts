@@ -42,4 +42,21 @@ export class UserBookService {
       where: { id },
     });
   }
+
+  //! Vérifier si un livre fait partie de la liste userBook d'un utilisateur
+  async checkIfBookInLibrary(userId: number, bookId: number) {
+    const userBook = await this.prisma.userBook.findUnique({
+      where: {
+        userId_bookId: {
+          userId,
+          bookId,
+        },
+      },
+    });
+
+    return {
+      exists: !!userBook,
+      userBook: userBook || null,
+    };
+  }
 }

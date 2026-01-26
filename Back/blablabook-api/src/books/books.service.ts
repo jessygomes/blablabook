@@ -251,6 +251,22 @@ export class BooksService {
     return this.mapBookWithUserBookId(books);
   }
 
+  //! GET BOOK BY ID
+  async findOne(id: number) {
+    const book = await this.prisma.book.findUnique({
+      where: { id },
+      include: {
+        comments: true,
+        rates: true,
+      },
+    });
+
+    if (!book) {
+      throw new Error('Livre non trouvé');
+    }
+
+    return book;
+    
   async mostAddedBooks(take = 10, userId?: number) {
     // count the number of times each bookId appears in userBook and return the top n books
     const groupedUserBooks = await this.prisma.userBook.groupBy({
