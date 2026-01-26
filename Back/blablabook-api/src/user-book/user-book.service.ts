@@ -20,7 +20,7 @@ export class UserBookService {
   }
 
   findAll() {
-    return `This action returns all userBook`;
+    return this.prisma.userBook.findMany();
   }
 
   findOne(id: number) {
@@ -41,5 +41,22 @@ export class UserBookService {
     return this.prisma.userBook.delete({
       where: { id },
     });
+  }
+
+  //! Vérifier si un livre fait partie de la liste userBook d'un utilisateur
+  async checkIfBookInLibrary(userId: number, bookId: number) {
+    const userBook = await this.prisma.userBook.findUnique({
+      where: {
+        userId_bookId: {
+          userId,
+          bookId,
+        },
+      },
+    });
+
+    return {
+      exists: !!userBook,
+      userBook: userBook || null,
+    };
   }
 }

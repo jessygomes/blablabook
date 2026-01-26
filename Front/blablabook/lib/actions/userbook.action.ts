@@ -18,8 +18,9 @@ export const getUserLibrary = async (userId: number, token: string) => {
 export const addToLibrary = async (
   bookId: number,
   userId: number,
-  token: string
+  token: string,
 ) => {
+  console.log("Adding to library:", `http://api:3000/userbook/add/${userId}/${bookId}`);
   const res = await fetch(`http://api:3000/userbook/add/${userId}/${bookId}`, {
     method: "POST",
     headers: {
@@ -78,8 +79,9 @@ export const removeFromLibrary = async (id: number, token: string) => {
 export const updateUserBookStatus = async (
   id: number,
   status: string,
-  token: string
+  token: string,
 ) => {
+  console.log("Updating user book status:", `http://api:3000/userbook/statut/${id}`);
   const res = await fetch(`http://api:3000/userbook/statut/${id}`, {
     method: "PATCH",
     headers: {
@@ -103,5 +105,34 @@ export const updateUserBookStatus = async (
     success: true,
     data: resData,
     message: "Statut mis à jour avec succès",
+  };
+};
+
+//! VÉRIFIER SI UN LIVRE EST DANS LA BIBLIOTHÈQUE DE L'UTILISATEUR
+export const checkIfBookInLibrary = async (userId: number, bookId: number) => {
+  const res = await fetch(
+    `http://api:3000/userbook/check/${userId}/${bookId}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  );
+
+  if (!res.ok) {
+    return {
+      success: false,
+      exists: false,
+      userBook: null,
+    };
+  }
+
+  const resData = await res.json();
+
+  return {
+    success: true,
+    exists: resData.exists,
+    userBook: resData.userBook,
   };
 };

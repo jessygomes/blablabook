@@ -1,8 +1,8 @@
 import BookCard from "@/components/BookCard/BookCard";
 import {
-  getTenLatestBooks,
-  getTenMostPopularBooks,
-  getTenRandomBooks,
+  getLatestBooks,
+  getMostPopularBooks,
+  getRandomBooks,
 } from "@/lib/actions/book.action";
 import { cookies } from "next/headers";
 import Carousel from "./Carousel";
@@ -28,9 +28,9 @@ export default async function BookLists() {
   }
 
   const [resRandom, resPopular, resLatest] = await Promise.all([
-    getTenRandomBooks(userId),
-    getTenMostPopularBooks(userId),
-    getTenLatestBooks(userId),
+    getRandomBooks(userId),
+    getMostPopularBooks(userId),
+    getLatestBooks(userId),
   ]);
 
   const randomBooks: Book[] = resRandom.success ? resRandom.data : [];

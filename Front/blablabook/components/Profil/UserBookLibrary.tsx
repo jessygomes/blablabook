@@ -53,7 +53,7 @@ export default function UserBookLibrary({
           onClose={hideToast}
         />
       )}
-      <div className="py-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+      <div className="pt-6 pb-20 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-10">
         {userBooks.map((userBook) => (
           <CardBookProfil
             key={userBook.id}

@@ -1,8 +1,14 @@
 // import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { Controller, Post, Get, Body, Query } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  Query,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { BooksService } from './books.service';
-// import { CreateBookDto } from './dto/create-book.dto';
-// import { UpdateBookDto } from './dto/update-book.dto';
 
 @Controller('books')
 export class BooksController {
@@ -21,25 +27,69 @@ export class BooksController {
   }
 
   @Get('fetch-random')
-  async findTenRandomBooks(@Query('userId') userId?: string) {
-    return this.booksService.getTenRandomBooks(userId ? +userId : undefined);
+  async findRandomBooks(@Query('userId') userId?: string) {
+    return this.booksService.getRandomBooks(10, userId ? +userId : undefined);
   }
 
   @Get('fetch-popular-books')
-  async findTenMostPopularBooks(@Query('userId') userId?: string) {
-    return this.booksService.getTenMostPopularBooks(
+  async findMostPopularBooks(@Query('userId') userId?: string) {
+    return this.booksService.getMostPopularBooks(
+      10,
       userId ? +userId : undefined,
     );
   }
 
   @Get('fetch-latest')
-  async findTenLatestBooks(@Query('userId') userId?: string) {
-    return this.booksService.getTenLatestBooks(userId ? +userId : undefined);
+  async findLatestBooks(@Query('userId') userId?: string) {
+    return this.booksService.getLatestBooks(10, userId ? +userId : undefined);
   }
 
   @Get()
   findAll(@Query('userId') userId?: string) {
     return this.booksService.getBooks(userId ? +userId : undefined);
+  }
+
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.booksService.findOne(id);
+  }
+  @Get('most-added-books')
+  mostAddedBooks(
+    @Query('take') take?: string,
+    @Query('userId', new ParseIntPipe({ optional: true })) userId?: number,
+  ) {
+    const n = take ? Number(take) : 10;
+    return this.booksService.mostAddedBooks(
+      Number.isFinite(n) ? Math.min(n, 10) : 10,
+      userId,
+    );
+  }
+
+  @Get('most-commented-books')
+  mostCommentedBooks(
+    @Query('take') take?: string,
+    @Query('userId', new ParseIntPipe({ optional: true })) userId?: number,
+  ) {
+    const n = take ? Number(take) : 10;
+    return this.booksService.mostCommentedBooks(
+      Number.isFinite(n) ? Math.min(n, 10) : 10,
+      userId,
+    );
+  }
+
+  @Get('search')
+  searchBooks(
+    @Query('q') query: string,
+    @Query('page', new ParseIntPipe({ optional: true })) pageNumber?: number,
+    @Query('size', new ParseIntPipe({ optional: true })) pageSize?: number,
+    @Query('userId', new ParseIntPipe({ optional: true })) userId?: number,
+  ) {
+    return this.booksService.searchBooks(
+      decodeURIComponent(query),
+      pageNumber,
+      pageSize,
+      userId,
+    );
   }
 
   // @Get(':id')

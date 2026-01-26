@@ -36,7 +36,11 @@ body {
 }
 
 .title {
-  @apply font-semibold text-white font-one tracking-widest text-xl;
+  @apply font-bold text-white text-center font-one tracking-wider text-3xl; 
+}
+
+.subtitle {
+  @apply font-semibold text-white text-center font-one tracking-widest text-xl;
 }
 .title-section {
   @apply text-3xl font-bold font-one tracking-wider;
