@@ -1,6 +1,5 @@
-import { Injectable } from "@nestjs/common";
-import { PrismaService } from "../prisma/prisma.service";
-
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class CommentService {
@@ -9,12 +8,12 @@ export class CommentService {
   async latestCommentPerBook(take = 10) {
     return this.prisma.comment.findMany({
       where: {
-        status: "ACTIVE",
+        status: 'ACTIVE',
       },
       orderBy: {
-        date: "desc",
+        date: 'desc',
       },
-      distinct: ["bookId"],
+      distinct: ['bookId'],
       take,
       include: {
         book: true,
@@ -27,5 +26,24 @@ export class CommentService {
         },
       },
     });
+  }
+
+  async numbeOfCommentsPerBook(take = 10) {
+    const groupedComments = await this.prisma.comment.groupBy({
+      by: ['bookId'],
+      where: {
+        status: 'ACTIVE',
+      },
+      _count: {
+        bookId: true,
+      },
+      orderBy: {
+        _count: {
+          bookId: 'desc',
+        },
+      },
+      take,
+    });
+    return groupedComments;
   }
 }

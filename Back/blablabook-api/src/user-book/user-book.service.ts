@@ -20,7 +20,7 @@ export class UserBookService {
   }
 
   findAll() {
-    return `This action returns all userBook`;
+    return this.prisma.userBook.findMany();
   }
 
   findOne(id: number) {

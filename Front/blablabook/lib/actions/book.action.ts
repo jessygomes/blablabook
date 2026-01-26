@@ -10,6 +10,13 @@ export const getTenRandomBooks = async (userId?: number | null) => {
       "Content-Type": "application/json",
     },
   });
+export const getRandomBooks = async(userId?: number | null) => {
+    const url = userId ? `http://api:3000/books/fetch-random?userId=${userId}` : `http://api:3000/books/fetch-random`;
+    const res = await fetch(url, {
+        method: "GET", 
+        headers: {
+            "Content-Type": "application/json",
+        },
 
   if (!res.ok) {
     const errorData = await res.json();
@@ -51,6 +58,15 @@ export const getTenMostPopularBooks = async (userId?: number | null) => {
       status: res.status,
     };
   }
+};
+
+export const getMostPopularBooks = async(userId?: number | null) => {
+    const url = userId ? `http://api:3000/books/fetch-popular-books?userId=${userId}` : `http://api:3000/books/fetch-popular-books`;
+    const res = await fetch(url, {
+        method: "GET", 
+        headers: {
+            "Content-Type": "application/json",
+        },
 
   const resData = await res.json();
 
@@ -81,6 +97,15 @@ export const getTenLatestBooks = async (userId?: number | null) => {
       status: res.status,
     };
   }
+}
+
+export const getLatestBooks = async(userId?: number | null) => {
+    const url = userId ? `http://api:3000/books/fetch-latest?userId=${userId}` : `http://api:3000/books/fetch-latest`;
+    const res = await fetch(url, {
+        method: "GET", 
+        headers: {
+            "Content-Type": "application/json",
+        },
 
   const resData = await res.json();
 

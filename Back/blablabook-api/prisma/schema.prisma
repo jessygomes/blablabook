@@ -49,7 +49,7 @@ model Book {
   page_count      Int
   author          String
   category        String
-  publishing_date DateTime
+  publishing_date DateTime?
   summary         String?
   publisher       String?
   isbn            String?  @unique
