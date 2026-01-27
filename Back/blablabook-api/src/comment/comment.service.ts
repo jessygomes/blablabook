@@ -5,6 +5,10 @@ import { PrismaService } from '../prisma/prisma.service';
 export class CommentService {
   constructor(private prisma: PrismaService) {}
 
+  async getCommentCount() {
+    return this.prisma.comment.count();
+  }
+
   async latestCommentPerBook(take = 10) {
     return this.prisma.comment.findMany({
       where: {
