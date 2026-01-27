@@ -6,6 +6,7 @@ export type UserCookie = {
   username: string;
   isPrivate: boolean;
   profilePicture: string | null;
+  roleId: number;
 };
 
 export async function isAuthenticated(): Promise<boolean> {

@@ -24,6 +24,7 @@ export default function NavbarMobile({
       label: "Dernières critiques",
       icon: "book",
     },
+    { href: "/administration", label: "Administration", icon: "dashboard"},
   ];
 
   return (

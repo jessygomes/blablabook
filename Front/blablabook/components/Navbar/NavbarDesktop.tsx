@@ -20,9 +20,9 @@ export default function NavbarDesktop({
   const links = [
     { href: "/", label: "Accueil" },
     { href: "/dernieres-critiques", label: "Dernières critiques" },
+    { href: "/administration", label: "Administration" },
   ];
-
-
+ // const links = allLinks.filter(link => link.href !== "/administration" || (user && user.roleId === 1));
 
   return (
     <nav className="w-full flex justify-between items-center gap-2 md:gap-4 py-4 wrapper bg-white">
@@ -50,6 +50,8 @@ export default function NavbarDesktop({
             </li>
           );
         })}
+
+       
 
         <Link
           href={isConnected ? "/mon-profil" : "/se-connecter"}
