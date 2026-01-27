@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 
-import { logoutServerAction } from "@/lib/actions/auth.action";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/Toast";
 import Modal from "../Modal";
+import { signOut } from "next-auth/react";
 
 export default function LogoutBtn() {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,20 +16,14 @@ export default function LogoutBtn() {
   const handleLogout = async () => {
     setIsLoading(true);
     try {
-      const result = await logoutServerAction();
+      await signOut({ redirect: false });
+      showToast("Déconnexion réussie !", "success");
+      setIsOpen(false);
 
-      if (result.success) {
-        showToast("Déconnexion réussie !", "success");
-        setIsOpen(false);
-
-        router.refresh();
-
-        setTimeout(() => {
-          router.push("/");
-        }, 1500);
-      } else {
-        showToast("Erreur lors de la déconnexion", "error");
-      }
+      router.refresh();
+      setTimeout(() => {
+        router.push("/");
+      }, 500);
     } catch (error) {
       console.error("Erreur lors de la déconnexion:", error);
       showToast("Une erreur est survenue", "error");

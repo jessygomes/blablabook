@@ -3,35 +3,48 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRef } from "react";
-import { UserCookie } from "@/lib/auth";
+import { User } from "@/lib/auth";
 import { getUploadUrl } from "@/lib/utils";
 import SearchBarHandler from "../Search/SearchBarHandler";
-import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
 export default function NavbarDesktop({
   isConnected,
-  user,
 }: {
   isConnected: boolean;
-  user: UserCookie | null;
 }) {
   const pathname = usePathname();
   const navRef = useRef<HTMLUListElement>(null);
+  const { data: session } = useSession();
+
+  const connected = !!session?.user || isConnected;
+  const user: User | null = session?.user
+    ? {
+        id: Number(session.user.id),
+        email: session.user.email ?? "",
+        username: session.user.username ?? "",
+        isPrivate: session.user.isPrivate ?? false,
+        profilePicture: session.user.profilePicture ?? null,
+        roleId: session.user.roleId ?? null,
+      }
+    : null;
 
   const links = [
     { href: "/", label: "Accueil" },
     { href: "/dernieres-critiques", label: "Dernières critiques" },
   ];
 
-
-
   return (
     <nav className="w-full flex justify-between items-center gap-2 md:gap-4 py-4 wrapper bg-white">
       {" "}
       <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
-        <Link href="/" className="flex items-center gap-2 md:gap-3">
-          <Image src="/logo/icon_logo_bleu.png" alt="Logo" width={50} height={50} className="shrink-0" />
-        </Link>
+        <Image
+          src="/logo/icon_logo_bleu.png"
+          alt="Logo"
+          width={50}
+          height={50}
+          className="shrink-0"
+        />
         <div className="min-w-0 mr-2 flex-1">
           <SearchBarHandler />
         </div>
@@ -55,10 +68,10 @@ export default function NavbarDesktop({
         })}
 
         <Link
-          href={isConnected ? "/mon-profil" : "/se-connecter"}
+          href={connected ? "/mon-profil" : "/se-connecter"}
           className="flex items-center gap-2 text-quater hover:text-primary cursor-pointer transition-colors duration-300"
         >
-          {isConnected && user?.profilePicture ? (
+          {connected && user?.profilePicture ? (
             <div className="relative h-8 w-8 rounded-full overflow-hidden border border-quater">
               <Image
                 src={getUploadUrl(user.profilePicture)}

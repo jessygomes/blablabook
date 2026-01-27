@@ -6,8 +6,8 @@ import { z } from "zod";
 import { loginSchema } from "@/lib/validator.schema";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { loginAction } from "@/lib/actions/auth.action";
 import { Toast, useToast } from "@/components/Toast";
+import { signIn } from "next-auth/react";
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
@@ -29,23 +29,23 @@ export default function Login() {
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
     try {
-      const response = await loginAction(data);
+      const result = await signIn("credentials", {
+        redirect: false,
+        email: data.email,
+        password: data.password,
+      });
 
-      if (!response?.success) {
-        showToast(
-          response?.error || "Une erreur est survenue lors de la connexion.",
-          "error"
-        );
+      if (result?.error) {
+        showToast(result.error, "error");
         return;
       }
 
       showToast("Connexion réussie !", "success");
-
       reset();
-
       setTimeout(() => {
-        router.push("/mon-profil");
-      }, 1500);
+        router.replace("/mon-profil");
+        router.refresh();
+      }, 500);
     } catch (error) {
       console.error("Erreur lors de la connexion:", error);
       showToast("Identifiants incorrects. Veuillez réessayer.", "error");

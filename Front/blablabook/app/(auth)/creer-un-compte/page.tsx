@@ -1,13 +1,11 @@
 import Register from "@/components/Auth/Register";
 import Image from "next/image";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { auth } from "@/auth.config";
 
 export default async function RegisterPage() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("refresh_token");
-
-  if (token) {
+  const session = await auth();
+  if (session?.user) {
     redirect("/mon-profil");
   }
 

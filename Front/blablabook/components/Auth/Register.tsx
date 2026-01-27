@@ -9,6 +9,7 @@ import { registerAction } from "@/lib/actions/auth.action";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Toast, useToast } from "@/components/Toast";
+import { signIn } from "next-auth/react";
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
@@ -58,21 +59,29 @@ export default function Register() {
         showToast(
           response?.error ||
             "Une erreur est survenue lors de la création du compte.",
-          "error"
+          "error",
         );
         return;
       }
 
       showToast("Compte créé avec succès !", "success");
+
+      await signIn("credentials", {
+        redirect: false,
+        email: data.email,
+        password: data.password,
+      });
+
       reset();
       setTimeout(() => {
-        router.push("/mon-profil");
-      }, 1500);
+        router.replace("/mon-profil");
+        router.refresh();
+      }, 500);
     } catch (error) {
       console.error("Erreur lors de la création du compte:", error);
       showToast(
         "Une erreur est survenue lors de la création du compte.",
-        "error"
+        "error",
       );
     } finally {
       setIsLoading(false);

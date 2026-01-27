@@ -1,30 +1,30 @@
-import { cookies } from "next/headers";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { auth } from "@/auth.config";
 
-export type UserCookie = {
+export type User = {
   id: number;
   email: string;
   username: string;
   isPrivate: boolean;
   profilePicture: string | null;
+  roleId: number | null;
 };
 
 export async function isAuthenticated(): Promise<boolean> {
-  try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("refresh_token")?.value;
-    return !!token;
-  } catch {
-    return false;
-  }
+  const session = await auth();
+  return !!session?.user;
 }
 
-export async function getAuthUser(): Promise<UserCookie | null> {
-  try {
-    const cookieStore = await cookies();
-    const userCookie = cookieStore.get("user")?.value;
-    if (!userCookie) return null;
-    return JSON.parse(userCookie);
-  } catch {
-    return null;
-  }
+export async function getAuthUser(): Promise<User | null> {
+  const session = await auth();
+  if (!session?.user) return null;
+
+  return {
+    id: Number(session.user.id),
+    email: session.user.email ?? "",
+    username: (session.user as any).username ?? "",
+    isPrivate: (session.user as any).isPrivate ?? false,
+    profilePicture: (session.user as any).profilePicture ?? null,
+    roleId: (session.user as any).roleId ?? null,
+  };
 }

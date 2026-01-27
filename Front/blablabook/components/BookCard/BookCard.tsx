@@ -15,7 +15,7 @@ interface BookCardProps {
     author: string;
     cover: string;
   };
-  userId: number;
+  userId?: number;
   token: string | null;
   userBookId: number | null;
   status: "READ" | "READING" | "NOT_READ" | null;
