@@ -53,17 +53,19 @@ export default function UserBookLibrary({
           onClose={hideToast}
         />
       )}
-      <div className="pt-6 pb-20 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-10">
-        {userBooks.map((userBook) => (
-          <CardBookProfil
-            key={userBook.id}
-            userBook={userBook}
-            token={token}
-            userId={userId ?? undefined}
-            onRemove={handleRemoveBook}
-            onToast={showToast}
-          />
-        ))}
+      <div className="pt-6 pb-20">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 md:grid-cols-4 md:gap-8 lg:grid-cols-5 lg:gap-10 auto-rows-max">
+          {userBooks.map((userBook) => (
+            <CardBookProfil
+              key={userBook.id}
+              userBook={userBook}
+              token={token}
+              userId={userId ?? undefined}
+              onRemove={handleRemoveBook}
+              onToast={showToast}
+            />
+          ))}
+        </div>
       </div>
     </>
   );

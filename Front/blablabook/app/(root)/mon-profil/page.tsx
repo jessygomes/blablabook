@@ -27,28 +27,39 @@ export default async function page() {
   return (
     <>
       <section className="wrapper bg-white pb-10 flex flex-col">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-6 my-6">
-            <div className="relative h-15 w-15 rounded-full overflow-hidden">
+        {/* Header Section */}
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 sm:gap-6 my-6">
+          {/* Profile Info */}
+          <div className="flex items-center gap-4 sm:gap-6">
+            <div className="relative h-16 w-16 sm:h-20 sm:w-20 shrink-0 rounded-full overflow-hidden shadow-md">
               <Image
                 src={getUploadUrl(userData.profilePicture)}
                 alt="Profile Picture"
                 fill
                 className="object-cover"
+                priority
               />
             </div>
-            <h2 className="title-section text-quater">Ma bibliothèque</h2>
+            <h2 className="title-section text-quater text-lg sm:text-2xl">
+              Ma bibliothèque
+            </h2>
           </div>
-          <div className="flex gap-4 h-fit">
-            <Link href={"/mon-profil/modifier"} className="btn-primary">
+
+          {/* Actions */}
+          <div className="flex gap-2 sm:gap-4 w-full sm:w-auto">
+            <Link
+              href={"/mon-profil/modifier"}
+              className="btn-primary text-center flex-1 sm:flex-none"
+            >
               Modifier mon profil
             </Link>
             <LogoutBtn />
           </div>
         </div>
 
-        <div className="my-4 ">
-          <p className="w-full text-noir text-sm">
+        {/* Description */}
+        <div className="mt-4 mb-2">
+          <p className="text-noir text-xs sm:text-sm leading-relaxed">
             {userData.description
               ? userData.description
               : "Aucune description disponible."}

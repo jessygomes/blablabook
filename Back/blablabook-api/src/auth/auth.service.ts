@@ -109,6 +109,7 @@ export class AuthService {
         username: user?.username,
         isPrivate: user?.isPrivate,
         profilePicture: user?.profilePicture,
+        roleId: user?.roleId,
       },
     };
   }
