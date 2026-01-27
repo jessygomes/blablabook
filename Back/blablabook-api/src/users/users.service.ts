@@ -69,6 +69,11 @@ export class UsersService {
     return user;
   }
 
+  async getUserCount() {
+    const count = await this.prisma.user.count();
+    return { count };
+  }
+
   //! Find user by ID
   async getProfileById(id: number) {
     console.log('Looking for user with ID:', id);
