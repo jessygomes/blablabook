@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 
 type Props = {
-  text: string;
+  text: string | null;
   clampLines?: 2 | 3 | 4 | 5 | 6;
   className?: string;
   minHeightClassName?: string;
@@ -17,7 +17,7 @@ export default function ExpandableText({
                                        }: Props) {
   const [expanded, setExpanded] = useState(false);
 
-  const showToggle = useMemo(() => text.trim().length > 220, [text]);
+  const showToggle = useMemo(() => (text?.trim().length ?? 0) > 220, [text]);
 
   const clampMap: Record<number, string> = {
     2: "line-clamp-2",

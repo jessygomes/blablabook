@@ -6,6 +6,7 @@ import { useRef } from "react";
 import { UserCookie } from "@/lib/auth";
 import { getUploadUrl } from "@/lib/utils";
 import SearchBarHandler from "../Search/SearchBarHandler";
+import { useRouter } from "next/router";
 
 export default function NavbarDesktop({
   isConnected,
@@ -28,7 +29,9 @@ export default function NavbarDesktop({
     <nav className="w-full flex justify-between items-center gap-2 md:gap-4 py-4 wrapper bg-white">
       {" "}
       <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
-        <Image src="/logo/icon_logo_bleu.png" alt="Logo" width={50} height={50} className="shrink-0" />
+        <Link href="/" className="flex items-center gap-2 md:gap-3">
+          <Image src="/logo/icon_logo_bleu.png" alt="Logo" width={50} height={50} className="shrink-0" />
+        </Link>
         <div className="min-w-0 mr-2 flex-1">
           <SearchBarHandler />
         </div>

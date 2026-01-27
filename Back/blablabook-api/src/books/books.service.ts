@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { catchError, firstValueFrom, of } from 'rxjs';
@@ -12,6 +16,7 @@ import {
   OpenLibraryWork,
 } from './types/books.type';
 import { AxiosResponse } from 'axios';
+import { PrismaClientKnownRequestError } from 'generated/prisma/runtime/client';
 
 /* Récupération des livres depuis l'API d'OpenLibrary. 
 Récupérations des Work contenant la description, et l'auteur principal d'une oeuvre (le concept du livre)
@@ -426,22 +431,42 @@ export class BooksService {
         : Array.isArray(edition.cover)
           ? edition.cover[0]
           : edition.cover;
-    const newBook = await this.prisma.book.create({
-      data: {
-        title: edition.title || 'Inconnu',
-        author: book.author_name?.join(', ') || 'Auteur inconnu',
-        page_count: edition.number_of_pages ?? 0,
-        category: 'unknown',
-        publishing_date: pubDate,
-        summary: summary,
-        publisher: edition.publishers?.[0] || null,
-        isbn: isbn || null,
-        cover: coverId
-          ? `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`
-          : null,
-        averageRating: 0,
-      },
-    });
-    return newBook;
+    try {
+      const newBook = await this.prisma.book.create({
+        data: {
+          title: edition.title || 'Inconnu',
+          author: book.author_name?.join(', ') || 'Auteur inconnu',
+          page_count: edition.number_of_pages ?? 0,
+          category: 'unknown',
+          publishing_date: pubDate,
+          summary: summary,
+          publisher: edition.publishers?.[0] || null,
+          isbn: isbn || null,
+          cover: coverId
+            ? `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`
+            : null,
+          averageRating: 0,
+        },
+      });
+      return newBook;
+    } catch (error) {
+      // Check if it's a Prisma unique constraint violation
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          // Duplicate entry - return the existing book instead
+          const existingBook = await this.prisma.book.findUnique({
+            where: { isbn: isbn || undefined },
+          });
+          if (existingBook) {
+            return existingBook;
+          }
+          throw new ConflictException(
+            'Ce livre existe déjà dans la base de données.',
+          );
+        }
+      }
+      // Re-throw other errors
+      throw error;
+    }
   }
 }
