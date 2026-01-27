@@ -48,6 +48,11 @@ export class UsersController {
     });
   }
 
+  @Get('user-count')
+  async getUserCount() {
+    return this.usersService.getUserCount();
+  }
+
   //! GET PROFILE USER
   @Get('/profil/:id')
   async getprofileById(@Param('id', ParseIntPipe) id: number) {
