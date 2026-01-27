@@ -86,7 +86,7 @@ export default function CardBookProfil({
         </div>
 
         {/* Actions Container */}
-        <div className="flex flex-col sm:flex-row gap-2 p-2 sm:p-3 border-t mt-auto">
+        <div className="flex  gap-2 p-2 sm:p-3 border-t mt-auto">
           <LibraryButton
             userId={userId ?? undefined}
             token={token}
