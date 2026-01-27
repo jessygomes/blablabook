@@ -6,7 +6,6 @@ import { useRef } from "react";
 import { UserCookie } from "@/lib/auth";
 import { getUploadUrl } from "@/lib/utils";
 import SearchBarHandler from "../Search/SearchBarHandler";
-import { useRouter } from "next/router";
 
 export default function NavbarDesktop({
   isConnected,
