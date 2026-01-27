@@ -59,6 +59,14 @@ body {
   @apply truncate text-noir text-base font-one font-bold;
 }
 
+.button-switch-backoffice-active {
+  @apply text-noir w-48 font-bold text-base text-left font-one
+}
+.button-switch-backoffice-inactive {
+  @apply text-gray-500 w-48 font-bold text-start font-one
+}
+
+
 /* Remove Scrollbar (from stackoverflow) */
 
 .container-snap::-webkit-scrollbar {

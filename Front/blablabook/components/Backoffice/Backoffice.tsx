@@ -1,0 +1,41 @@
+import { getBookReadCount, getCommentCount, getReportedCommentCount, getUserCount, User } from "@/lib/actions/backoffice.action";
+import BackofficeCard from "./BackofficeCard";
+import BackofficeSwitch from "./BackofficeSwitch";
+import { getUsers } from "@/lib/actions/user.action";
+
+export default async function Backoffice() {
+    
+   
+    const [resGetUsers, resUserCount, resCommentCount, resReportedCommentCount, resBookReadCount] = await Promise.all([
+        getUsers(),
+        getUserCount(),
+        getCommentCount(),
+        getReportedCommentCount(),
+        getBookReadCount(),
+    ]);
+
+
+
+    const users:User[] = resGetUsers.success ? resGetUsers.data : [];
+    const userCount = resUserCount.success ? resUserCount.data.count : 0;
+    const commentCount = resCommentCount.success ? resCommentCount.data.count : 0;
+    const reportedCommentCount = resReportedCommentCount.success ? resReportedCommentCount.data.count : 0;
+    const bookReadCount = resBookReadCount.success ? resBookReadCount.data.count : 0; 
+
+    return (
+    <section className="w-full">
+        <div className="mx-auto sm:py-14 space-y-6">
+            <h2 className="title-section">Backoffice</h2>
+            <div className="flex flex-wrap gap-2.5">
+                <BackofficeCard icon="contacts_product" label="Utilisateurs" count={userCount}/>
+                <BackofficeCard icon="chat_bubble" label="Critiques" count={commentCount}/>
+                <BackofficeCard icon="chat_error" label="Critiques signalées" count={reportedCommentCount} />
+                <BackofficeCard icon="book_5" label="Livres lus" count={bookReadCount}/>
+            </div>
+        </div>
+        <div className="mt-4">
+            <BackofficeSwitch users={users}/>
+        </div>
+    </section>
+    )
+}

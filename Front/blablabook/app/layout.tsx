@@ -39,6 +39,10 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
           rel="stylesheet"
         />
+         <link
+          href="https://fonts.googleapis.com/icon?family=Material+Symbols+Rounded"
+          rel="stylesheet"
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} bg-white! antialiased `}

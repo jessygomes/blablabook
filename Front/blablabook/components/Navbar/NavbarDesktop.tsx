@@ -32,6 +32,7 @@ export default function NavbarDesktop({
   const links = [
     { href: "/", label: "Accueil" },
     { href: "/dernieres-critiques", label: "Dernières critiques" },
+    { href: "/administration", label: "Administration" },
   ];
 
   return (
@@ -66,6 +67,8 @@ export default function NavbarDesktop({
             </li>
           );
         })}
+
+       
 
         <Link
           href={connected ? "/mon-profil" : "/se-connecter"}

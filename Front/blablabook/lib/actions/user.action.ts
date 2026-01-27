@@ -21,6 +21,23 @@ export const getUserById = async (userId: number) => {
   return userData;
 };
 
+export const getUsers = async() => {
+  const res = await fetch(`http://api:3000/users/`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if(!res.ok) {
+    throw new Error("Failed to fetch users");
+  }
+
+  const usersData = await res.json();
+
+  return usersData;
+}
+
 //! GET PROFILE BY ID (avec les userbooks et commentaires)
 export const getProfileById = async (userId: number) => {
   const res = await fetch(`http://api:3000/users/profil/${userId}`, {
