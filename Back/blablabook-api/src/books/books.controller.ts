@@ -105,7 +105,6 @@ export class BooksController {
     return this.booksService.importExternalBookToDatabase(book);
   }
 
-  // the regex \\d+ ensures that the slug only catches numeric ids
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.booksService.findOne(id);

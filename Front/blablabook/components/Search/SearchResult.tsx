@@ -33,7 +33,7 @@ async function SearchResult({ books }: Props) {
   const userId = session?.user ? Number(session.user.id) : undefined;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr m-">
       {books.map((book) => (
         <SearchResultCard
           key={book.id}
