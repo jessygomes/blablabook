@@ -1,8 +1,7 @@
 "use server";
 import { z } from "zod";
-import { cookies } from "next/headers";
 import { editProfileSchema } from "../validator.schema";
-import { getAuthUser } from "../auth";
+import { auth } from "@/auth.config";
 
 //! GET USER BY ID
 export const getUserById = async (userId: number) => {
@@ -44,11 +43,11 @@ export const getProfileById = async (userId: number) => {
 export const updateProfileAction = async (
   userId: number,
   data: z.infer<typeof editProfileSchema>,
-  profilePictureFile?: File | null
+  profilePictureFile?: File | null,
 ) => {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("refresh_token")?.value;
+    const session = await auth();
+    const token = (session as any)?.accessToken;
 
     if (!token) {
       return {
@@ -92,23 +91,6 @@ export const updateProfileAction = async (
     }
 
     const resData = await res.json();
-
-    // Mise à jour du cookie utilisateur
-    const authUser = await getAuthUser();
-    if (authUser) {
-      const updatedUser = {
-        ...authUser,
-        username: data.username,
-        isPrivate: data.isPrivate,
-        profilePicture: resData.profilePicture || null,
-      };
-      cookieStore.set("user", JSON.stringify(updatedUser), {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24 * 7,
-      });
-    }
 
     return {
       success: true,

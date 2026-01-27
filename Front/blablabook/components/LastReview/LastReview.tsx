@@ -1,5 +1,5 @@
 import ExpandableText from "@/components/ExpandableText";
-import { getUploadUrl } from '@/lib/utils';
+import { getUploadUrl } from "@/lib/utils";
 import Image from "next/image";
 
 type Item = {
@@ -8,15 +8,19 @@ type Item = {
   content: string;
   date: string;
   book: { id: number; title: string };
-  user: { id: number; username: string; author : string, cover : string, profilePicture : string};
+  user: {
+    id: number;
+    username: string;
+    author: string;
+    cover: string;
+    profilePicture: string;
+  };
 };
 
 async function getLatest() {
-  const res = await fetch(
-    "http://api:3000/comments/latest-per-book?take=9",
-    { cache: "no-store" }
-  );
-
+  const res = await fetch("http://api:3000/comments/latest-per-book?take=9", {
+    cache: "no-store",
+  });
 
   if (!res.ok) {
     const text = await res.text().catch(() => "");
@@ -25,7 +29,6 @@ async function getLatest() {
 
   return res.json();
 }
-
 
 export default async function DernieresCritiques() {
   const items = await getLatest();
@@ -38,8 +41,9 @@ export default async function DernieresCritiques() {
             Les dernières critiques
           </h1>
           <p className="text-sm sm:text-base text-gray-700 max-w-10xl">
-            Découvrez les dernières critiques de la communauté, accédez aux bibliothèques des autres membres
-            et ajoutez directement des livres à votre bibliothèque.
+            Découvrez les dernières critiques de la communauté, accédez aux
+            bibliothèques des autres membres et ajoutez directement des livres à
+            votre bibliothèque.
           </p>
         </header>
 
@@ -62,13 +66,13 @@ export default async function DernieresCritiques() {
                     {c.book.title}
                   </h2>
 
-                    <p className="text-xs sm:text-sm text-gray-500">
-                      de <span className="italic">{c.book.author}</span>
-                    </p>
+                  <p className="text-xs sm:text-sm text-gray-500">
+                    de <span className="italic">{c.book.author}</span>
+                  </p>
 
                   <button className="mt-3 inline-flex items-center rounded-md bg-green-100 px-3 py-1 text-xs text-green-700 hover:bg-green-200">
-                + ajouter à ma bibliothèque
-              </button>
+                    + ajouter à ma bibliothèque
+                  </button>
                 </div>
               </div>
 
@@ -87,17 +91,16 @@ export default async function DernieresCritiques() {
                 <div className="mt-auto pt-6 flex flex-wrap items-center gap-1 text-xs sm:text-sm text-gray-800">
                   <div className="relative h-6 w-6 rounded-full overflow-hidden">
                     {c.user?.profilePicture ? (
-                    <Image
-                      src={getUploadUrl(c.user.profilePicture)}
-                      alt={c.user.username}
-                      fill
-                      className="rounded-full object-cover border"
-                      loading="lazy"
-                    />
-
-                      ) : (
+                      <Image
+                        src={getUploadUrl(c.user.profilePicture)}
+                        alt={c.user.username}
+                        fill
+                        className="rounded-full object-cover border"
+                        loading="lazy"
+                      />
+                    ) : (
                       <span className="material-icons">account_circle</span>
-                      )}
+                    )}
                   </div>
                   <span className="italic">
                     par <span>{c.user.username}</span>

@@ -4,7 +4,7 @@ import {
   getTenMostPopularBooks as getMostPopularBooks,
   getTenRandomBooks as getRandomBooks,
 } from "@/lib/actions/book.action";
-import { cookies } from "next/headers";
+import { auth } from "@/auth.config";
 import Carousel from "./Carousel";
 
 interface Book {
@@ -17,15 +17,9 @@ interface Book {
 }
 
 export default async function BookLists() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("refresh_token")?.value || null;
-  const userCookie = cookieStore.get("user")?.value;
-
-  let userId = null;
-  if (userCookie) {
-    const userData = JSON.parse(decodeURIComponent(userCookie));
-    userId = userData.id;
-  }
+  const session = await auth();
+  const token = session?.accessToken ?? null;
+  const userId = session?.user ? Number(session.user.id) : undefined;
 
   const [resRandom, resPopular, resLatest] = await Promise.all([
     getRandomBooks(userId),
@@ -61,7 +55,7 @@ export default async function BookLists() {
           <BookCard
             key={book.id}
             book={book}
-            userId={userId}
+            userId={userId ?? 0}
             token={token}
             userBookId={book.userBookId ?? null}
             status={book.status ?? null}

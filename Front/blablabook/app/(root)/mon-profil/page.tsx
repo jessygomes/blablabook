@@ -1,28 +1,22 @@
 import LogoutBtn from "@/components/Auth/LogoutBtn";
 import React from "react";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getProfileById } from "@/lib/actions/user.action";
 import Image from "next/image";
 import Link from "next/link";
 import { getUploadUrl } from "@/lib/utils";
 import UserBookLibrary from "@/components/Profil/UserBookLibrary";
+import { auth } from "@/auth.config";
 
 export default async function page() {
-  const cookieStore = await cookies();
-
-  const token = cookieStore.get("refresh_token");
-  if (!token) {
+  const session = await auth();
+  if (!session?.user) {
     redirect("/se-connecter");
   }
 
-  const userCookie = cookieStore.get("user");
-  if (!userCookie) {
-    redirect("/se-connecter");
-  }
-
-  const user = JSON.parse(userCookie.value);
-  const userData = await getProfileById(user.id);
+  const userId = Number(session.user.id);
+  const accessToken = (session as any).accessToken ?? null;
+  const userData = await getProfileById(userId);
 
   return (
     <>
@@ -70,8 +64,8 @@ export default async function page() {
       <section className="wrapper">
         <UserBookLibrary
           initialUserBooks={userData.userBooks || []}
-          token={token?.value ?? null}
-          userId={user.id}
+          token={accessToken}
+          userId={userId}
         />
       </section>
     </>

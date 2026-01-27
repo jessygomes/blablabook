@@ -1,0 +1,85 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
+import { z } from "zod";
+
+const credentialsSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1),
+});
+
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  trustHost: true,
+  secret: process.env.NEXTAUTH_SECRET,
+  session: { strategy: "jwt" },
+  pages: {
+    signIn: "/se-connecter",
+  },
+  providers: [
+    Credentials({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(rawCredentials) {
+        const parsed = credentialsSchema.safeParse(rawCredentials);
+        if (!parsed.success) {
+          throw new Error("Email ou mot de passe invalide");
+        }
+
+        const response = await fetch("http://api:3000/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(parsed.data),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(
+            errorData?.message || "Identifiants incorrects, veuillez réessayer",
+          );
+        }
+
+        const data = await response.json();
+        if (!data?.user) return null;
+
+        return {
+          id: String(data.user.id),
+          email: data.user.email,
+          username: data.user.username,
+          isPrivate: data.user.isPrivate,
+          profilePicture: data.user.profilePicture ?? null,
+          accessToken: data.token ?? data.refresh_token,
+          refreshToken: data.refresh_token ?? null,
+          roleId: data.user.roleId,
+        };
+      },
+    }),
+  ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.user = {
+          id: user.id,
+          email: user.email,
+          username: (user as any).username,
+          isPrivate: (user as any).isPrivate,
+          profilePicture: (user as any).profilePicture ?? null,
+          roleId: (user as any).roleId,
+        };
+        token.accessToken = (user as any).accessToken ?? null;
+        token.refreshToken = (user as any).refreshToken ?? null;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token.user) {
+        session.user = token.user as typeof session.user;
+      }
+      (session as any).accessToken = (token as any).accessToken ?? null;
+      (session as any).refreshToken = (token as any).refreshToken ?? null;
+      return session;
+    },
+  },
+});

@@ -3,51 +3,63 @@ import MostCommentedBooks from "@/components/Search/MostCommentedBooks";
 import SearchBarHandler from "@/components/Search/SearchBarHandler";
 import SearchResult from "@/components/Search/SearchResult";
 import BackupSearchResults from "@/components/Search/BackupSearchResults";
-import { searchBooksAction, searchBooksFromExternalApiAction } from "@/lib/actions/search.action";
-import { cookies } from "next/headers";
+import {
+  searchBooksAction,
+  searchBooksFromExternalApiAction,
+} from "@/lib/actions/search.action";
+import { auth } from "@/auth.config";
 
 interface SearchPageProps {
   searchParams: Promise<{ q?: string }>;
 }
 
 export default async function Search({ searchParams }: SearchPageProps) {
-  const cookieStore = await cookies();
-  const userCookie = cookieStore.get("user")?.value;
+  const session = await auth();
   const params = await searchParams;
   const query = params.q;
 
   let searchResults = null;
   let backUpSearch = null;
-  
+
   if (query) {
-    let userId
-    if (userCookie) {
-      userId = JSON.parse(userCookie).id;
-    }
+    const userId = session?.user ? Number(session.user.id) : undefined;
     searchResults = await searchBooksAction(query, userId);
-    if (query.trim().length >= 3 && (!searchResults.success || (searchResults.data && searchResults.data.length === 0))) {
+    if (
+      query.trim().length >= 3 &&
+      (!searchResults.success ||
+        (searchResults.data && searchResults.data.length === 0))
+    ) {
       backUpSearch = await searchBooksFromExternalApiAction(query, 10);
     }
   }
 
-  const hasResults = searchResults && searchResults.success && searchResults.data && searchResults.data.length > 0;
+  const hasResults =
+    searchResults &&
+    searchResults.success &&
+    searchResults.data &&
+    searchResults.data.length > 0;
 
   return (
     <>
-      <div className="sm:hidden" >
+      <div className="sm:hidden">
         <SearchBarHandler />
       </div>
-      
+
       {searchResults && searchResults.data && hasResults ? (
         <SearchResult books={searchResults.data} />
       ) : (
         <>
           {searchResults && searchResults.success && !hasResults && (
             <>
-              <p className="text-red-400 ml-5 mb-3">Aucun résultat trouvé pour votre recherche.</p>
-              {backUpSearch && backUpSearch.success && backUpSearch.data && backUpSearch.data.length > 0 && (
-                <BackupSearchResults books={backUpSearch.data} />
-              )}
+              <p className="text-red-400 ml-5 mb-3">
+                Aucun résultat trouvé pour votre recherche.
+              </p>
+              {backUpSearch &&
+                backUpSearch.success &&
+                backUpSearch.data &&
+                backUpSearch.data.length > 0 && (
+                  <BackupSearchResults books={backUpSearch.data} />
+                )}
             </>
           )}
           <MostAddedBooks />
