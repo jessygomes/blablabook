@@ -6,7 +6,20 @@ export class CommentService {
   constructor(private prisma: PrismaService) {}
 
   async getCommentCount() {
-    return this.prisma.comment.count();
+    const count = await this.prisma.comment.count();
+    return { count };
+  }
+
+  async getReportedCommentCount() {
+    const count = await this.prisma.comment.count({
+      where: {
+        reportCounter: {
+          gte: 5,
+        },
+      },
+    });
+
+    return { count };
   }
 
   async latestCommentPerBook(take = 10) {
