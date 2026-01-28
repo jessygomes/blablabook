@@ -1,8 +1,7 @@
-"use client";
+'use client';
 
 import { useRouter } from "next/navigation";
 import { importBooksFromExternalApiAction } from "@/lib/actions/search.action";
-import Image from "next/image";
 
 export interface OpenLibraryDoc {
   key?: string;
@@ -36,9 +35,7 @@ interface BackupSearchResultsProps {
   books: OpenLibraryDoc[];
 }
 
-export default function BackupSearchResults({
-  books,
-}: BackupSearchResultsProps) {
+export default function BackupSearchResults({ books }: BackupSearchResultsProps) {
   const router = useRouter();
 
   const handleGetDetailOfExternalBook = async (book: OpenLibraryDoc) => {
@@ -50,38 +47,40 @@ export default function BackupSearchResults({
 
   return (
     <div className="mx-5 my-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
-      <p className="text-xs text-gray-500 mb-2">
-        Suggestions de livres externes :
-      </p>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+      <p className="text-xs text-gray-500 mb-2">Recherchez-vous l&apos;un de ces livres :</p>
+      <div className="space-y-1.5">
         {books.slice(0, 10).map((book) => (
-          <div
-            key={book.edition_key ? book.edition_key[0] : book.title}
-            className="bg-white p-2 rounded border border-gray-100 hover:shadow-sm transition-shadow cursor-pointer"
+          <div 
+            key={book.edition_key ? book.edition_key[0] : book.title} 
+            className="bg-white p-2 rounded border border-gray-100 hover:shadow-sm hover:border-gray-300 transition-all cursor-pointer flex items-center gap-3"
             onClick={() => handleGetDetailOfExternalBook(book)}
           >
-            {book.cover_i ? (
-              <Image
-                src={`https://covers.openlibrary.org/b/id/${book.cover_i}-S.jpg`}
-                alt={book.title || "Couverture de livre"}
-                width={80}
-                height={100}
-                className="w-full h-20 object-cover rounded mb-1"
-              />
-            ) : (
-              <div className="w-full h-20 bg-gray-100 flex items-center justify-center rounded mb-1">
-                <span className="text-gray-400 text-xs">📚</span>
-              </div>
-            )}
-            <h3
-              className="text-xs font-medium text-gray-700 line-clamp-2"
-              title={book.title}
+            <div className="shrink-0 w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-sm">
+              <span className="text-white font-semibold text-sm">
+                {book.title?.[0]?.toUpperCase() || '?'}
+              </span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="text-sm font-medium text-gray-800 truncate" title={book.title}>
+                {book.title || 'Titre inconnu'}
+              </h3>
+              <p className="text-xs text-gray-500 truncate">
+                {book.author_name?.[0] || 'Auteur inconnu'}
+              </p>
+            </div>
+            <svg 
+              className="shrink-0 w-4 h-4 text-gray-400" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
             >
-              {book.title}
-            </h3>
-            <p className="text-xs text-gray-500 truncate">
-              {book.author_name?.[0] || "Inconnu"}
-            </p>
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
           </div>
         ))}
       </div>
