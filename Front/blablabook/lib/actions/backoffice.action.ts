@@ -7,6 +7,10 @@ export type User = {
     isPrivate: boolean;
     profilePicture: string | null;
     roleId: number;
+    role: {
+      id: number;
+      name: string;
+    }
     createdAt: string;
     updatedAt: string;
 }

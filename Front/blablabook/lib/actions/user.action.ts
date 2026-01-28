@@ -21,8 +21,9 @@ export const getUserById = async (userId: number) => {
   return userData;
 };
 
-export const getUsers = async() => {
-  const res = await fetch(`http://api:3000/users/`, {
+export const getUsers = async(page: number, limit: number, search: string = '') => {
+  const res = await fetch(`http://api:3000/users?page=${page}&limit=${limit}&search=${search}`, {
+    cache: 'no-store',
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -122,3 +123,41 @@ export const updateProfileAction = async (
     };
   }
 };
+
+//! REMOVE USER
+export const removeUser = async (userId: number) => {
+  try {
+    const session = await auth();
+    const token = (session as any)?.accessToken;
+    if(!token) {
+      return {
+        success: false,
+        error: "Non authentifié",
+      };
+    }
+    const res = await fetch(`http://api:3000/users/${userId}`, {
+      method: "DELETE", 
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    })
+
+    console.log("Status API:", res.status);
+    if(!res.ok) return { 
+      success: false,
+      error: "Une erreur est survenue"
+    }
+
+    return {
+      success: true,
+    }
+
+  } catch(error) {
+    console.error("Error deleting user : ", error);
+    return  {
+      success: false,
+      error: "Une erreur est survenue lors de la suppression de l'utilisateur",
+    };
+  }
+};
+

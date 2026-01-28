@@ -66,6 +66,26 @@ body {
   @apply text-gray-500 w-48 font-bold text-start font-one
 }
 
+.toggle-btn {
+ @apply bg-gray-300 border-2 border-gray-400 rounded-full w-[50px] h-7 cursor-pointer transition-all duration-200 ease-in-out relative 
+}
+
+.toggle-btn .thumb {
+@apply h-5 w-5 bg-white rounded-full translate-x-0 absolute left-[3px] top-1/2 -translate-y-1/2 transition-[left] duration-150 ease-out
+}
+.toggle-btn.toggled {
+@apply bg-lime-600
+}
+
+.toggled:hover {
+@apply bg-gray-500;
+}
+
+.toggle-btn.toggled .thumb {
+@apply left-[calc(50px-25px)]
+}
+
+
 
 /* Remove Scrollbar (from stackoverflow) */
 

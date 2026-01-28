@@ -1,13 +1,20 @@
 'use client';
 import { useState } from "react";
 import BackofficeUsersTable from "./BackofficeUsersTable";
-import { UserCookie } from "@/lib/auth";
+import { User } from "@/lib/actions/backoffice.action";
+
+export type DeleteUserAction = (userId: number) => Promise<{ success: boolean; error?: string }>;
 
 interface BackofficeSwitchProps {
-    users: UserCookie[];
+    users: User[];
+    totalUserCount: number;
+    onDeleteUser: (userId: number) => Promise<{ 
+        success: boolean; 
+        error?: string; 
+    }>;
 }
 
-export default function BackofficeSwitch({users}: BackofficeSwitchProps) {
+export default function BackofficeSwitch({users, totalUserCount, onDeleteUser}: BackofficeSwitchProps) {
 
 
     const [activeTab, setActiveTab] = useState<'users' | 'reportedComments'>('users');
@@ -22,10 +29,10 @@ export default function BackofficeSwitch({users}: BackofficeSwitchProps) {
                     className={activeTab === 'reportedComments' ? "button-switch-backoffice-active" : "button-switch-backoffice-inactive"} 
                     onClick={() => {setActiveTab('reportedComments')}}>Critiques signalées</button>
             </div>
-            {activeTab === 'users' && (
+            {/* {activeTab === 'users' && (
                 <input className="text-black bg-amber-400" type="text" value="coucou"/>
-            )}
-            {activeTab === 'users' && <BackofficeUsersTable users={users}/>}
+            )} */}
+            {activeTab === 'users' && <BackofficeUsersTable users={users} totalUserCount={totalUserCount} onDeleteUser={onDeleteUser} />}
         </>
     )
 }
