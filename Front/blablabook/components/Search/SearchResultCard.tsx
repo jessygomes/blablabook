@@ -6,6 +6,8 @@ import ExpandableText from "../ExpandableText";
 import LibraryButton from "../Library/LibraryButton";
 import StatusSelector, { StatusType } from "../Library/StatusSelector";
 import { Toast, useToast } from "../Toast";
+import router from "next/dist/shared/lib/router/router";
+import Link from "next/dist/client/link";
 
 interface SearchResultCardProps {
   book: {
@@ -62,12 +64,14 @@ export default function SearchResultCard({
       )}
       <article className="h-full flex flex-col rounded-md border bg-white p-5 shadow-sm hover:shadow-md transition">
         <div className="flex gap-4">
-          <img
-            src={book.cover}
-            alt={book.title}
-            className="w-16 sm:w-20 h-24 sm:h-28 object-cover rounded-lg border"
-            loading="lazy"
-          />
+          <Link href={`/bibliotheque/${book.id}`}>
+            <img
+              src={book.cover}
+              alt={book.title}
+              className="w-16 sm:w-20 h-24 sm:h-28 object-cover rounded-lg border cursor-pointer"
+              loading="lazy"
+            />
+          </Link>
 
           <div className="min-w-0 flex-1">
             <h2 className="text-base sm:text-lg font-semibold text-black leading-tight truncate">

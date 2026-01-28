@@ -1,49 +1,124 @@
-import { auth } from "@/auth.config";
-import SearchResultCard from "./SearchResultCard";
+"use client";
 
-type Props = {
-  books: {
+import { useEffect, useState, useRef, useCallback } from "react";
+import SearchResultCard from "./SearchResultCard";
+import { searchBooksAction } from "@/lib/actions/search.action";
+
+type Book = {
+  id: number;
+  title: string;
+  page_count: number;
+  author: string;
+  category: string;
+  publishing_date: Date;
+  summary: string;
+  publisher: string;
+  isbn: string;
+  cover: string;
+  averageRating: number;
+  createdAt: Date;
+  updatedAt: Date;
+  userBooks?: {
     id: number;
-    title: string;
-    page_count: number;
-    author: string;
-    category: string;
-    publishing_date: Date;
-    summary: string;
-    publisher: string;
-    isbn: string;
-    cover: string;
-    averageRating: number;
+    status: "READ" | "READING" | "NOT_READ";
     createdAt: Date;
     updatedAt: Date;
-    userBooks?: {
-      id: number;
-      status: "READ" | "READING" | "NOT_READ";
-      createdAt: Date;
-      updatedAt: Date;
-      userId: number;
-      bookId: number;
-    }[];
+    userId: number;
+    bookId: number;
   }[];
 };
 
-async function SearchResult({ books }: Props) {
-  const session = await auth();
-  const token = session?.accessToken ?? null;
-  const userId = session?.user ? Number(session.user.id) : undefined;
+type Props = {
+  initialBooks: Book[];
+  query: string;
+  token: string | null;
+  userId?: number;
+};
+
+export default function SearchResult({
+  initialBooks,
+  query,
+  token,
+  userId,
+}: Props) {
+  const [books, setBooks] = useState<Book[]>(initialBooks);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const observerTarget = useRef<HTMLDivElement>(null);
+
+  const loadMore = useCallback(async () => {
+    if (loading || !hasMore) return;
+
+    setLoading(true);
+    try {
+      const nextPage = page + 1;
+      const result = await searchBooksAction(query, userId, nextPage, 10);
+
+      if (result.success && result.data) {
+        if (result.data.length === 0) {
+          setHasMore(false);
+        } else {
+          setBooks((prevBooks) => [...prevBooks, ...result.data]);
+          setPage(nextPage);
+        }
+      } else {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error("Error loading more books:", error);
+      setHasMore(false);
+    } finally {
+      setLoading(false);
+    }
+  }, [loading, hasMore, page, query, userId]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loading) {
+          loadMore();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const currentTarget = observerTarget.current;
+    if (currentTarget) {
+      observer.observe(currentTarget);
+    }
+
+    return () => {
+      if (currentTarget) {
+        observer.unobserve(currentTarget);
+      }
+    };
+  }, [loadMore, hasMore, loading]);
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr m-">
-      {books.map((book) => (
-        <SearchResultCard
-          key={book.id}
-          book={book}
-          token={token}
-          userId={userId}
-        />
-      ))}
-    </div>
+    <>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr m-">
+        {books.map((book) => (
+          <SearchResultCard
+            key={book.id}
+            book={book}
+            token={token}
+            userId={userId}
+          />
+        ))}
+      </div>
+
+      <div ref={observerTarget} className="h-20 flex items-center justify-center">
+        {loading && (
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            <span className="text-gray-600">Chargement...</span>
+          </div>
+        )}
+        {/* {!hasMore && books.length > 0 && (
+          <span className="text-gray-500">Aucun résultat supplémentaire</span>
+        )} */}
+      </div>
+    </>
   );
 }
-
-export default SearchResult;
