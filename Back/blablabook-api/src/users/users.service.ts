@@ -90,10 +90,15 @@ export class UsersService {
     });
 
     if (!user) {
-      return null;
+      return { error: 'NOT_FOUND' };
     }
 
-    return user;
+    // If the profile is private and the requesting user is not the profile owner
+    if (user.isPrivate) {
+      return { error: 'PRIVATE' };
+    }
+
+    return { user };
   }
 
   async findByIdWithRole(id: number): Promise<UserWithRole | null> {
@@ -133,7 +138,6 @@ export class UsersService {
     if (data.password) {
       updateData.password = await bcrypt.hash(data.password, 12);
     }
-
     // quand on remplace la photo de profil, il faut supprimer l'ancienne
     if (data.profilePicture) {
       const currentUser = await this.prisma.user.findUnique({

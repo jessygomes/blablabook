@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from 'next/image';
 import { getUploadUrl } from '@/lib/utils';
+import Link from "next/dist/client/link";
 
 
 interface Comment {
@@ -179,10 +180,16 @@ export default function CommentsSection({
                         <h4 className="font-semibold text-sm text-gray-900 truncate">
                           {comment.title ?? "Titre du commentaire"}
                         </h4>
-
                         <p className="mt-0.5 text-xs italic text-gray-500">
                           Publié le {formatDate(comment.createdAt ?? comment.date)}{" "}
-                          {comment.user?.username ? `par ${comment.user.username}` : ""}
+                          {comment.user?.username && (
+                            <>
+                              par{" "}
+                              <Link href={`/profil/${comment.user.id}`} className="underline hover:text-quater">
+                                {comment.user.username}
+                              </Link>
+                            </>
+                          )}
                         </p>
                       </div>
 
