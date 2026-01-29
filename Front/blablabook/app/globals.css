@@ -67,25 +67,32 @@ body {
 }
 
 .toggle-btn {
- @apply bg-gray-300 border-2 border-gray-400 rounded-full w-[50px] h-7 cursor-pointer transition-all duration-200 ease-in-out relative 
+  @apply bg-gray-300 border-2 border-gray-400 rounded-full w-[50px] h-7 cursor-pointer transition-all duration-300 ease-in-out relative;
 }
 
 .toggle-btn .thumb {
-@apply h-5 w-5 bg-white rounded-full translate-x-0 absolute left-[3px] top-1/2 -translate-y-1/2 transition-[left] duration-150 ease-out
-}
-.toggle-btn.toggled {
-@apply bg-lime-600
+  /* On utilise left pour l'animation */
+  @apply h-5 w-5 bg-white rounded-full absolute left-[3px] top-1/2 -translate-y-1/2 transition-all duration-300 ease-in-out;
 }
 
-.toggled:hover {
-@apply bg-gray-500;
+/* État Actif (ADMIN) */
+.toggle-btn.toggled {
+  @apply bg-lime-600 border-lime-700;
 }
 
 .toggle-btn.toggled .thumb {
-@apply left-[calc(50px-25px)]
+  /* On déplace le rond vers la droite */
+  left: calc(100% - 23px);
 }
 
+/* Hover effects */
+.toggle-btn:not(.toggled):hover {
+  @apply bg-gray-400;
+}
 
+.toggle-btn.toggled:hover {
+  @apply bg-lime-700;
+}
 
 /* Remove Scrollbar (from stackoverflow) */
 

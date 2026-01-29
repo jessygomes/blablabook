@@ -208,6 +208,13 @@ export class UsersService {
     });
   }
 
+  async updateUserRole(id: number, data: { roleId: number }) {
+    return this.prisma.user.update({
+      where: { id },
+      data: { roleId: data.roleId },
+    });
+  }
+
   async remove(id: number) {
     return this.prisma.user.delete({
       where: { id },

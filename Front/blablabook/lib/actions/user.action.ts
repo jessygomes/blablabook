@@ -2,6 +2,7 @@
 import { z } from "zod";
 import { editProfileSchema } from "../validator.schema";
 import { auth } from "@/auth.config";
+import { Session } from "next-auth";
 
 //! GET USER BY ID
 export const getUserById = async (userId: number) => {
@@ -21,23 +22,30 @@ export const getUserById = async (userId: number) => {
   return userData;
 };
 
-export const getUsers = async(page: number, limit: number, search: string = '') => {
-  const res = await fetch(`http://api:3000/users?page=${page}&limit=${limit}&search=${search}`, {
-    cache: 'no-store',
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
+export const getUsers = async (
+  page: number,
+  limit: number,
+  search: string = "",
+) => {
+  const res = await fetch(
+    `http://api:3000/users?page=${page}&limit=${limit}&search=${search}`,
+    {
+      cache: "no-store",
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
     },
-  });
+  );
 
-  if(!res.ok) {
+  if (!res.ok) {
     throw new Error("Failed to fetch users");
   }
 
   const usersData = await res.json();
 
   return usersData;
-}
+};
 
 //! GET PROFILE BY ID (avec les userbooks et commentaires)
 export const getProfileById = async (userId: number) => {
@@ -65,7 +73,7 @@ export const updateProfileAction = async (
 ) => {
   try {
     const session = await auth();
-    const token = (session as any)?.accessToken;
+    const token = (session as Session)?.accessToken;
 
     if (!token) {
       return {
@@ -124,40 +132,82 @@ export const updateProfileAction = async (
   }
 };
 
+//! UPDATE USER ROLE
+export const updateUserRole = async (userId: number, newRoleId: number) => {
+  try {
+    const session = await auth();
+    const token = (session as Session)?.accessToken;
+    if (!token) {
+      return {
+        success: false,
+        error: "Non authentifié",
+      };
+    }
+    const res = await fetch(`http://api:3000/users/${userId}/role`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ roleId: newRoleId }),
+    });
+    if (!res.ok) {
+      const errorData = await res.json();
+      return {
+        success: false,
+        error: errorData.message || "Erreur lors de la mise à jour du profil",
+        status: res.status,
+      };
+    }
+
+    const resData = await res.json();
+
+    return {
+      success: true,
+      data: resData,
+      message: "Profil mis à jour avec succès",
+    };
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    return {
+      success: false,
+      error: "Une erreur est survenue lors de la mise à jour du profil",
+    };
+  }
+};
+
 //! REMOVE USER
 export const removeUser = async (userId: number) => {
   try {
     const session = await auth();
-    const token = (session as any)?.accessToken;
-    if(!token) {
+    const token = (session as Session)?.accessToken;
+    if (!token) {
       return {
         success: false,
         error: "Non authentifié",
       };
     }
     const res = await fetch(`http://api:3000/users/${userId}`, {
-      method: "DELETE", 
+      method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
-      }
-    })
+      },
+    });
 
-    console.log("Status API:", res.status);
-    if(!res.ok) return { 
-      success: false,
-      error: "Une erreur est survenue"
-    }
+    if (!res.ok)
+      return {
+        success: false,
+        error: "Une erreur est survenue",
+      };
 
     return {
       success: true,
-    }
-
-  } catch(error) {
+    };
+  } catch (error) {
     console.error("Error deleting user : ", error);
-    return  {
+    return {
       success: false,
       error: "Une erreur est survenue lors de la suppression de l'utilisateur",
     };
   }
 };
-

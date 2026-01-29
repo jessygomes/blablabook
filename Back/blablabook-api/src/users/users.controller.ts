@@ -25,6 +25,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { SelfOrAdminGuard } from 'src/auth/guards/selfOrAdmin.guard';
+import { AdminGuard } from 'src/auth/guards/admin.guard';
 
 @ApiTags('Users')
 @Controller('users')
@@ -140,10 +141,25 @@ export class UsersController {
     return this.usersService.update(id, data);
   }
 
+  //! UPDATE USER ROLE
+  @Patch(':id/role')
+  @ApiBearerAuth()
+  @UseGuards(AdminGuard)
+  @ApiUnauthorizedResponse({
+    description:
+      "Jeton d'autorisation manquant (ou invalide dans l'entête de la requête",
+  })
+  async updateUserRole(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('roleId', ParseIntPipe) roleId: number,
+  ) {
+    return this.usersService.updateUserRole(id, { roleId });
+  }
+
   //! DELETE USER BY ID
   @Delete(':id')
   @ApiBearerAuth()
-  @UseGuards(SelfOrAdminGuard)
+  @UseGuards(AdminGuard)
   @ApiUnauthorizedResponse({
     description:
       "Jeton d'autorisation manquant (ou invalide) dans l'entête de la requête",

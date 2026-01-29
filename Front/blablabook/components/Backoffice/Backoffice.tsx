@@ -1,8 +1,7 @@
 import { getBookReadCount, getCommentCount, getReportedCommentCount, getUserCount } from "@/lib/actions/backoffice.action";
 import BackofficeCard from "./BackofficeCard";
 import BackofficeSwitch from "./BackofficeSwitch";
-import { getUsers } from "@/lib/actions/user.action";
-import { removeUser } from "@/lib/actions/user.action";
+import { getUsers, updateUserRole, removeUser } from "@/lib/actions/user.action";
 
 export default async function Backoffice() {
 
@@ -25,9 +24,9 @@ export default async function Backoffice() {
    
 
     return (
-    <section className="w-full">
-        <div className="mx-auto sm:py-14 lg:py-3 space-y-3">
-            <h2 className="title-section">Backoffice</h2>
+    <section className="w-full ">
+        <div className="mx-auto sm:py-14 lg:py-3 lg:px-0 space-y-3">
+            <h2 className="text-2xl sm:text-3xl font-bold text-black">Backoffice</h2>
             <div className="flex flex-wrap gap-2.5">
                 <BackofficeCard icon="contacts_product" label="Utilisateurs" count={userCount}/>
                 <BackofficeCard icon="chat_bubble" label="Critiques" count={commentCount}/>
@@ -36,7 +35,7 @@ export default async function Backoffice() {
             </div>
         </div>
         <div className="mt-4">
-            <BackofficeSwitch users={initialUsers} totalUserCount={totalUserCount} onDeleteUser={removeUser}/>
+            <BackofficeSwitch users={initialUsers} totalUserCount={totalUserCount} onDeleteUser={removeUser} onUpdateUserRole={updateUserRole}/>
         </div>
     </section>
     )

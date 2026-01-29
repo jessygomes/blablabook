@@ -5,13 +5,12 @@ import Image from "next/image";
 import { getUploadUrl } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { getUsers } from "@/lib/actions/user.action";
-import { DeleteUserAction } from "./BackofficeSwitch";
+import { DeleteUserAction, UpdateUserRoleAction } from "./BackofficeSwitch";
 
 declare module "@tanstack/react-table" {
     interface TableMeta<TData extends RowData> {
-        toggled?: boolean;
-        setToggled?: (value: boolean) => void;
         removeRow?: (userId: number) => Promise<void>;
+        updateUserRole?: (userId: number, newRoleId: number) => Promise<void>
     }
 }
 
@@ -68,20 +67,20 @@ const columns = [
             </span>
         ),
     }),
-    columnHelper.accessor("role.name", {
-        cell: ({table, getValue,}) => {
+    columnHelper.accessor("role.id", {
+        cell: ({row, table}) => {
+            const user = row.original;
             const meta = table.options.meta;
-            if (!meta) return null;
-            const isToggled = getValue() === 'ADMIN'; 
-            getValue();
+            const isAdmin = user.role?.id === 2;
+            const handleToggle = async () => {
+                if(meta?.updateUserRole) {
+                    const newRoleId = isAdmin ? 1 : 2;
+                    await meta.updateUserRole(user.id, newRoleId);
+                }
+            };
             return (
-                <div className="flex items-center justify-center">
-                    <button className={`toggle-btn w-9 h-9 ${isToggled ? 'toggled' : '' }`} onClick={() => {
-                        if (meta.setToggled) {
-                            meta.setToggled(!meta.toggled)
-                            console.log('toggled : ', meta.toggled)
-                        }
-                    }}>
+                <div className="flex items-center">
+                    <button className={`toggle-btn w-9 h-9 ${isAdmin ? 'toggled' : '' }`} onClick={handleToggle}>
                         <div className="thumb"></div>
                     </button>
                 </div>
@@ -142,7 +141,7 @@ const columns = [
             <span>Dernière modification</span>
         ),
     }),
-        columnHelper.display({
+    columnHelper.display({
         id:"actions",
         header: () => (
             <span>Action</span>
@@ -160,11 +159,11 @@ const columns = [
                     </button>
                 </div>
             )
-        }
+        },
     }),
 ]
 
-export default function BackofficeUsersTable({users, totalUserCount, onDeleteUser} : {users: User[], totalUserCount: number, onDeleteUser: DeleteUserAction}) {
+export default function BackofficeUsersTableDesktop({users, totalUserCount, onDeleteUser, onUpdateUserRole} : {users: User[], totalUserCount: number, onDeleteUser: DeleteUserAction, onUpdateUserRole: UpdateUserRoleAction}) {
 
     const [data, setData] = useState(users);
     const [total, setTotal] = useState(totalUserCount);
@@ -220,17 +219,38 @@ export default function BackofficeUsersTable({users, totalUserCount, onDeleteUse
         onGlobalFilterChange: setGlobalFilter,
         getCoreRowModel: getCoreRowModel(),
         meta: {
-            toggled,
-            setToggled,
             removeRow: async (userId: number) => {
-            const result = await onDeleteUser(userId);
-            if (result.success) {
-                setData((prev) => prev.filter((user) => user.id !== userId));
-                setTotal((prev) => prev - 1);
+                const result = await onDeleteUser(userId);
+                if (result.success) {
+                    setData((prev) => prev.filter((user) => user.id !== userId));
+                    setTotal((prev) => prev - 1);
+                } else {
+                    alert(result.error || "Erreur lors de la suppression");
+                }
+            },
+            updateUserRole: async (userId:number, newRoleId: number) => {
+                const result = await onUpdateUserRole(userId, newRoleId);
+                if (result.success) {
+                setData((prevData) => {
+                    return prevData.map((user) => {
+                        if (user.id === userId) {
+                            return {
+                                ...user,
+                                roleId: newRoleId,
+                                role: {
+                                    ...user.role,
+                                    id: newRoleId,
+                                    name: newRoleId === 2 ? 'ADMIN' : 'USER',
+                                },
+                            };
+                        }
+                        return user;
+                });
+            });
             } else {
-                alert(result.error || "Erreur lors de la suppression");
+                alert(result.error || "Erreur lors du changement de rôle");
             }
-        },
+            }
         }
   })
     return (
