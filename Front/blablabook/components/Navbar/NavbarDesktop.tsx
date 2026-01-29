@@ -32,12 +32,10 @@ export default function NavbarDesktop({
   const links = [
     { href: "/", label: "Accueil" },
     { href: "/dernieres-critiques", label: "Dernières critiques" },
-    { href: "/administration", label: "Administration" },
+    ...(session?.user?.roleId === 2 ? [
+      {href:"/administration", label:"Administration"}
+    ]: [])
   ];
-<<<<<<< HEAD
-=======
- // const links = allLinks.filter(link => link.href !== "/administration" || (user && user.roleId === 1));
->>>>>>> 65f41db95f391665fbd638db487e7325dedeba91
 
   return (
     <nav className="w-full flex justify-between items-center gap-2 md:gap-4 py-4 wrapper bg-white">

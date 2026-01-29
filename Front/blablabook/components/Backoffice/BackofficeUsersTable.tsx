@@ -68,11 +68,11 @@ const columns = [
             </span>
         ),
     }),
-    columnHelper.accessor("role.id", {
+    columnHelper.accessor("role.name", {
         cell: ({table, getValue,}) => {
             const meta = table.options.meta;
             if (!meta) return null;
-            const isToggled = getValue() === 1; 
+            const isToggled = getValue() === 'ADMIN'; 
             getValue();
             return (
                 <div className="flex items-center justify-center">

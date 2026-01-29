@@ -11,6 +11,7 @@ import {
   UseInterceptors,
   UploadedFile,
   BadRequestException,
+  Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -39,13 +40,18 @@ export class UsersController {
 
   //! GET ALL USERS
   @Get()
-  async findAll() {
-    const users = await this.usersService.findAll();
-    return users.map((user) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...userWithoutPassword } = user;
-      return userWithoutPassword;
-    });
+  async findAll(
+    @Query('page') page: string = '0',
+    @Query('limit') limit: string = '10',
+    @Query('search') search?: string,
+  ) {
+    const skip = Number(page) * Number(limit);
+    const take = Number(limit);
+    const { data, total } = await this.usersService.findAll(skip, take, search);
+    const usersWithoutPassWword = data.map(({ password, ...user }) => user);
+    console.log('--- REQUETE RECUE ---');
+    console.log('Search query param:', search);
+    return { data: usersWithoutPassWword, total };
   }
 
   @Get('user-count')
