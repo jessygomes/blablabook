@@ -51,7 +51,7 @@ export class AuthService {
       email: registerDto.email,
       password: hashedPassword,
       username: registerDto.username || registerDto.email.split('@')[0],
-      roleId: 1,
+      roleId: 2,
       isPrivate: false,
     };
 

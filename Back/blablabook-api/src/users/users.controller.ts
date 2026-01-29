@@ -124,7 +124,7 @@ export class UsersController {
     @Req() request: express.Request,
     @UploadedFile() file?: Express.Multer.File,
   ) {
-    if (request.user?.roleId !== 2 && 'roleId' in data) {
+    if (request.user?.roleId !== 1 && 'roleId' in data) {
       throw new ForbiddenException(
         "Accès refusé : vous n'avez pas la permission de modifier le rôle de l'utilisateur",
       );

@@ -55,7 +55,7 @@ export class SelfOrAdminGuard implements CanActivate {
       const targetUserId = parseInt(request.params.id);
 
       const isSelf = user.id === targetUserId;
-      const isAdmin = user.roleId === 2;
+      const isAdmin = user.roleId === 1;
 
       if (!isSelf && !isAdmin) {
         throw new ForbiddenException(
