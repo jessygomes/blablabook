@@ -149,7 +149,11 @@ export default function DetailBook({
         </div>
       </div>
       <section className="mt-12">
-        <CommentsSection comments={book.comments} />
+        <CommentsSection comments={book.comments}
+                         bookId={book.id}
+                         userRating={book.userRating}
+                         userId={userId}
+                         token={token}/>
       </section>
     </div>
   );
