@@ -229,7 +229,18 @@ export class BooksService {
     const book = await this.prisma.book.findUnique({
       where: { id },
       include: {
-        comments: true,
+        comments: {
+          where: { status: "ACTIVE" },
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                profilePicture: true,
+              },
+            },
+          },
+        },
         rates: true,
       },
     });

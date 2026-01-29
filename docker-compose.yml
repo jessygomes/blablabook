@@ -20,7 +20,7 @@ services:
       dockerfile: Dockerfile
     container_name: blablabook-api
     environment:
-      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@database:5432/${DB_NAME}?schema=public
+      - DATABASE_URL=${DATABASE_URL}
     depends_on:
       - database
     volumes:

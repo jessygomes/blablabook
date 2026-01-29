@@ -4,6 +4,7 @@ export const getTenRandomBooks = async (userId?: number | null) => {
   const url = userId
     ? `http://api:3000/books/fetch-random?userId=${userId}`
     : `http://api:3000/books/fetch-random`;
+
   const res = await fetch(url, {
     method: "GET",
     headers: {

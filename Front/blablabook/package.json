@@ -10,8 +10,11 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+<<<<<<< HEAD
     "@tanstack/react-table": "^8.21.3",
     "@tanstack/react-table-devtools": "^8.21.3",
+=======
+>>>>>>> dev
     "next": "16.0.7",
     "next-auth": "^5.0.0-beta.30",
     "react": "19.2.0",

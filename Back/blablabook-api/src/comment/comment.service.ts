@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { CreateCommentDto } from './dto/create-comment.dto';
 
 @Injectable()
 export class CommentService {
@@ -20,6 +21,32 @@ export class CommentService {
     });
 
     return { count };
+  }
+  async createComment(userId: number, dto: CreateCommentDto) {
+    const book = await this.prisma.book.findUnique({
+      where: { id: dto.bookId },
+      select: { id: true },
+    });
+
+    if (!book) throw new NotFoundException('Livre introuvable');
+
+    return this.prisma.comment.create({
+      data: {
+        title: dto.title,
+        content: dto.content,
+
+        reportCounter: 0,
+        status: 'ACTIVE',
+        date: new Date(),
+
+        user: { connect: { id: userId } },
+        book: { connect: { id: dto.bookId } },
+      },
+      include: {
+        user: { select: { id: true, username: true, profilePicture: true } },
+        book: { select: { id: true, title: true, author: true, cover: true } },
+      },
+    });
   }
 
   async latestCommentPerBook(take = 10) {
