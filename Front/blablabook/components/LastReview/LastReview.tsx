@@ -1,5 +1,6 @@
 import ExpandableText from "@/components/ExpandableText";
 import { getUploadUrl } from "@/lib/utils";
+import Link from "next/dist/client/link";
 import Image from "next/image";
 
 type Item = {
@@ -103,7 +104,10 @@ export default async function DernieresCritiques() {
                     )}
                   </div>
                   <span className="italic">
-                    par <span>{c.user.username}</span>
+                    par 
+                    <Link href={`/profil/${c.user.id}`} className="underline hover:text-quater ml-1">
+                      <span>{c.user.username}</span>
+                    </Link>
                   </span>
                   <span className="italic">
                     le {new Date(c.date).toLocaleDateString("fr-FR")}

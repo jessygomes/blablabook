@@ -15,7 +15,7 @@ export default async function page() {
   }
 
   const userId = Number(session.user.id);
-  const accessToken = (session as any).accessToken ?? null;
+  const accessToken = session.accessToken ?? null;
   const userData = await getProfileById(userId);
 
   return (
