@@ -37,7 +37,6 @@ export class UsersService {
 
   //! Find user by ID
   async findById(id: number) {
-    console.log('Looking for user with ID:', id);
     // const user = await this.prisma.user.findUnique({
     //   where: { id },
     //   select: {
@@ -64,14 +63,12 @@ export class UsersService {
     if (!user) {
       return null;
     }
-    console.log('Found user:', user);
 
     return user;
   }
 
   //! Find user by ID
   async getProfileById(id: number) {
-    console.log('Looking for user with ID:', id);
     const user = await this.prisma.user.findUnique({
       where: { id },
       select: {

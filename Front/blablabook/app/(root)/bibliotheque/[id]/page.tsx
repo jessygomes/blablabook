@@ -13,7 +13,7 @@ export default async function Page({ params }: { params: Params }) {
   }
 
   const session = await auth();
-  const token = (session as any)?.accessToken ?? null;
+  const token = session?.accessToken ?? null;
   const userId = session?.user ? Number(session.user.id) : null;
 
   const bookRes = await getBookById(bookId);
