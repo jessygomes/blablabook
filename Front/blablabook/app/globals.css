@@ -55,6 +55,7 @@ body {
   @apply tracking-wider text-noir font-bold text-2xl font-one p-0 sm:p-4 ;
 }
 
+
 .title-card {
   @apply truncate text-noir text-base font-one font-bold;
 }
@@ -103,4 +104,9 @@ body {
 .container-snap {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
+}
+
+[data-vaul-drawer] {
+  backface-visibility: hidden;
+  -webkit-font-smoothing: subpixel-antialiased;
 }

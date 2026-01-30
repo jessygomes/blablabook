@@ -7,11 +7,7 @@ export type User = {
   username: string;
   isPrivate: boolean;
   profilePicture: string | null;
-<<<<<<< HEAD
   roleId: number | null;
-=======
-  roleId: number;
->>>>>>> 65f41db95f391665fbd638db487e7325dedeba91
 };
 
 export async function isAuthenticated(): Promise<boolean> {

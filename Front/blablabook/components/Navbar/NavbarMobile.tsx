@@ -36,7 +36,9 @@ export default function NavbarMobile({
       label: "Dernières critiques",
       icon: "book",
     },
-    { href: "/administration", label: "Administration", icon: "dashboard"},
+        ...(session?.user?.roleId === 1 ? [
+      {href:"/administration", label:"Administration", icon:"dashboard"}
+    ]: []),
   ];
 
   return (

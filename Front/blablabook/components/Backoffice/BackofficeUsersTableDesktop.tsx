@@ -4,8 +4,8 @@ import { createColumnHelper, flexRender, getCoreRowModel, useReactTable, RowData
 import Image from "next/image";
 import { getUploadUrl } from "@/lib/utils";
 import { useEffect, useState } from "react";
-import { getUsers } from "@/lib/actions/user.action";
-import { DeleteUserAction, UpdateUserRoleAction } from "./BackofficeSwitch";
+import { getUsers } from "@/lib/actions/backoffice.action";
+import { DeleteUserAction, UpdateUserRoleAction } from "./BackofficeSwitchUserComment";
 
 declare module "@tanstack/react-table" {
     interface TableMeta<TData extends RowData> {

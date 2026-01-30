@@ -1,7 +1,7 @@
 import { getBookReadCount, getCommentCount, getReportedCommentCount, getUserCount } from "@/lib/actions/backoffice.action";
 import BackofficeCard from "./BackofficeCard";
-import BackofficeSwitch from "./BackofficeSwitch";
-import { getUsers, updateUserRole, removeUser } from "@/lib/actions/user.action";
+import BackofficeSwitch from "./BackofficeSwitchUserComment";
+import { getUsers, updateUserRole , removeUser } from "@/lib/actions/backoffice.action";
 
 export default async function Backoffice() {
 

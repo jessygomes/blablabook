@@ -2,6 +2,7 @@
 import { useState } from "react";
 import BackofficeUsersTableDesktop from "./BackofficeUsersTableDesktop";
 import { User } from "@/lib/actions/backoffice.action";
+import BackofficeUsersMobile from "./BackofficeUsersMobile";
 
 export type DeleteUserAction = (userId: number) => Promise<{ success: boolean; error?: string }>;
 export type UpdateUserRoleAction = (userId: number, newRoleId: number) => Promise<{ success: boolean; error?: string}> 
@@ -19,9 +20,9 @@ interface BackofficeSwitchProps {
     }>;
 }
 
-export default function BackofficeSwitch({users, totalUserCount, onDeleteUser, onUpdateUserRole}: BackofficeSwitchProps) {
+export default function BackofficeSwitchUserComment({users, totalUserCount, onDeleteUser, onUpdateUserRole}: BackofficeSwitchProps) {
 
-
+    
     const [activeTab, setActiveTab] = useState<'users' | 'reportedComments'>('users');
 
     return (
@@ -40,10 +41,10 @@ export default function BackofficeSwitch({users, totalUserCount, onDeleteUser, o
             {activeTab === 'users' && 
                 <>
                 <div className="hidden lg:block">
-                    <BackofficeUsersTableDesktop users={users} totalUserCount={totalUserCount} onDeleteUser={onDeleteUser} onUpdateUserRole={onUpdateUserRole}/>
+                    <BackofficeUsersTableDesktop  users={users} totalUserCount={totalUserCount} onDeleteUser={onDeleteUser} onUpdateUserRole={onUpdateUserRole}/>
                 </div>
                 <div className="lg:hidden">
-                    <h1 className="text-amber-300">Little screen</h1>
+                    <BackofficeUsersMobile users={users} totalUserCount={totalUserCount} onDeleteUser={onDeleteUser} onUpdateUserRole={onUpdateUserRole}/>
                 </div>
                 </>
             }
