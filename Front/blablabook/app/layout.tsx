@@ -23,13 +23,11 @@ export const metadata: Metadata = {
     "Découvrez, partagez et discutez de vos lectures préférées sur Blablabook, la communauté dédiée aux passionnés de livres.",
 };
 
-
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  
   const session = await auth();
   const isAuth = !!session?.user;
   return (
