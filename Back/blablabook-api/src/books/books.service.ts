@@ -230,7 +230,7 @@ export class BooksService {
       where: { id },
       include: {
         comments: {
-          where: { status: "ACTIVE" },
+          where: { status: 'ACTIVE' },
           include: {
             user: {
               select: {

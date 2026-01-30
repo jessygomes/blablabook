@@ -11,11 +11,14 @@ import {
   UseInterceptors,
   UploadedFile,
   BadRequestException,
+  ForbiddenException,
+  Req,
   Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import express from 'express';
 import { UsersService } from './users.service';
 import { NewUserDTO } from './dto/new-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
@@ -63,11 +66,15 @@ export class UsersController {
   //! GET PROFILE USER
   @Get('/profil/:id')
   async getprofileById(@Param('id', ParseIntPipe) id: number) {
-    const user = await this.usersService.getProfileById(id);
-    if (!user) {
-      throw new BadRequestException('Utilisateur non trouvé');
+    const result = await this.usersService.getProfileById(id);
+    if ('error' in result) {
+      if (result.error === 'NOT_FOUND') {
+        throw new BadRequestException('Utilisateur non trouvé');
+      } else if (result.error === 'PRIVATE') {
+        throw new ForbiddenException('Ce profil est privé');
+      }
     }
-    return user;
+    return result.user;
   }
 
   //! GET USER BY ID
@@ -126,14 +133,18 @@ export class UsersController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() data: UpdateUserDTO,
+    @Req() request: express.Request,
     @UploadedFile() file?: Express.Multer.File,
   ) {
-    // Si un fichier est uploadé, ajouter l'URL au data
+    if (request.user?.roleId !== 1 && 'roleId' in data) {
+      throw new ForbiddenException(
+        "Accès refusé : vous n'avez pas la permission de modifier le rôle de l'utilisateur",
+      );
+    }
     if (file) {
       data.profilePicture = `/uploads/profiles/${file.filename}`;
     }
 
-    // Convertir isPrivate de string à boolean si nécessaire
     if (typeof data.isPrivate === 'string') {
       data.isPrivate = data.isPrivate === 'true';
     }

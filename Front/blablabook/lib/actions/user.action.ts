@@ -57,7 +57,13 @@ export const getProfileById = async (userId: number) => {
   });
 
   if (!res.ok) {
-    throw new Error("Failed to fetch user data");
+    if (res.status === 400) {
+      throw new Error("NOT_FOUND");
+    } else if (res.status === 403) {
+      throw new Error("PRIVATE");
+    } else {
+      throw new Error("Failed to fetch profile data");
+    }
   }
 
   const userData = await res.json();
@@ -73,7 +79,7 @@ export const updateProfileAction = async (
 ) => {
   try {
     const session = await auth();
-    const token = (session as Session)?.accessToken;
+    const token = session?.accessToken;
 
     if (!token) {
       return {
