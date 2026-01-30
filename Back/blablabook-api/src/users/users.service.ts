@@ -18,7 +18,7 @@ export class UsersService {
         email: data.email,
         username: data.username,
         password: data.password,
-        roleId: data.roleId || 1,
+        roleId: data.roleId || 2,
         isPrivate: data.isPrivate || false,
       },
       include: {

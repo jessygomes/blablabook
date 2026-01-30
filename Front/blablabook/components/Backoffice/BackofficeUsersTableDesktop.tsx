@@ -71,10 +71,10 @@ const columns = [
         cell: ({row, table}) => {
             const user = row.original;
             const meta = table.options.meta;
-            const isAdmin = user.role?.id === 2;
+            const isAdmin = user.role?.id === 1;
             const handleToggle = async () => {
                 if(meta?.updateUserRole) {
-                    const newRoleId = isAdmin ? 1 : 2;
+                    const newRoleId = isAdmin ? 2 : 1;
                     await meta.updateUserRole(user.id, newRoleId);
                 }
             };
@@ -240,7 +240,7 @@ export default function BackofficeUsersTableDesktop({users, totalUserCount, onDe
                                 role: {
                                     ...user.role,
                                     id: newRoleId,
-                                    name: newRoleId === 2 ? 'ADMIN' : 'USER',
+                                    name: newRoleId === 1 ? 'ADMIN' : 'USER',
                                 },
                             };
                         }

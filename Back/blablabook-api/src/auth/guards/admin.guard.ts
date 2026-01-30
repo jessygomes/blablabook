@@ -42,7 +42,7 @@ export class AdminGuard implements CanActivate {
       }
       const user = await this.usersService.findById(payload.id);
 
-      if (!user || user.roleId !== 2) {
+      if (!user || user.roleId !== 1) {
         throw new ForbiddenException(
           'Accès refusé : droits administrateur requis',
         );

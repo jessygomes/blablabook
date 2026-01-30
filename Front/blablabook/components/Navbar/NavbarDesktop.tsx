@@ -32,7 +32,7 @@ export default function NavbarDesktop({
   const links = [
     { href: "/", label: "Accueil" },
     { href: "/dernieres-critiques", label: "Dernières critiques" },
-    ...(session?.user?.roleId === 2 ? [
+    ...(session?.user?.roleId === 1 ? [
       {href:"/administration", label:"Administration"}
     ]: [])
   ];
