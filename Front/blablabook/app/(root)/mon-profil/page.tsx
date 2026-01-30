@@ -56,7 +56,7 @@ export default async function page() {
         </div>
 
         {/* Description */}
-        <div className="mt-4 mb-2">
+        <div className="mt-4 mb-2 bg-gray-300/20 p-4 rounded-sm">
           <p className="text-noir text-xs sm:text-sm leading-relaxed">
             {userData.description ? userData.description : "Aucune description"}
           </p>
