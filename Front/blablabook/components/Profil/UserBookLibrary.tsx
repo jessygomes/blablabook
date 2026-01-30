@@ -35,10 +35,11 @@ export default function UserBookLibrary({
 
   if (!userBooks.length) {
     return (
-      <div className="py-6">
-        <p className="text-noir opacity-70">
-          Aucun livre dans votre bibliothèque.
-        </p>
+      <div className="py-20 w-full flex flex-col justify-center items-center gap-3 bg-linear-to-br from-primary/50 to-second/50 text-quater/80 font-one tracking-widest rounded-md border border-noir/10">
+        <span className="material-icons text-5xl text-quater/80">
+          auto_stories
+        </span>
+        <p>Aucun livre dans votre bibliothèque.</p>
       </div>
     );
   }
