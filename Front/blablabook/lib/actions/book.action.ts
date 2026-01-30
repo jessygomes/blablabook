@@ -6,7 +6,6 @@ export const getTenRandomBooks = async (userId?: number | null) => {
   const fetchUrl = userId
     ? `${url}/books/fetch-random?userId=${userId}`
     : `${url}/books/fetch-random`;
-  console.log("Fetch URL:", fetchUrl);
 
   const res = await fetch(fetchUrl, {
     method: "GET",
