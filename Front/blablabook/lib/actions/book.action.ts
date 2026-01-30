@@ -2,7 +2,7 @@
 
 const url = process.env.NEXT_PUBLIC_API_URL ?? "http://api:3000";
 
-export const getTenRandomBooks = async (userId?: number | null) => {
+export const getRandomBooks = async (userId?: number | null) => {
   const fetchUrl = userId
     ? `${url}/books/fetch-random?userId=${userId}`
     : `${url}/books/fetch-random`;
@@ -33,7 +33,7 @@ export const getTenRandomBooks = async (userId?: number | null) => {
   };
 };
 
-export const getTenMostPopularBooks = async (userId?: number | null) => {
+export const getMostPopularBooks = async (userId?: number | null) => {
   const fetchUrl = userId
     ? `${url}/books/fetch-popular-books?userId=${userId}`
     : `${url}/books/fetch-popular-books`;
@@ -63,7 +63,7 @@ export const getTenMostPopularBooks = async (userId?: number | null) => {
   };
 };
 
-export const getTenLatestBooks = async (userId?: number | null) => {
+export const getLatestBooks = async (userId?: number | null) => {
   const fetchUrl = userId
     ? `${url}/books/fetch-latest?userId=${userId}`
     : `${url}/books/fetch-latest`;

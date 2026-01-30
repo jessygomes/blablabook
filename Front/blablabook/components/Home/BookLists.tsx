@@ -1,8 +1,8 @@
 import BookCard from "@/components/BookCard/BookCard";
 import {
-  getTenLatestBooks as getLatestBooks,
-  getTenMostPopularBooks as getMostPopularBooks,
-  getTenRandomBooks as getRandomBooks,
+  getLatestBooks as getLatestBooks,
+  getMostPopularBooks as getMostPopularBooks,
+  getRandomBooks as getRandomBooks,
 } from "@/lib/actions/book.action";
 import { auth } from "@/auth.config";
 import Carousel from "./Carousel";
