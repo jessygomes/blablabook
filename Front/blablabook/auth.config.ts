@@ -36,9 +36,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
-          throw new Error(
-            errorData?.message || "Identifiants incorrects, veuillez réessayer",
-          );
+          const message = errorData?.message || "Identifiants incorrects";
+          throw new Error(message);
         }
 
         const data = await response.json();
