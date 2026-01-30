@@ -7,7 +7,7 @@ const url = process.env.NEXT_PUBLIC_API_URL ?? "http://api:3000";
 
 //! GET USER BY ID
 export const getUserById = async (userId: number) => {
-  const res = await fetch(`${url}/users/profil/${userId}`, {
+  const res = await fetch(`${url}/users/${userId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
