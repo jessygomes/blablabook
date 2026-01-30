@@ -13,7 +13,6 @@ export default async function Page({ params }: { params: Params }) {
   const token = session?.accessToken ?? null;
   const currentUserId = session?.user ? Number(session.user.id) : null;
 
-
   // Await params to get the id
   const resolvedParams = await Promise.resolve(params);
   const profileUserId = Number(resolvedParams.id);
@@ -21,7 +20,7 @@ export default async function Page({ params }: { params: Params }) {
   // Fetch the user profile data
   let userData;
   let errorType: "not-found" | "private" | null = null;
-  
+
   try {
     userData = await getProfileById(profileUserId);
   } catch (error: unknown) {
@@ -47,9 +46,7 @@ export default async function Page({ params }: { params: Params }) {
     return (
       <section className="wrapper py-8">
         <div className="bg-white p-8 rounded-lg text-center">
-          <h2 className="text-2xl font-bold text-quater mb-4">
-            Profil privé
-          </h2>
+          <h2 className="text-2xl font-bold text-quater mb-4">Profil privé</h2>
           <p className="text-noir opacity-70">
             Ce profil est privé et ne peut pas être consulté.
           </p>
@@ -59,6 +56,9 @@ export default async function Page({ params }: { params: Params }) {
   }
 
   const isOwnProfile = currentUserId === profileUserId;
+  const profileImageSrc = userData.profilePicture
+    ? getUploadUrl(userData.profilePicture)
+    : "/default-avatar.webp";
 
   return (
     <>
@@ -67,7 +67,7 @@ export default async function Page({ params }: { params: Params }) {
           <div className="flex items-center gap-4 sm:gap-6">
             <div className="relative h-16 w-16 sm:h-20 sm:w-20 shrink-0 rounded-full overflow-hidden shadow-md">
               <Image
-                src={getUploadUrl(userData.profilePicture)}
+                src={profileImageSrc}
                 alt="Profile Picture"
                 fill
                 className="object-cover"
@@ -75,7 +75,9 @@ export default async function Page({ params }: { params: Params }) {
               />
             </div>
             <h2 className="title-section text-quater text-lg sm:text-2xl">
-              {isOwnProfile ? "Ma bibliothèque" : `Bibliothèque de ${userData.username}`}
+              {isOwnProfile
+                ? "Ma bibliothèque"
+                : `Bibliothèque de ${userData.username}`}
             </h2>
           </div>
 
@@ -94,9 +96,7 @@ export default async function Page({ params }: { params: Params }) {
         {/* Description */}
         <div className="mt-4 mb-2">
           <p className="text-noir text-xs sm:text-sm leading-relaxed">
-            {userData.description
-              ? userData.description
-              : "Aucune description disponible."}
+            {userData.description ? userData.description : "Aucune description"}
           </p>
         </div>
       </section>

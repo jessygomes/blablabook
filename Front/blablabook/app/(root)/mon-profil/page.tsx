@@ -18,6 +18,9 @@ export default async function page() {
   const userId = Number(session.user.id);
   const accessToken = session.accessToken ?? null;
   const userData = await getProfileById(userId);
+  const profileImageSrc = userData.profilePicture
+    ? getUploadUrl(userData.profilePicture)
+    : "/default-avatar.webp";
 
   return (
     <>
@@ -28,7 +31,7 @@ export default async function page() {
           <div className="flex items-center gap-4 sm:gap-6">
             <div className="relative h-16 w-16 sm:h-20 sm:w-20 shrink-0 rounded-full overflow-hidden shadow-md">
               <Image
-                src={getUploadUrl(userData.profilePicture)}
+                src={profileImageSrc}
                 alt="Profile Picture"
                 fill
                 className="object-cover"
@@ -55,9 +58,7 @@ export default async function page() {
         {/* Description */}
         <div className="mt-4 mb-2">
           <p className="text-noir text-xs sm:text-sm leading-relaxed">
-            {userData.description
-              ? userData.description
-              : "Aucune description disponible."}
+            {userData.description ? userData.description : "Aucune description"}
           </p>
         </div>
       </section>
