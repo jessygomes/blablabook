@@ -27,6 +27,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { SelfOrAdminGuard } from 'src/auth/guards/selfOrAdmin.guard';
+import { OptionalAuthGuard } from 'src/auth/guards/optional-auth.guard';
 
 @ApiTags('Users')
 @Controller('users')
@@ -53,8 +54,14 @@ export class UsersController {
 
   //! GET PROFILE USER
   @Get('/profil/:id')
-  async getprofileById(@Param('id', ParseIntPipe) id: number) {
-    const result = await this.usersService.getProfileById(id);
+  @UseGuards(OptionalAuthGuard)
+  async getprofileById(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() request: express.Request,
+  ) {
+    const requestingUserId = request.user?.id;
+    const result = await this.usersService.getProfileById(id, requestingUserId);
+
     if ('error' in result) {
       if (result.error === 'NOT_FOUND') {
         throw new BadRequestException('Utilisateur non trouvé');

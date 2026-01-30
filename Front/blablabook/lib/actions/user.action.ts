@@ -23,11 +23,20 @@ export const getUserById = async (userId: number) => {
 
 //! GET PROFILE BY ID (avec les userbooks et commentaires)
 export const getProfileById = async (userId: number) => {
+  const session = await auth();
+  const token = session?.accessToken;
+
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+  };
+
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
   const res = await fetch(`http://api:3000/users/profil/${userId}`, {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers,
   });
 
   if (!res.ok) {

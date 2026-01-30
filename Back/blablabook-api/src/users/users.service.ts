@@ -68,7 +68,7 @@ export class UsersService {
   }
 
   //! Find user by ID
-  async getProfileById(id: number) {
+  async getProfileById(id: number, requestingUserId?: number) {
     const user = await this.prisma.user.findUnique({
       where: { id },
       select: {
@@ -93,8 +93,8 @@ export class UsersService {
       return { error: 'NOT_FOUND' };
     }
 
-    // If the profile is private and the requesting user is not the profile owner
-    if (user.isPrivate) {
+    // Allow access if the profile is public OR if the requesting user is the profile owner
+    if (user.isPrivate && requestingUserId !== id) {
       return { error: 'PRIVATE' };
     }
 

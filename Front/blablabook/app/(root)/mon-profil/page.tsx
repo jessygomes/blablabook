@@ -10,6 +10,7 @@ import { auth } from "@/auth.config";
 
 export default async function page() {
   const session = await auth();
+
   if (!session?.user) {
     redirect("/se-connecter");
   }
