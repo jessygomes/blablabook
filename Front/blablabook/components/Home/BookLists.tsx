@@ -1,11 +1,12 @@
 import BookCard from "@/components/BookCard/BookCard";
 import {
-  getLatestBooks as getLatestBooks,
-  getMostPopularBooks as getMostPopularBooks,
-  getRandomBooks as getRandomBooks,
+  getLatestBooks,
+  getMostPopularBooks,
+  getRandomBooks,
 } from "@/lib/actions/book.action";
 import { auth } from "@/auth.config";
 import Carousel from "./Carousel";
+import { log } from "console";
 
 interface Book {
   id: number;
@@ -30,6 +31,8 @@ export default async function BookLists() {
   const randomBooks: Book[] = resRandom.success ? resRandom.data : [];
   const popularBooks: Book[] = resPopular.success ? resPopular.data : [];
   const latestBooks: Book[] = resLatest.success ? resLatest.data : [];
+
+  console.log("randomBooks : ", resRandom.data);
 
   return (
     <>

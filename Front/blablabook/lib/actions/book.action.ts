@@ -13,7 +13,7 @@ export const getRandomBooks = async (userId?: number | null) => {
       "Content-Type": "application/json",
     },
   });
-
+  console.log("res : ", res);
   if (!res.ok) {
     const errorData = await res.json();
     return {

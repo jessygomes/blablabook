@@ -37,7 +37,6 @@ export default function NavbarDesktop({
     ]: [])
   ];
 
-  console.log("session : ", session);
 
   return (
     <nav className="w-full flex justify-between items-center gap-2 md:gap-4 py-4 wrapper bg-white">
