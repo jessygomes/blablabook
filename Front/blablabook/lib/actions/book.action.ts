@@ -1,11 +1,13 @@
 "use server";
 
-export const getTenRandomBooks = async (userId?: number | null) => {
-  const url = userId
-    ? `http://api:3000/books/fetch-random?userId=${userId}`
-    : `http://api:3000/books/fetch-random`;
+const url = process.env.NEXT_PUBLIC_API_URL ?? "http://api:3000";
 
-  const res = await fetch(url, {
+export const getTenRandomBooks = async (userId?: number | null) => {
+  const fetchUrl = userId
+    ? `${url}/books/fetch-random?userId=${userId}`
+    : `${url}/books/fetch-random`;
+
+  const res = await fetch(fetchUrl, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -32,10 +34,10 @@ export const getTenRandomBooks = async (userId?: number | null) => {
 };
 
 export const getTenMostPopularBooks = async (userId?: number | null) => {
-  const url = userId
-    ? `http://api:3000/books/fetch-popular-books?userId=${userId}`
-    : `http://api:3000/books/fetch-popular-books`;
-  const res = await fetch(url, {
+  const fetchUrl = userId
+    ? `${url}/books/fetch-popular-books?userId=${userId}`
+    : `${url}/books/fetch-popular-books`;
+  const res = await fetch(fetchUrl, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -62,10 +64,10 @@ export const getTenMostPopularBooks = async (userId?: number | null) => {
 };
 
 export const getTenLatestBooks = async (userId?: number | null) => {
-  const url = userId
-    ? `http://api:3000/books/fetch-latest?userId=${userId}`
-    : `http://api:3000/books/fetch-latest`;
-  const res = await fetch(url, {
+  const fetchUrl = userId
+    ? `${url}/books/fetch-latest?userId=${userId}`
+    : `${url}/books/fetch-latest`;
+  const res = await fetch(fetchUrl, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -93,7 +95,7 @@ export const getTenLatestBooks = async (userId?: number | null) => {
 
 //! RÉCUPÉRER UN LIVRE PAR SON ID
 export const getBookById = async (bookId: number) => {
-  const res = await fetch(`http://api:3000/books/${bookId}`, {
+  const res = await fetch(`${url}/books/${bookId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

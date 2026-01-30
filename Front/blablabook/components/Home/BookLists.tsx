@@ -34,7 +34,12 @@ export default async function BookLists() {
   return (
     <>
       <section className="border-b border-b-gray-200 mt-2 mb-6">
-        <h2 className="title-section mt-2">Découvertes</h2>
+        <h2 className="title-section mt-2 inline-flex items-center">
+          <span className="relative">
+            Découvertes
+            <span className="absolute -bottom-2 left-0 h-1 w-12 rounded-full bg-quater/30" />
+          </span>
+        </h2>
         <Carousel>
           {randomBooks.map((book) => (
             <div key={book.id} className="snap-start shrink-0">
@@ -63,7 +68,12 @@ export default async function BookLists() {
         ))}
       </div> */}
       <section className="border-b border-b-gray-200 mt-2 mb-6">
-        <h2 className="title-section">Populaires</h2>
+        <h2 className="title-section inline-flex items-center">
+          <span className="relative">
+            Populaires
+            <span className="absolute -bottom-2 left-0 h-1 w-12 rounded-full bg-quater/30" />
+          </span>
+        </h2>
         <Carousel>
           {popularBooks.map((book) => (
             <div key={book.id} className="snap-start shrink-0">
@@ -80,7 +90,12 @@ export default async function BookLists() {
       </section>
 
       <section className="mb-18">
-        <h2 className="title-section">Nouveautés</h2>
+        <h2 className="title-section inline-flex items-center">
+          <span className="relative">
+            Nouveautés
+            <span className="absolute -bottom-2 left-0 h-1 w-12 rounded-full bg-quater/30" />
+          </span>
+        </h2>
         <Carousel>
           {latestBooks.map((book) => (
             <div key={book.id} className="snap-start shrink-0">

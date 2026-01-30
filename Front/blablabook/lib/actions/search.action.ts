@@ -1,28 +1,28 @@
 "use server";
 
 type BooksResponse = {
-  id: number,
-  title: string,
-  page_count: number,
-  author: string,
-  category: string,
-  publishing_date: Date,
-  summary: string,
-  publisher: string,
-  isbn: string,
-  cover: string,
-  averageRating: number,
-  createdAt: Date,
-  updatedAt: Date,
+  id: number;
+  title: string;
+  page_count: number;
+  author: string;
+  category: string;
+  publishing_date: Date;
+  summary: string;
+  publisher: string;
+  isbn: string;
+  cover: string;
+  averageRating: number;
+  createdAt: Date;
+  updatedAt: Date;
   userBooks?: {
-    id: number,
-    status: "READ" | "READING" | "NOT_READ",
+    id: number;
+    status: "READ" | "READING" | "NOT_READ";
     createdAt: Date;
     updatedAt: Date;
     userId: number;
     bookId: number;
-  }[]
-}
+  }[];
+};
 
 interface Book {
   id: number;
@@ -68,69 +68,89 @@ interface EditionsDocs {
   isbn: string[];
 }
 
-
-
 interface mostCommentedBooksResponse extends BooksResponse {
-  commentCount: number,
+  commentCount: number;
 }
 
 interface mostAddedBooksResponse extends BooksResponse {
-  addedCount: number,
+  addedCount: number;
 }
 
-export const searchBooksAction = async (query: string, userId?: number, page: number = 1, size: number = 10) => {
-  const res = await fetch(`http://api:3000/books/search?q=${encodeURIComponent(query)}&page=${page}&size=${size}${userId ? `&userId=${userId}` : ""}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
+const url = process.env.NEXT_PUBLIC_API_URL ?? "http://api:3000";
+
+export const searchBooksAction = async (
+  query: string,
+  userId?: number,
+  page: number = 1,
+  size: number = 10,
+) => {
+  const res = await fetch(
+    `${url}/books/search?q=${encodeURIComponent(query)}&page=${page}&size=${size}${userId ? `&userId=${userId}` : ""}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
     },
-  });
+  );
   if (!res.ok) {
     const errorData = await res.json();
     return {
       success: false,
-      error:    errorData.message || "Un problème est survenu lors de la recherche des livres",
-      status:   res.status,
+      error:
+        errorData.message ||
+        "Un problème est survenu lors de la recherche des livres",
+      status: res.status,
     };
-  } 
+  }
   const resData: BooksResponse[] = await res.json();
   return {
     success: true,
-    data:    resData,
+    data: resData,
   };
-}
+};
 
-export const searchBooksFromExternalApiAction = async (query: string, limit: number = 20) => {
+export const searchBooksFromExternalApiAction = async (
+  query: string,
+  limit: number = 20,
+) => {
   if (query.trim().length < 3) {
     return {
       success: false,
-      error:   'La recherche doit contenir au moins 3 caractères.',
-      status:  400,
+      error: "La recherche doit contenir au moins 3 caractères.",
+      status: 400,
     };
   }
-  const res = await fetch(`http://api:3000/books/search-external?q=${encodeURIComponent(query)}&limit=${limit}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
+  const res = await fetch(
+    `${url}/books/search-external?q=${encodeURIComponent(query)}&limit=${limit}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
     },
-  });
+  );
   if (!res.ok) {
     const errorData = await res.json();
     return {
       success: false,
-      error:    errorData.message || "Un problème est survenu lors de la recherche des livres externes",
-      status:   res.status,
+      error:
+        errorData.message ||
+        "Un problème est survenu lors de la recherche des livres externes",
+      status: res.status,
     };
   }
   const resData: OpenLibraryDoc[] = await res.json();
   return {
     success: true,
-    data:    resData,
+    data: resData,
   };
-}
+};
 
-export const importBooksFromExternalApiAction = async (book: OpenLibraryDoc) => {
-  const res = await fetch(`http://api:3000/books/import-external`, {
+export const importBooksFromExternalApiAction = async (
+  book: OpenLibraryDoc,
+) => {
+  const res = await fetch(`${url}/books/import-external`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -141,60 +161,70 @@ export const importBooksFromExternalApiAction = async (book: OpenLibraryDoc) => 
     const errorData = await res.json();
     return {
       success: false,
-      error:    errorData.message || "Un problème est survenu lors de l'importation du livre externe",
-      status:   res.status,
+      error:
+        errorData.message ||
+        "Un problème est survenu lors de l'importation du livre externe",
+      status: res.status,
     };
   }
   const resData: Book = await res.json();
   return {
     success: true,
-    data:    resData,
+    data: resData,
   };
-}
+};
 
-  
 export const mostCommentedBooksAction = async (take = 9, userId?: number) => {
-  const res = await fetch(`http://api:3000/books/most-commented-books?take=${take}${userId ? `&userId=${userId}` : ""}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
+  const res = await fetch(
+    `${url}/books/most-commented-books?take=${take}${userId ? `&userId=${userId}` : ""}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
     },
-  });
+  );
   if (!res.ok) {
     const errorData = await res.json();
     return {
       success: false,
-      error:    errorData.message || "Un problème est survenu lors de la récupération des livres",
-      status:   res.status,
+      error:
+        errorData.message ||
+        "Un problème est survenu lors de la récupération des livres",
+      status: res.status,
     };
   }
 
-  const resData: mostCommentedBooksResponse[] = await res.json(); 
+  const resData: mostCommentedBooksResponse[] = await res.json();
   return {
     success: true,
-    data:    resData,
+    data: resData,
   };
-}
+};
 
 export const mostAddedBooksAction = async (take = 9, userId?: number) => {
-  const res = await fetch(`http://api:3000/books/most-added-books?take=${take}${userId ? `&userId=${userId}` : ""}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
+  const res = await fetch(
+    `${url}/books/most-added-books?take=${take}${userId ? `&userId=${userId}` : ""}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
     },
-  });
+  );
   if (!res.ok) {
     const errorData = await res.json();
     return {
       success: false,
-      error:    errorData.message || "Un problème est survenu lors de la récupération des livres",
-      status:   res.status,
+      error:
+        errorData.message ||
+        "Un problème est survenu lors de la récupération des livres",
+      status: res.status,
     };
   }
-  const resData: mostAddedBooksResponse[] = await res.json(); 
+  const resData: mostAddedBooksResponse[] = await res.json();
   return {
     success: true,
-    data:    resData,
+    data: resData,
   };
-}
-
+};

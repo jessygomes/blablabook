@@ -3,8 +3,10 @@ import { z } from "zod";
 import { registerSchema } from "../validator.schema";
 
 //! REGISTER ACTION
+const url = process.env.NEXT_PUBLIC_API_URL ?? "http://api:3000";
+
 export const registerAction = async (data: z.infer<typeof registerSchema>) => {
-  const res = await fetch(`http://api:3000/auth/register`, {
+  const res = await fetch(`${url}/auth/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

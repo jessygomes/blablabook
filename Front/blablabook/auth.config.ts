@@ -8,6 +8,8 @@ const credentialsSchema = z.object({
   password: z.string().min(1),
 });
 
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://api:3000";
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
   secret: process.env.NEXTAUTH_SECRET,
@@ -28,7 +30,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           throw new Error("Email ou mot de passe invalide");
         }
 
-        const response = await fetch("http://api:3000/auth/login", {
+        const response = await fetch(`${apiBaseUrl}/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(parsed.data),
@@ -36,9 +38,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
-          throw new Error(
-            errorData?.message || "Identifiants incorrects, veuillez réessayer",
-          );
+          const message = errorData?.message || "Identifiants incorrects";
+          throw new Error(message);
         }
 
         const data = await response.json();

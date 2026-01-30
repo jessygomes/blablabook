@@ -7,7 +7,6 @@ import { loginSchema } from "@/lib/validator.schema";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Toast, useToast } from "@/components/Toast";
-import { signIn } from "next-auth/react";
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
@@ -29,14 +28,20 @@ export default function Login() {
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
     try {
-      const result = await signIn("credentials", {
-        redirect: false,
-        email: data.email,
-        password: data.password,
+      // Appel à notre endpoint API personnalisé
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
       });
 
-      if (result?.error) {
-        showToast(result.error, "error");
+      const result = await response.json();
+
+      if (!response.ok) {
+        showToast(result.error || "Erreur lors de la connexion", "error");
         return;
       }
 
@@ -48,7 +53,7 @@ export default function Login() {
       }, 500);
     } catch (error) {
       console.error("Erreur lors de la connexion:", error);
-      showToast("Identifiants incorrects. Veuillez réessayer.", "error");
+      showToast("Une erreur est survenue. Veuillez réessayer.", "error");
     } finally {
       setIsLoading(false);
     }

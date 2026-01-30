@@ -50,43 +50,40 @@ export default function CardBookProfil({
 
   return (
     <>
-      <article className="relative bg-white drop-shadow-md rounded-lg overflow-hidden flex flex-col h-full">
+      <article className="relative flex-none w-44 sm:w-56 bg-white drop-shadow-md flex flex-col items-center p-2">
         {/* Image Container */}
-        <div className="w-full flex justify-center items-center bg-gray-50 aspect-2/3 sm:aspect-auto sm:h-40 md:h-48 lg:h-56">
+        <div className="w-full flex justify-center items-center h-56">
           <Link
             href={`/bibliotheque/${item.book.id}`}
-            className="relative w-3/4 sm:w-4/5 h-full aspect-2/3 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+            className="relative w-[60%] rounded-2xl aspect-2/3 shadow-sm hover:shadow-md transition-shadow"
           >
             <Image
               src={item.book?.cover || "/default-book.png"}
               alt={item.book?.title || "Couverture"}
               fill
-              className="object-cover"
+              className="object-cover rounded-sm"
               priority
             />
           </Link>
         </div>
 
         {/* Text Container */}
-        <div className="flex-1 p-2 sm:p-3 border-t flex flex-col">
-          <h3
-            className="title-card line-clamp-2 text-xs sm:text-sm"
-            title={item.book?.title}
-          >
+        <div className="p-2 w-full border-t">
+          <h3 className="title-card" title={item.book?.title}>
             {item.book?.title || "Titre inconnu"}
           </h3>
           {item.book?.author && (
             <p
-              className="truncate text-noir text-xs italic tracking-wider mt-1 opacity-80 shrink-0"
+              className="truncate text-noir text-xs italic tracking-wider"
               title={item.book.author}
             >
-              {item.book.author}
+              de {item.book.author}
             </p>
           )}
         </div>
 
         {/* Actions Container */}
-        <div className="flex  gap-2 p-2 sm:p-3 border-t mt-auto">
+        <div className="mt-auto flex items-center justify-between w-full p-2">
           <LibraryButton
             userId={userId ?? undefined}
             token={token}
@@ -94,7 +91,7 @@ export default function CardBookProfil({
             initialUserBookId={item.id}
             onUpdate={handleRemovedFromChild}
             onToast={onToast}
-            className="flex-1 px-2 py-1.5 text-xs sm:text-sm"
+            className="w-[49%]"
           />
           <StatusSelector
             token={token}
@@ -102,7 +99,7 @@ export default function CardBookProfil({
             status={item.status}
             onUpdated={handleStatusUpdated}
             onToast={onToast}
-            triggerClassName="flex-1 px-2 py-1.5 text-xs sm:text-sm"
+            triggerClassName="w-[49%] px-3 py-1"
           />
         </div>
       </article>

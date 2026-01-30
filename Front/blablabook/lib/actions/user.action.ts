@@ -4,9 +4,11 @@ import { editProfileSchema } from "../validator.schema";
 import { auth } from "@/auth.config";
 import { Session } from "next-auth";
 
+const url = process.env.NEXT_PUBLIC_API_URL ?? "http://api:3000";
+
 //! GET USER BY ID
 export const getUserById = async (userId: number) => {
-  const res = await fetch(`http://api:3000/users/profil/${userId}`, {
+  const res = await fetch(`${url}/users/profil/${userId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -24,11 +26,20 @@ export const getUserById = async (userId: number) => {
 
 //! GET PROFILE BY ID (avec les userbooks et commentaires)
 export const getProfileById = async (userId: number) => {
-  const res = await fetch(`http://api:3000/users/profil/${userId}`, {
+  const session = await auth();
+  const token = session?.accessToken;
+
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+  };
+
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  const res = await fetch(`${url}/users/profil/${userId}`, {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers,
   });
 
   if (!res.ok) {
@@ -79,7 +90,7 @@ export const updateProfileAction = async (
       formData.append("profilePicture", data.profilePicture);
     }
 
-    const res = await fetch(`http://api:3000/users/${userId}`, {
+    const res = await fetch(`${url}/users/${userId}`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,

@@ -1,8 +1,10 @@
 "use server";
 
+const url = process.env.NEXT_PUBLIC_API_URL ?? "http://api:3000";
+
 //! RECUPERER LA LIBRAIRIE D'UN UTILISATEUR
 export const getUserLibrary = async (userId: number, token: string) => {
-  const res = await fetch(`http://api:3000/userbook/${userId}`, {
+  const res = await fetch(`${url}/userbook/${userId}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -20,7 +22,7 @@ export const addToLibrary = async (
   userId: number,
   token: string,
 ) => {
-  const res = await fetch(`http://api:3000/userbook/add/${userId}/${bookId}`, {
+  const res = await fetch(`${url}/userbook/add/${userId}/${bookId}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -50,7 +52,7 @@ export const addToLibrary = async (
 
 //! SUPPRIMER DE LA LIBRAIRIE
 export const removeFromLibrary = async (id: number, token: string) => {
-  const res = await fetch(`http://api:3000/userbook/remove/${id}`, {
+  const res = await fetch(`${url}/userbook/remove/${id}`, {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -80,7 +82,7 @@ export const updateUserBookStatus = async (
   status: string,
   token: string,
 ) => {
-  const res = await fetch(`http://api:3000/userbook/statut/${id}`, {
+  const res = await fetch(`${url}/userbook/statut/${id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -108,15 +110,12 @@ export const updateUserBookStatus = async (
 
 //! VÉRIFIER SI UN LIVRE EST DANS LA BIBLIOTHÈQUE DE L'UTILISATEUR
 export const checkIfBookInLibrary = async (userId: number, bookId: number) => {
-  const res = await fetch(
-    `http://api:3000/userbook/check/${userId}/${bookId}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+  const res = await fetch(`${url}/userbook/check/${userId}/${bookId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
     },
-  );
+  });
 
   if (!res.ok) {
     return {

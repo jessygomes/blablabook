@@ -36,10 +36,13 @@ export default function LogoutBtn() {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="cursor-pointer flex items-center gap-2 px-4 py-2 rounded-md bg-quater text-white font-medium transition-colors duration-300"
+        title="Se déconnecter"
+        className="w-full sm:w-fit cursor-pointer group relative flex items-center justify-center gap-2 px-4 py-1.5 sm:py-2.5 rounded-md bg-white border border-noir/10 text-noir hover:border-noir/20 hover:shadow-md hover:scale-105 active:scale-100 font-medium transition-all duration-200 overflow-hidden"
       >
-        <span className="material-icons text-xs">logout</span>
-        {/* Se déconnecter */}
+        <span className="material-icons text-[10px] sm:text-[15px]">
+          logout
+        </span>
+        <div className="absolute inset-0 bg-noir/5 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
       </button>
 
       <Modal
