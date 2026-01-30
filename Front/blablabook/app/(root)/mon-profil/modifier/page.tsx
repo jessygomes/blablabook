@@ -1,4 +1,3 @@
-import React from "react";
 import { redirect } from "next/navigation";
 import { getUserById } from "@/lib/actions/user.action";
 import EditProfile from "@/components/Profil/EditProfile";
