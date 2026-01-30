@@ -58,10 +58,10 @@ export default function NavbarDesktop({
           return (
             <li
               key={index}
-              className={`relative overflow-hidden text-sm font-one py-2 px-2 xl:px-4 rounded-md tracking-widest transition-all duration-500 ease-in-out transform ${
+              className={`relative overflow-hidden text-sm font-one py-2 px-2 xl:px-4 rounded-md tracking-widest transition-all duration-300 ease-out ${
                 isActive
-                  ? "text-quater underline shadow-primary/30 scale-105"
-                  : "text-quater hover:text-primary hover:bg-gray-50 hover:scale-102"
+                  ? "text-quater underline underline-offset-4"
+                  : "text-quater  hover:bg-quater/10 hover:underline hover:underline-offset-4"
               }`}
             >
               <Link href={link.href}>{link.label}</Link>

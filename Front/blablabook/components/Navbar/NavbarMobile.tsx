@@ -40,7 +40,7 @@ export default function NavbarMobile({
 
   return (
     <nav className="bg-primary wrapper py-4">
-      <ul ref={navRef} className="flex justify-between gap-6">
+      <ul ref={navRef} className="flex justify-between items-center gap-6">
         {links.map((link, index) => {
           const isActive = pathname === link.href;
 
@@ -70,7 +70,7 @@ export default function NavbarMobile({
             className="flex flex-col gap-1 items-center"
           >
             {connected && user?.profilePicture ? (
-              <div className="relative h-6 w-6 rounded-full overflow-hidden border border-white">
+              <div className="relative h-8 w-8 rounded-full overflow-hidden border border-white">
                 <Image
                   src={getUploadUrl(user.profilePicture)}
                   alt={user.username}
