@@ -19,6 +19,11 @@ import { UserBookStatusEnum } from 'generated/prisma';
 export class UserBookController {
   constructor(private readonly userBookService: UserBookService) {}
 
+  @Get('book-read-count')
+  async getBookReadCount() {
+    return this.userBookService.getBookReadCount();
+  }
+
   @Post('/add/:userId/:bookId')
   create(
     @Param('userId', ParseIntPipe) userId: number,

@@ -19,6 +19,15 @@ export class UserBookService {
     });
   }
 
+  async getBookReadCount() {
+    const count = await this.prisma.userBook.count({
+      where: {
+        status: 'READ',
+      },
+    });
+    return { count };
+  }
+
   findAll() {
     return this.prisma.userBook.findMany();
   }
