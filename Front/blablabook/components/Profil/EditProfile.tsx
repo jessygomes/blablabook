@@ -7,11 +7,13 @@ import { z } from "zod";
 import { editProfileSchema } from "@/lib/validator.schema";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { updateProfileAction } from "@/lib/actions/user.action";
+import { deleteUserAction, updateProfileAction } from "@/lib/actions/user.action";
 import { Toast, useToast } from "@/components/Toast";
 import Link from "next/link";
 import { getUploadUrl } from "@/lib/utils";
 import ProfileImageDropzone from "./ProfileImageDropzone";
+import DeleteConfirmation from "./DeleteConfirmation";
+import { signOut } from "next-auth/react";
 
 type EditProfileFormData = z.infer<typeof editProfileSchema>;
 
@@ -27,6 +29,8 @@ export default function EditProfile({
   const [previewUrl, setPreviewUrl] = useState<string | null>(
     initialData.profilePicture ? getUploadUrl(initialData.profilePicture) : null
   );
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
   const { toast, showToast, hideToast } = useToast();
 
@@ -130,6 +134,29 @@ export default function EditProfile({
       showToast("Une erreur est survenue. Veuillez réessayer.", "error");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setIsDeleting(true);
+    try {
+      const response = await deleteUserAction(userId);
+      if (!response?.success) {
+        showToast(
+          response?.error || "Une erreur est survenue lors de la suppression du compte.",
+          "error"
+        );
+        return;
+      }
+      await signOut({ redirect: false });
+      showToast("Compte supprimé avec succès", "success");
+      router.push("/");
+    } catch (error) {
+      console.error("Erreur lors de la suppression:", error);
+      showToast("Une erreur est survenue. Veuillez réessayer.", "error");
+    } finally {
+      setIsDeleting(false);
+      setIsDeleteModalOpen(false);
     }
   };
 
@@ -281,8 +308,37 @@ export default function EditProfile({
                 {isSubmitting || isLoading ? "Mise à jour..." : "Enregistrer"}
               </button>
             </div>
+
+            {/* Zone de danger */}
+            <div className="pt-6 border-t border-red-200">
+              <div className="bg-red-50 rounded-lg p-4">
+                <h3 className="text-sm font-semibold text-red-800 mb-2 flex items-center gap-2">
+                  <span className="material-icons text-base">warning</span>
+                  Zone de danger
+                </h3>
+                <p className="text-xs text-red-600 mb-3">
+                  La suppression de votre compte est définitive et irréversible.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setIsDeleteModalOpen(true)}
+                  className="w-full sm:w-auto py-2 px-4 rounded-lg font-medium text-sm transition-colors bg-red-600 hover:bg-red-700 text-white flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+                >
+                  <span className="material-icons text-base">delete_forever</span>
+                  Supprimer mon compte
+                </button>
+              </div>
+            </div>
           </div>
         </form>
+
+        {/* Delete Confirmation Modal */}
+        <DeleteConfirmation
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+          onConfirm={handleDeleteAccount}
+          isDeleting={isDeleting}
+        />
       </div>
     </>
   );

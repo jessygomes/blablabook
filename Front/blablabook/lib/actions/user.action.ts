@@ -122,3 +122,35 @@ export const updateProfileAction = async (
     };
   }
 };
+
+export const deleteUserAction = async (userId: number) => {
+  try {
+    const session = await auth();
+    const token = session?.accessToken;
+    if (!token) {
+      return { success: false, error: "Non authentifié" };
+    }
+    const res = await fetch(`${url}/users/${userId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (!res.ok) {
+      const errorData = await res.json();
+      return {
+        success: false,
+        error: errorData.message || "Erreur lors de la suppression du compte",
+        status: res.status,
+      };
+    }
+    return { success: true, message: "Compte supprimé avec succès" };
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    return {
+      success: false,
+      error: "Une erreur est survenue lors de la suppression du compte",
+    };
+  } 
+};
