@@ -3,9 +3,11 @@ import { z } from "zod";
 import { editProfileSchema } from "../validator.schema";
 import { auth } from "@/auth.config";
 
+const url = process.env.NEXT_PUBLIC_API_URL ?? "http://api:3000";
+
 //! GET USER BY ID
 export const getUserById = async (userId: number) => {
-  const res = await fetch(`http://api:3000/users/profil/${userId}`, {
+  const res = await fetch(`${url}/users/profil/${userId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -34,7 +36,7 @@ export const getProfileById = async (userId: number) => {
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const res = await fetch(`http://api:3000/users/profil/${userId}`, {
+  const res = await fetch(`${url}/users/profil/${userId}`, {
     method: "GET",
     headers,
   });
@@ -87,7 +89,7 @@ export const updateProfileAction = async (
       formData.append("profilePicture", data.profilePicture);
     }
 
-    const res = await fetch(`http://api:3000/users/${userId}`, {
+    const res = await fetch(`${url}/users/${userId}`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,

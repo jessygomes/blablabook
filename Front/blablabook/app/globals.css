@@ -36,23 +36,22 @@ body {
 }
 
 .title {
-  @apply font-bold text-white text-center font-one tracking-wider text-3xl; 
+  @apply font-bold text-white text-center font-one tracking-wider text-3xl;
 }
 
 .subtitle {
   @apply font-semibold text-white text-center font-one tracking-widest text-xl;
 }
 .title-section {
-  @apply text-3xl font-bold font-one tracking-wider;
+  @apply text-5xl font-bold font-one tracking-wider;
 }
 
 .btn-primary {
   @apply cursor-pointer bg-primary text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-primary/85 transition-colors duration-300;
 }
 
-
 .title-section {
-  @apply tracking-wider text-noir font-bold text-2xl font-one p-0 sm:p-4 ;
+  @apply tracking-wider text-noir font-bold text-2xl font-one p-0 sm:p-4;
 }
 
 .title-card {
@@ -62,10 +61,10 @@ body {
 /* Remove Scrollbar (from stackoverflow) */
 
 .container-snap::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 .container-snap {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }

@@ -6,6 +6,8 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { email, password } = body;
 
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://api:3000";
+
     // Validation basique
     if (!email || !password) {
       return NextResponse.json(
@@ -15,7 +17,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Appel au backend
-    const response = await fetch("http://api:3000/auth/login", {
+    const response = await fetch(`${apiBaseUrl}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),

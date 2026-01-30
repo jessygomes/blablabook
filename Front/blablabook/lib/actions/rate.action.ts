@@ -1,9 +1,9 @@
 "use server";
-import { z } from "zod";
+const url = process.env.NEXT_PUBLIC_API_URL ?? "http://api:3000";
 
 //! RÉCUPÉRER LA NOTE MOYENNE D'UN LIVRE
 export const getBookAverageRating = async (bookId: number) => {
-  const res = await fetch(`http://api:3000/rate/book/${bookId}/average`, {
+  const res = await fetch(`${url}/rate/book/${bookId}/average`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -31,7 +31,7 @@ export const getBookAverageRating = async (bookId: number) => {
 
 //! RÉCUPÉRER LA NOTE D'UN UTILISATEUR POUR UN LIVRE
 export const getUserRateForBook = async (bookId: number, token: string) => {
-  const res = await fetch(`http://api:3000/rate/book/${bookId}/user`, {
+  const res = await fetch(`${url}/rate/book/${bookId}/user`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -64,7 +64,7 @@ export const createRate = async (
   rating: number,
   token: string,
 ) => {
-  const res = await fetch(`http://api:3000/rate`, {
+  const res = await fetch(`${url}/rate`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -102,7 +102,7 @@ export const updateRate = async (
   rating: number,
   token: string,
 ) => {
-  const res = await fetch(`http://api:3000/rate/book/${bookId}`, {
+  const res = await fetch(`${url}/rate/book/${bookId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
