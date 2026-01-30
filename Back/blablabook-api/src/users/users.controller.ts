@@ -78,7 +78,7 @@ export class UsersController {
     const user = await this.usersService.findById(id);
     if (user) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...userWithoutPassword } = user;
+      const { email, password, ...userWithoutPassword } = user;
       return userWithoutPassword;
     }
   }
