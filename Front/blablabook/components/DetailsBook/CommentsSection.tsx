@@ -1,37 +1,39 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from 'next/image';
-import { getUploadUrl } from '@/lib/utils';
+import Image from "next/image";
+import { getUploadUrl } from "@/lib/utils";
 import Link from "next/dist/client/link";
 
-
-interface Comment {
+export interface Comment {
   id?: number;
   user?: {
     id: number;
     username: string;
+    profilePicture?: string;
   };
   title?: string;
   content?: string;
   createdAt?: string;
-  rating?: number;
+  rating?: number | null;
+  date?: string;
 }
 
 interface CommentsSectionProps {
   comments?: Comment[];
   bookId: number;
   token: string | null;
-  userId: number | null;
+  userId?: number | null;
 }
 
 export default function CommentsSection({
-                                          comments = [],
-                                          bookId,
-                                          token,
-                                          userId,
-                                        }: CommentsSectionProps) {
+  comments = [],
+  bookId,
+  token,
+  userId,
+}: CommentsSectionProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -122,8 +124,8 @@ export default function CommentsSection({
             isOpen ? "rotate-180" : ""
           }`}
         >
-        expand_more
-      </span>
+          expand_more
+        </span>
       </button>
 
       {isOpen && (
@@ -143,11 +145,11 @@ export default function CommentsSection({
             [...comments]
               .sort((a, b) => {
                 const da =
-                  a.createdAt ?? a.date
+                  (a.createdAt ?? a.date)
                     ? new Date(a.createdAt ?? a.date!).getTime()
                     : 0;
                 const db =
-                  b.createdAt ?? b.date
+                  (b.createdAt ?? b.date)
                     ? new Date(b.createdAt ?? b.date!).getTime()
                     : 0;
                 return db - da;
@@ -158,8 +160,7 @@ export default function CommentsSection({
                   className="flex gap-4 rounded-xl border border-gray-200 bg-white p-4"
                 >
                   <div className="flex-shrink-0">
-                    <div
-                      className="relative h-10 w-10 overflow-hidden rounded-full bg-gray-200 flex items-center justify-center">
+                    <div className="relative h-10 w-10 overflow-hidden rounded-full bg-gray-200 flex items-center justify-center">
                       {comment.user?.profilePicture ? (
                         <Image
                           src={getUploadUrl(comment.user.profilePicture)}
@@ -181,11 +182,15 @@ export default function CommentsSection({
                           {comment.title ?? "Titre du commentaire"}
                         </h4>
                         <p className="mt-0.5 text-xs italic text-gray-500">
-                          Publié le {formatDate(comment.createdAt ?? comment.date)}{" "}
+                          Publié le{" "}
+                          {formatDate(comment.createdAt ?? comment.date)}{" "}
                           {comment.user?.username && (
                             <>
                               par{" "}
-                              <Link href={`/profil/${comment.user.id}`} className="underline hover:text-quater">
+                              <Link
+                                href={`/profil/${comment.user.id}`}
+                                className="underline hover:text-quater"
+                              >
                                 {comment.user.username}
                               </Link>
                             </>

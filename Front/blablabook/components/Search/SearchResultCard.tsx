@@ -6,7 +6,6 @@ import ExpandableText from "../ExpandableText";
 import LibraryButton from "../Library/LibraryButton";
 import StatusSelector, { StatusType } from "../Library/StatusSelector";
 import { Toast, useToast } from "../Toast";
-import router from "next/dist/shared/lib/router/router";
 import Link from "next/dist/client/link";
 
 interface SearchResultCardProps {
@@ -46,10 +45,10 @@ export default function SearchResultCard({
 
   const userBookEntry = book.userBooks?.[0];
   const [currentUserBookId, setCurrentUserBookId] = useState<number | null>(
-    userBookEntry?.id ?? null
+    userBookEntry?.id ?? null,
   );
   const [currentStatus, setCurrentStatus] = useState<StatusType>(
-    (userBookEntry?.status ?? "NOT_READ") as StatusType
+    (userBookEntry?.status ?? "NOT_READ") as StatusType,
   );
 
   return (

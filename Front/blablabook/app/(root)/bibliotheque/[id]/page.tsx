@@ -3,11 +3,11 @@ import { getBookById } from "@/lib/actions/book.action";
 import DetailBook from "@/components/DetailsBook/DetailBook";
 import { auth } from "@/auth.config";
 
-type Params = Promise<{ id: string }> | { id: string };
+type Params = { id: string };
 
-export default async function Page({ params }: { params: Params }) {
-  const resolvedParams = params instanceof Promise ? await params : params;
-  const bookId = Number(resolvedParams?.id);
+export default async function Page({ params }: { params: Promise<Params> }) {
+  const { id } = await params;
+  const bookId = Number(id);
   if (!bookId) {
     notFound();
   }
