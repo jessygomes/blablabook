@@ -7,13 +7,14 @@ import { z } from "zod";
 import { editProfileSchema } from "@/lib/validator.schema";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { deleteUserAction, updateProfileAction } from "@/lib/actions/user.action";
+import { updateProfileAction } from "@/lib/actions/user.action";
 import { Toast, useToast } from "@/components/Toast";
 import Link from "next/link";
 import { getUploadUrl } from "@/lib/utils";
 import ProfileImageDropzone from "./ProfileImageDropzone";
 import DeleteConfirmation from "./DeleteConfirmation";
 import { signOut } from "next-auth/react";
+import { removeUser } from "@/lib/actions/backoffice.action";
 
 type EditProfileFormData = z.infer<typeof editProfileSchema>;
 
@@ -27,7 +28,9 @@ export default function EditProfile({
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(
-    initialData.profilePicture ? getUploadUrl(initialData.profilePicture) : null
+    initialData.profilePicture
+      ? getUploadUrl(initialData.profilePicture)
+      : null,
   );
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -95,7 +98,7 @@ export default function EditProfile({
     // Conserver la valeur actuelle du champ (chemin existant) pour la validation
     setValue(
       "profilePicture",
-      profilePictureUrl || initialData.profilePicture || ""
+      profilePictureUrl || initialData.profilePicture || "",
     );
 
     showToast("Image sélectionnée", "success");
@@ -119,7 +122,7 @@ export default function EditProfile({
       if (!response?.success) {
         showToast(
           response?.error || "Une erreur est survenue lors de la mise à jour.",
-          "error"
+          "error",
         );
         return;
       }
@@ -140,11 +143,12 @@ export default function EditProfile({
   const handleDeleteAccount = async () => {
     setIsDeleting(true);
     try {
-      const response = await deleteUserAction(userId);
+      const response = await removeUser(userId);
       if (!response?.success) {
         showToast(
-          response?.error || "Une erreur est survenue lors de la suppression du compte.",
-          "error"
+          response?.error ||
+            "Une erreur est survenue lors de la suppression du compte.",
+          "error",
         );
         return;
       }
@@ -324,7 +328,9 @@ export default function EditProfile({
                   onClick={() => setIsDeleteModalOpen(true)}
                   className="w-full sm:w-auto py-2 px-4 rounded-lg font-medium text-sm transition-colors bg-red-600 hover:bg-red-700 text-white flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
                 >
-                  <span className="material-icons text-base">delete_forever</span>
+                  <span className="material-icons text-base">
+                    delete_forever
+                  </span>
                   Supprimer mon compte
                 </button>
               </div>

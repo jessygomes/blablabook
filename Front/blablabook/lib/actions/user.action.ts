@@ -2,7 +2,6 @@
 import { z } from "zod";
 import { editProfileSchema } from "../validator.schema";
 import { auth } from "@/auth.config";
-import { Session } from "next-auth";
 
 const url = process.env.NEXT_PUBLIC_API_URL ?? "http://api:3000";
 
@@ -123,4 +122,3 @@ export const updateProfileAction = async (
     };
   }
 };
-

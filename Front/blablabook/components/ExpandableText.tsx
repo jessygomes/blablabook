@@ -10,11 +10,11 @@ type Props = {
 };
 
 export default function ExpandableText({
-                                         text,
-                                         clampLines = 4,
-                                         className = "",
-                                         minHeightClassName = "",
-                                       }: Props) {
+  text,
+  clampLines = 4,
+  className = "",
+  minHeightClassName = "",
+}: Props) {
   const [expanded, setExpanded] = useState(false);
 
   const showToggle = useMemo(() => (text?.trim().length ?? 0) > 220, [text]);

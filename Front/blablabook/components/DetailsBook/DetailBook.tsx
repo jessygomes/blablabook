@@ -3,45 +3,32 @@ import Image from "next/image";
 import LibraryButton from "../Library/LibraryButton";
 import { Toast, useToast } from "../Toast";
 import RatingComponent from "./RatingComponent";
-import CommentsSection from "./CommentsSection";
+import CommentsSection, { Comment } from "./CommentsSection";
 
-type Comment = {
+interface BookDetails {
   id: number;
   title: string;
-  reportCounter: number;
-  content: string;
-  date: string;
-  status: string;
-  createdAt: string;
-  user: {
-    id: number;
-    username: string;
-    profilePicture: string | null;
-  };
-};
+  author?: string | null;
+  cover?: string | null;
+  publishing_date?: string | null;
+  publisher?: string | null;
+  page_count?: number | null;
+  summary?: string | null;
+  genre?: string | null;
+  publishedAt?: string | null;
+  pages?: number | null;
+  userBookId?: number | null;
+  userRating: number | null;
+  averageRating?: number | null;
+  comments: Comment[];
+}
 
 export default function DetailBook({
   book,
   userId,
   token,
 }: {
-  book: {
-    id: number;
-    title: string;
-    author?: string | null;
-    cover?: string | null;
-    publishing_date?: string | null;
-    publisher?: string | null;
-    page_count?: number | null;
-    summary?: string | null;
-    genre?: string | null;
-    publishedAt?: string | null;
-    pages?: number | null;
-    userBookId?: number | null;
-    userRating?: number | null;
-    averageRating?: number | null;
-    comments: Comment[];
-  };
+  book: BookDetails;
   userId?: number | null;
   token: string | null;
 }) {
@@ -149,11 +136,12 @@ export default function DetailBook({
         </div>
       </div>
       <section className="mt-12">
-        <CommentsSection comments={book.comments}
-                         bookId={book.id}
-                         userRating={book.userRating}
-                         userId={userId}
-                         token={token}/>
+        <CommentsSection
+          comments={book.comments}
+          bookId={book.id}
+          userId={userId}
+          token={token}
+        />
       </section>
     </div>
   );

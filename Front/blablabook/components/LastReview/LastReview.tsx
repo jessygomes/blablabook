@@ -8,7 +8,7 @@ type Item = {
   title: string;
   content: string;
   date: string;
-  book: { id: number; title: string };
+  book: { id: number; title: string; cover: string; author: string };
   user: {
     id: number;
     username: string;
@@ -49,15 +49,16 @@ export default async function DernieresCritiques() {
         </header>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
-          {items.map((c) => (
+          {items.map((c: Item) => (
             <article
               key={c.id}
               className="h-full flex flex-col rounded-md border bg-white p-5 shadow-sm hover:shadow-md transition"
             >
               <div className="flex gap-4">
-                <img
+                <Image
                   src={c.book.cover}
                   alt={c.book.title}
+                  fill
                   className="w-16 sm:w-20 h-24 sm:h-28 object-cover rounded-lg border"
                   loading="lazy"
                 />
@@ -104,8 +105,11 @@ export default async function DernieresCritiques() {
                     )}
                   </div>
                   <span className="italic">
-                    par 
-                    <Link href={`/profil/${c.user.id}`} className="underline hover:text-quater ml-1">
+                    par
+                    <Link
+                      href={`/profil/${c.user.id}`}
+                      className="underline hover:text-quater ml-1"
+                    >
                       <span>{c.user.username}</span>
                     </Link>
                   </span>
