@@ -24,7 +24,7 @@ export default function AboutUs({ isOpen, onClose }: AboutUsProps) {
 
   if (!isOpen) return null;
 
-  return (
+return (
     <>
       <div
         className="fixed inset-0 bg-black/50 z-40 backdrop-blur-md transition-all duration-300"
@@ -34,6 +34,7 @@ export default function AboutUs({ isOpen, onClose }: AboutUsProps) {
       {/* Modal content - Mobile: slide from bottom, Desktop: centered */}
       <div className="fixed inset-x-0 bottom-0 sm:inset-0 sm:flex sm:items-center sm:justify-center z-50">
         <div className="relative bg-white/95 rounded-t-xl sm:rounded-xl shadow-2xl ring-1 ring-black/5 animate-[slideUp_0.5s_ease-out] sm:animate-[fadeIn_0.3s_ease-out] h-[90vh] sm:max-h-[85vh] w-full sm:max-w-5xl sm:mx-4 overflow-hidden flex flex-col">
+          
           {/* Close button */}
           <button
             onClick={onClose}
@@ -60,73 +61,47 @@ export default function AboutUs({ isOpen, onClose }: AboutUsProps) {
             <div className="w-12 h-1.5 bg-gray-300/80 rounded-full" />
           </div>
 
-          {/* Content - Compact clear layout */}
-          <div className="flex flex-col gap-6 px-5 pb-6 sm:p-8 overflow-y-auto flex-1">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl bg-linear-to-br from-primary/20 via-white to-second/20 ring-1 ring-black/10 shadow-sm flex items-center justify-center">
-                  <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-white shadow-inner flex items-center justify-center">
-                    <Image
-                      src="/logo/Logo-bleu.png"
-                      alt="Blablabook Logo"
-                      width={36}
-                      height={36}
-                      className="object-contain"
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-col">
-                  <h1 className="text-2xl sm:text-3xl font-bold text-noir">
-                    À propos
-                  </h1>
-                </div>
+          {/* Content */}
+          <div className="flex flex-col gap-8 px-6 pb-8 sm:p-12 overflow-y-auto flex-1">
+            
+            {/* Header Section */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-6">
+              <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-3xl bg-linear-to-br from-primary/10 via-transparent to-second/10 flex items-center justify-center ring-1 ring-black/5">
+                <Image
+                  src="/logo/Logo-bleu.png"
+                  alt="Blablabook Logo"
+                  width={48}
+                  height={48}
+                  className="object-contain"
+                />
+              </div>
+              <div className="flex flex-col">
+                <h1 className="text-3xl sm:text-4xl font-extrabold text-noir tracking-tight">
+                  À propos
+                </h1>
+                <div className="h-1 w-12 bg-primary rounded-full mt-2" />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-              <div className="rounded-xl border border-black/5 bg-white shadow-sm p-4 sm:p-5 space-y-3 text-noir/90">
-                <p className="text-sm sm:text-base leading-relaxed">
-                  Découvrez Blablabook, votre plateforme de partage et
-                  d&apos;échange.
+            {/* Main Text Content */}
+            <div className="max-w-5xl space-y-6 text-noir/80">
+              <p className="text-lg sm:text-xl leading-relaxed font-medium text-noir">
+                Découvrez Blablabook, l&apos;écrin numérique de votre bibliothèque et le point de rencontre des amoureux des mots.
+              </p>
+              
+              <div className="space-y-4 text-base sm:text-lg leading-relaxed">
+                <p>
+                  Sur <span className="font-semibold text-primary">BlaBlaBook</span>, nous sommes convaincus que les livres ne sont pas de simples objets destinés à prendre la poussière, mais des invitations à l&apos;évasion qui ne demandent qu&apos;à être partagées. Notre mission est double : vous offrir un outil intuitif pour organiser votre collection personnelle, tout en créant un pont entre vos lectures et celles de toute une communauté de passionnés.
                 </p>
-                <p className="text-sm sm:text-base leading-relaxed">
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                  Eaque dolor dolorum reiciendis. Esse, rerum vero neque nihil,
-                  dolorum repellat deleniti nesciunt beatae modi doloribus porro
-                  rem. Nobis ullam, sint tempore aperiam dolorum aliquid
-                  officiis. Ad tenetur reiciendis ipsam optio obcaecati
-                  explicabo doloribus necessitatibus quibusdam consectetur.
-                  Illum vero fuga quasi mollitia!
+                <p>
+                  Plus besoin de chercher des heures le titre de ce roman qui vous a marqué. En quelques clics, recherchez et répertoriez vos ouvrages pour constituer une bibliothèque qui vous ressemble. Mais l&apos;expérience ne s&apos;arrête pas à vos propres étagères : BlaBlaBook vous ouvre les portes des collections d&apos;autres lecteurs.
                 </p>
-                <p className="text-sm sm:text-base leading-relaxed">
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                  Eaque dolor dolorum reiciendis. Esse, rerum vero neque nihil,
-                  dolorum repellat deleniti nesciunt beatae modi doloribus porro
-                  rem.
-                </p>
-              </div>
-
-              <div className="rounded-xl border border-black/5 bg-white shadow-sm p-4 sm:p-5 space-y-3 text-noir/90">
-                <p className="text-sm sm:text-base leading-relaxed">
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                  Eaque dolor dolorum reiciendis. Esse, rerum vero neque nihil,
-                  dolorum repellat deleniti nesciunt beatae modi doloribus porro
-                  rem. Nobis ullam, sint tempore aperiam dolorum aliquid
-                  officiis. Ad tenetur reiciendis ipsam optio obcaecati
-                  explicabo doloribus necessitatibus quibusdam consectetur.
-                  Illum vero fuga quasi mollitia!
-                </p>
-                <p className="text-sm sm:text-base leading-relaxed">
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                  Eaque dolor dolorum reiciendis. Esse, rerum vero neque nihil,
-                  dolorum repellat deleniti nesciunt beatae modi doloribus porro
-                  rem. Nobis ullam, sint tempore aperiam dolorum aliquid
-                  officiis. Ad tenetur reiciendis ipsam optio obcaecati
-                  explicabo doloribus necessitatibus quibusdam consectetur.
-                  Illum vero fuga quasi mollitia!
+                <p>
+                  Parce qu&apos;un livre n&apos;est vraiment achevé que lorsqu&apos;il est discuté, exprimez votre ressenti, laissez vos critiques et laissez-vous guider par les recommandations de la communauté. Que vous soyez amateur de polars haletants, de poésie délicate ou de récits d&apos;apprentissage, vous trouverez ici le compagnon idéal pour votre prochaine nuit de lecture.
                 </p>
               </div>
             </div>
+
           </div>
         </div>
       </div>
