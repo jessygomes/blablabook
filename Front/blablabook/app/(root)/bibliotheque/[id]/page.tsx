@@ -5,8 +5,9 @@ import { auth } from "@/auth.config";
 
 type Params = { id: string };
 
-export default async function Page({ params }: { params: Params }) {
-  const bookId = Number(params.id);
+export default async function Page({ params }: { params: Promise<Params> }) {
+  const { id } = await params;
+  const bookId = Number(id);
   if (!bookId) {
     notFound();
   }
