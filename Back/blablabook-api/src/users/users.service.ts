@@ -52,27 +52,25 @@ export class UsersService {
 
   //! Find user by ID
   async findById(id: number) {
-    // const user = await this.prisma.user.findUnique({
-    //   where: { id },
-    //   select: {
-    //     id: true,
-    //     username: true,
-    //     email: true,
-    //     isPrivate: true,
-    //     // description: true,
-    //     createdAt: true,
-    //     updatedAt: true,
-    //     userBooks: {
-    //       include: {
-    //         book: true,
-    //       },
-    //     },
-    //     comments: true,
-    //   },
-    // });
-
     const user = await this.prisma.user.findUnique({
       where: { id },
+      select: {
+        id: true,
+        username: true,
+        email: false,
+        password: false,
+        isPrivate: true,
+        description: true,
+        profilePicture: true,
+        createdAt: true,
+        updatedAt: true,
+        userBooks: {
+          include: {
+            book: true,
+          },
+        },
+        comments: true,
+      },
     });
 
     if (!user) {
@@ -94,8 +92,9 @@ export class UsersService {
       select: {
         id: true,
         username: true,
-        email: true,
+        email: false,
         isPrivate: true,
+        password: false,
         description: true,
         profilePicture: true,
         createdAt: true,
@@ -173,7 +172,6 @@ export class UsersService {
         await this.deleteFile(currentUser.profilePicture);
       }
     }
-
     return this.prisma.user.update({
       where: { id },
       data: updateData,
