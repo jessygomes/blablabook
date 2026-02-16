@@ -113,7 +113,7 @@ export default function LibraryButton({
           className={`${baseBtn} bg-green-200 text-green-800 hover:bg-green-100 ${className}`}
         >
           <span className="material-icons text-[14px]!">add</span>
-          <span className="hidden sm:inline">Ajouter à ma bibliothèque</span>
+          <span>Ajouter à ma bibliothèque</span>
         </button>
       )}
     </>

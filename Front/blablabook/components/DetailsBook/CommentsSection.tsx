@@ -175,9 +175,9 @@ export default function CommentsSection({
                     </div>
                   </div>
 
-                  <div className="flex-1">
+                  <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <h4 className="font-semibold text-sm text-gray-900 truncate">
                           {comment.title ?? "Titre du commentaire"}
                         </h4>
@@ -207,7 +207,7 @@ export default function CommentsSection({
                       </button>
                     </div>
 
-                    <p className="mt-2 text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+                    <p className="mt-2 text-sm text-gray-700 leading-relaxed whitespace-pre-line wrap-break-word overflow-wrap-anywhere">
                       {comment.content}
                     </p>
                   </div>

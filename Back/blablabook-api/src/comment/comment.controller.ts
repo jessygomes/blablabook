@@ -1,10 +1,16 @@
-import { Body, Controller, Get, Post, Request, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
-import { SelfOrAdminGuard } from 'src/auth/guards/selfOrAdmin.guard';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { User } from '../../generated/prisma';
-
 
 @Controller('comments')
 export class CommentController {
