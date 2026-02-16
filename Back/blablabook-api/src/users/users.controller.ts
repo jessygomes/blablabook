@@ -53,6 +53,7 @@ export class UsersController {
     const skip = Number(page) * Number(limit);
     const take = Number(limit);
     const { data, total } = await this.usersService.findAll(skip, take, search);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const usersWithoutPassWword = data.map(({ password, ...user }) => user);
     console.log('--- REQUETE RECUE ---');
     console.log('Search query param:', search);
@@ -177,7 +178,7 @@ export class UsersController {
   //! DELETE USER BY ID
   @Delete(':id')
   @ApiBearerAuth()
-  @UseGuards(AdminGuard)
+  @UseGuards(SelfOrAdminGuard)
   @ApiUnauthorizedResponse({
     description:
       "Jeton d'autorisation manquant (ou invalide) dans l'entête de la requête",
