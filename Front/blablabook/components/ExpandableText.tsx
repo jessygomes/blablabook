@@ -31,7 +31,7 @@ export default function ExpandableText({
 
   return (
     <div>
-      <p className={`${className} ${minHeightClassName} ${clampClass}`}>
+      <p className={`${className} ${minHeightClassName} ${clampClass} wrap-break-word`}>
         {text}
       </p>
 

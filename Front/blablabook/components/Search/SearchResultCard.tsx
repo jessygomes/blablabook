@@ -67,7 +67,7 @@ export default function SearchResultCard({
             <img
               src={book.cover}
               alt={book.title}
-              className="w-16 sm:w-20 h-24 sm:h-28 object-cover rounded-lg border cursor-pointer"
+              className="w-32 sm:w-40 h-40 sm:h-48 object-cover rounded-lg border cursor-pointer"
               loading="lazy"
             />
           </Link>
@@ -104,14 +104,14 @@ export default function SearchResultCard({
           </div>
         </div>
 
-        <div className="mt-5 flex flex-col flex-1">
+        {/* <div className="mt-5 flex flex-col flex-1">
           <ExpandableText
             text={book.summary}
             clampLines={4}
             className="mt-2 text-sm text-gray-700 leading-relaxed"
             minHeightClassName="min-h-[72px] sm:min-h-[96px]"
           />
-        </div>
+        </div> */}
       </article>
     </>
   );

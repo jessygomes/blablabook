@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { promises as fs } from 'fs';
 import { join } from 'path';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { User } from 'generated/prisma/client';
+import { User, Prisma } from 'generated/prisma/client';
 import { NewUserDTO } from './dto/new-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import * as bcrypt from 'bcryptjs';
@@ -27,12 +27,27 @@ export class UsersService {
     });
   }
 
-  async findAll() {
-    return this.prisma.user.findMany({
-      include: {
-        role: true,
-      },
-    });
+  async findAll(skip: number, take: number, search?: string) {
+    const where: Prisma.UserWhereInput = search
+      ? {
+          OR: [
+            { username: { contains: search, mode: 'insensitive' } },
+            { email: { contains: search, mode: 'insensitive' } },
+          ],
+        }
+      : {};
+    const [data, total] = await Promise.all([
+      this.prisma.user.findMany({
+        skip,
+        take,
+        where,
+        include: {
+          role: true,
+        },
+      }),
+      this.prisma.user.count({ where }),
+    ]);
+    return { data, total };
   }
 
   //! Find user by ID
@@ -65,6 +80,11 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  async getUserCount() {
+    const count = await this.prisma.user.count();
+    return { count };
   }
 
   //! Find user by ID
@@ -150,17 +170,7 @@ export class UsersService {
         currentUser.profilePicture.startsWith('/uploads') &&
         currentUser.profilePicture !== data.profilePicture
       ) {
-        const filePath = join(
-          __dirname,
-          '..',
-          '..',
-          currentUser.profilePicture,
-        );
-        try {
-          await fs.unlink(filePath);
-        } catch (error) {
-          console.error('Error deleting old profile picture:', error);
-        }
+        await this.deleteFile(currentUser.profilePicture);
       }
     }
 
@@ -189,9 +199,30 @@ export class UsersService {
     });
   }
 
+  async updateUserRole(id: number, data: { roleId: number }) {
+    return this.prisma.user.update({
+      where: { id },
+      data: { roleId: data.roleId },
+    });
+  }
+
   async remove(id: number) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+
+    if (user?.profilePicture) {
+      await this.deleteFile(user.profilePicture);
+    }
     return this.prisma.user.delete({
       where: { id },
     });
+  }
+
+  private async deleteFile(filePath: string) {
+    const fullPath = join(__dirname, '..', '..', filePath);
+    try {
+      await fs.unlink(fullPath);
+    } catch (error) {
+      console.error('Error deleting file:', error);
+    }
   }
 }

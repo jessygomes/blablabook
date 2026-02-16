@@ -13,6 +13,7 @@ import {
   BadRequestException,
   ForbiddenException,
   Req,
+  Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -27,6 +28,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { SelfOrAdminGuard } from 'src/auth/guards/selfOrAdmin.guard';
+import { AdminGuard } from 'src/auth/guards/admin.guard';
 import { OptionalAuthGuard } from 'src/auth/guards/optional-auth.guard';
 
 @ApiTags('Users')
@@ -43,13 +45,23 @@ export class UsersController {
 
   //! GET ALL USERS
   @Get()
-  async findAll() {
-    const users = await this.usersService.findAll();
-    return users.map((user) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...userWithoutPassword } = user;
-      return userWithoutPassword;
-    });
+  async findAll(
+    @Query('page') page: string = '0',
+    @Query('limit') limit: string = '10',
+    @Query('search') search?: string,
+  ) {
+    const skip = Number(page) * Number(limit);
+    const take = Number(limit);
+    const { data, total } = await this.usersService.findAll(skip, take, search);
+    const usersWithoutPassWword = data.map(({ password, ...user }) => user);
+    console.log('--- REQUETE RECUE ---');
+    console.log('Search query param:', search);
+    return { data: usersWithoutPassWword, total };
+  }
+
+  @Get('user-count')
+  async getUserCount() {
+    return this.usersService.getUserCount();
   }
 
   //! GET PROFILE USER
@@ -78,7 +90,7 @@ export class UsersController {
     const user = await this.usersService.findById(id);
     if (user) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...userWithoutPassword } = user;
+      const { email, password, ...userWithoutPassword } = user;
       return userWithoutPassword;
     }
   }
@@ -147,10 +159,25 @@ export class UsersController {
     return this.usersService.update(id, data);
   }
 
+  //! UPDATE USER ROLE
+  @Patch(':id/role')
+  @ApiBearerAuth()
+  @UseGuards(AdminGuard)
+  @ApiUnauthorizedResponse({
+    description:
+      "Jeton d'autorisation manquant (ou invalide dans l'entête de la requête",
+  })
+  async updateUserRole(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('roleId', ParseIntPipe) roleId: number,
+  ) {
+    return this.usersService.updateUserRole(id, { roleId });
+  }
+
   //! DELETE USER BY ID
   @Delete(':id')
   @ApiBearerAuth()
-  @UseGuards(SelfOrAdminGuard)
+  @UseGuards(AdminGuard)
   @ApiUnauthorizedResponse({
     description:
       "Jeton d'autorisation manquant (ou invalide) dans l'entête de la requête",

@@ -32,7 +32,11 @@ export default function NavbarDesktop({
   const links = [
     { href: "/", label: "Accueil" },
     { href: "/dernieres-critiques", label: "Dernières critiques" },
+    ...(session?.user?.roleId === 1 ? [
+      {href:"/administration", label:"Administration"}
+    ]: [])
   ];
+
 
   return (
     <nav className="w-full flex justify-between items-center gap-2 md:gap-4 py-4 wrapper bg-white">
@@ -68,6 +72,8 @@ export default function NavbarDesktop({
             </li>
           );
         })}
+
+       
 
         <Link
           href={connected ? "/mon-profil" : "/se-connecter"}
