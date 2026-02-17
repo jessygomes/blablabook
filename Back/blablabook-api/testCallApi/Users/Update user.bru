@@ -1,0 +1,22 @@
+meta {
+  name: Update user
+  type: http
+  seq: 3
+}
+
+patch {
+  url: http://localhost:3000/users/2
+  body: json
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidHlwZSI6ImF1dGgiLCJpYXQiOjE3Njk2OTIzNTcsImV4cCI6MTc3MDI5NzE1N30.GZ4E1DWHYYiGYCvr5MoR-yJNeAesfYQya0opi2qRnlU
+  : 
+}
+
+body:json {
+  {
+    "roleId": 2
+  }
+}

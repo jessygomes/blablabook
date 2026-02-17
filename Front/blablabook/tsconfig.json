@@ -18,6 +18,7 @@
         "name": "next"
       }
     ],
+    "typeRoots": ["./types", "./node_modules/@types"],
     "paths": {
       "@/*": ["./*"]
     }
@@ -26,9 +27,11 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
+    "**/*.d.ts",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts"
+    "**/*.mts",
+    "../../Back/blablabook-api/booksData.ts"
   ],
   "exclude": ["node_modules"]
 }
