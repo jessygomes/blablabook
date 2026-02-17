@@ -129,6 +129,20 @@ export class UsersService {
     });
   }
 
+  async findAuthUserById(id: number) {
+    return this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        isPrivate: true,
+        profilePicture: true,
+        roleId: true,
+      },
+    });
+  }
+
   async findByEmail(email: string): Promise<User | null> {
     return this.prisma.user.findUnique({
       where: { email },
