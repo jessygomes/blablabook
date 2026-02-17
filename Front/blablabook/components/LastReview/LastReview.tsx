@@ -1,6 +1,6 @@
 import ExpandableText from "@/components/ExpandableText";
 import { getUploadUrl } from "@/lib/utils";
-import Link from "next/link";
+import Link from "next/dist/client/link";
 import Image from "next/image";
 
 type Item = {
@@ -55,15 +55,13 @@ export default async function DernieresCritiques() {
               className="h-full flex flex-col rounded-md border bg-white p-5 shadow-sm hover:shadow-md transition"
             >
               <div className="flex gap-4">
-                <div className="relative w-16 sm:w-20 h-24 sm:h-28 shrink-0">
-                  <Image
-                    src={c.book.cover}
-                    alt={c.book.title}
-                    fill
-                    className="object-cover rounded-lg border"
-                    loading="lazy"
-                  />
-                </div>
+                <Image
+                  src={c.book.cover}
+                  alt={c.book.title}
+                  fill
+                  className="w-16 sm:w-20 h-24 sm:h-28 object-cover rounded-lg border"
+                  loading="lazy"
+                />
 
                 <div className="min-w-0">
                   <h2 className="text-base sm:text-lg font-semibold text-black leading-tight truncate">
