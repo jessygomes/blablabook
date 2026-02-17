@@ -3,7 +3,7 @@ services:
     image: postgres:18.1-alpine
     volumes:
       - postgre-data:/var/lib/postgresql/data
-      - ./dumbSQL.sql:/docker-entrypoint-initdb.d/init.sql
+      # - ./dumpSql/book.sql:/docker-entrypoint-initdb.d/init.sql
       # - ./db/database:/var/lib/postgresql/data
     ports:
       - 5432:5432
@@ -20,30 +20,15 @@ services:
       dockerfile: Dockerfile
     container_name: blablabook-api
     environment:
-      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@database:5432/${DB_NAME}?schema=public
+      - DATABASE_URL=${DATABASE_URL}
     depends_on:
       - database
     volumes:
       - ./Back/blablabook-api/src:/usr/src/api/src
-      - ./Back/blablabook-api/prisma:/usr/src/api/prisma
       - ./Back/blablabook-api:/usr/src/api
       - api_node_modules:/usr/src/api/node_modules
+      - ./Back/blablabook-api/uploads:/usr/src/api/uploads
     restart: on-failure
-    # develop:
-    #   watch:
-    #     - action: sync
-    #       path: ./Back/blablabook-api/src
-    #       target: /usr/src/api/src
-    #     - action: sync+restart
-    #       path: ./Back/blablabook-api/src/schemas
-    #       target: /usr/src/api/src/schemas
-    #     - action: sync+restart
-    #       path: ./Back/blablabook-api
-    #       target: /usr/src/api
-    #       ignore:
-    #         - ./Back/blablabook-api/src
-    #     - action: rebuild
-    #       path: ./Back/blablabook-api/package.json
     ports:
       - "3000:3000"
     env_file: ".env"
@@ -69,15 +54,13 @@ services:
     ports:
       - "5173:5173"
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:3000
       - WATCHPACK_POLLING=true
     depends_on:
       - api
     volumes:
-      - ./Front/blablabook:/app
-      - /app/node_modules
+      - ./Front/blablabook:/usr/src/app
+      - /usr/src/app/node_modules
     env_file: ".env"
-    # command: "npm run dev"
 
   redis:
     image: redis:8.4.0
@@ -104,7 +87,6 @@ services:
       ADMINER_DESIGN: pepa-linha
     depends_on:
       - database
-
 
 volumes:
   postgre-data:

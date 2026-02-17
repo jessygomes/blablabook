@@ -1,0 +1,15 @@
+meta {
+  name: Most comment
+  type: http
+  seq: 3
+}
+
+get {
+  url: http://localhost:3000/books/most-commented-books?take=9
+  body: none
+  auth: inherit
+}
+
+params:query {
+  take: 9
+}

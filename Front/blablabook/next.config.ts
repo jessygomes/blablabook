@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // import type { NextConfig } from "next";
 
 // const nextConfig: NextConfig = {
@@ -10,16 +11,38 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
-  webpack: (config, context) => {
-    if(process.env.NEXT_WEBPACK_USEPOLLING) {
+  // swcMinify: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "3000",
+        pathname: "/uploads/**",
+      },
+      {
+        protocol: "http",
+        hostname: "api",
+        port: "3000",
+        pathname: "/uploads/**",
+      },
+      {
+        protocol: "https",
+        hostname: "covers.openlibrary.org",
+        port: "",
+        pathname: "/b/id/**",
+      },
+    ],
+  },
+  webpack: (config: any, context: any) => {
+    if (process.env.NEXT_WEBPACK_USEPOLLING) {
       config.watchOptions = {
         poll: 200,
-        aggregateTimeout: 300
-      }
+        aggregateTimeout: 300,
+      };
     }
-    return config
+    return config;
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
