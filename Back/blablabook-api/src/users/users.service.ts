@@ -64,6 +64,7 @@ export class UsersService {
         profilePicture: true,
         createdAt: true,
         updatedAt: true,
+        roleId: true,
         userBooks: {
           include: {
             book: true,
