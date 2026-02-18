@@ -18,17 +18,25 @@ type Item = {
   };
 };
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://api:3000";
+
 async function getLatest() {
-  const res = await fetch("http://api:3000/comments/latest-per-book?take=9", {
-    cache: "no-store",
-  });
+  try {
+    const res = await fetch(`${apiUrl}/comments/latest-per-book?take=9`, {
+      cache: "no-store",
+    });
 
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(`Fetch failed (${res.status}) ${text}`);
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      console.error(`Latest reviews fetch failed (${res.status}) ${text}`);
+      return [];
+    }
+
+    return res.json();
+  } catch (error) {
+    console.error("Latest reviews fetch error:", error);
+    return [];
   }
-
-  return res.json();
 }
 
 export default async function DernieresCritiques() {
