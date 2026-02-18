@@ -8,7 +8,7 @@ import { auth } from "@/auth.config";
 
 type Params = Promise<{ id: string }> | { id: string };
 
-export default async function Page({ params }: { params: Params }) {
+export default async function Page({ params }: { params: Promise<Params> }) {
   const session = await auth();
   const token = session?.accessToken ?? null;
   const currentUserId = session?.user ? Number(session.user.id) : null;
