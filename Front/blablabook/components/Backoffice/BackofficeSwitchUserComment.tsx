@@ -1,10 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BackofficeUsersTableDesktop from "./BackofficeUsersTableDesktop";
 import BackofficeCommentsTableDesktop from "./BackofficeCommentsTableDesktop";
 import { User, Comment } from "@/lib/actions/backoffice.action";
+import BackofficeUsersMobile from "./BackofficeUsersDrawerMobile";
 import BackofficeCommentsDrawerMobile from "./BackofficeCommentsDrawerMobile";
-import BackofficeUsersMobile from "./BackofficeUsersMobile";
 
 export type DeleteUserAction = (
   userId: number,
